@@ -164,5 +164,26 @@ class Room {
     public function getOffers($con) {
         return AvailableOffers::readByRoomId($con, $this->room_id);
     }
+
+    public static function getAvailableRooms($con, $check_in_date, $check_out_date, $guest_count) {
+        try {
+            $query = "
+                SELECT * FROM Room r
+                WHERE r.guest_count >= :guest_count
+                AND r.room_id NOT IN (
+                    SELECT room_id FROM Reservation
+                    WHERE (check_in_date <= :check_out_date AND check_out_date >= :check_in_date)
+                )
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(':check_in_date', $check_in_date);
+            $stmt->bindValue(':check_out_date', $check_out_date);
+            $stmt->bindValue(':guest_count', $guest_count);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Error fetching available rooms: " . $e->getMessage());
+        }
+    }
 }
 ?>

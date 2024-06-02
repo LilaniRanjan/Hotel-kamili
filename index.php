@@ -164,13 +164,13 @@ try {
         <h1> <span>Book </span> Your Rooms </h1>
       </div>
       <div class="form">
-        <form class="grid">
+        <form class="grid" action="filteredRoom.php" method="post">
           
-          <input type="date" placeholder="Araival Date">
+          <input type="date" placeholder="Araival Date" name="check_in_date" required>
          
-          <input type="date" placeholder="Departure Date">
-          <input type="number" placeholder="Adults">
-          <input type="number" placeholder="Childern">
+          <input type="date" placeholder="Departure Date" name="check_out_date" required>
+          <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
+          <!-- <input type="number" placeholder="Childern"> -->
           <input type="submit" value="CHECK AVAILABILITY">
         </form>
       </div>
