@@ -41,8 +41,8 @@ try {
      
       <div class="navlinks">
         <ul id="menulist">
-          <li><a href="#home">Home</a> </li>
-          <li><a href="#about">About</a> </li>
+          <li><a href="./index.php">Home</a> </li>
+          <li><a href="./about-us.php">About</a> </li>
           <li><a href="#rooms">Rooms</a> </li>
           <li><a href="#pages">Weddings</a> </li>
           <li><a href="#news">Services</a> </li>
