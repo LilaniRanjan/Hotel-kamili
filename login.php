@@ -1,29 +1,16 @@
 <!DOCTYPE html>
 <?php 
-    // if(isset($_GET["msg"])){
-    //     $msg = $_GET["msg"];
-    //     if($msg == 1){
-    //         $message = "Your Staff registration was successful!";
-    //     }elseif($msg == 2){
-    //         $message = "Failed to register the Staff. Please try again later.";
-    //     }elseif($msg == 3){
-    //         $message = "Username already exists. Please choose a different username.";
-    //     }elseif($msg == 4){
-    //         $message = "Your Staff registration was successful!";
-    //     }elseif($msg == 5){
-    //         $message = "All fields are required. Please fill in all the fields.";
-    //     }elseif($msg == 6){
-    //         $message = "Data not received. Please check your form submission.";
-    //     }else{
-    //         $message = "Something went wrong, Try Again!";
-    //     }
-    // }
-
     session_start();
     $message = "";
+    $msg = "";
     if (isset($_SESSION['message'])) {
         $message = $_SESSION['message'];
         unset($_SESSION['message']);
+    }
+
+    if(isset($_SESSION['msg'])){
+        $msg = $_SESSION['msg'];
+        unset($_SESSION['msg']);
     }
 ?>
 <html lang="en">
@@ -65,8 +52,16 @@
         <!------------------- login form -------------------------->
 
         <form action="login_process.php" method="POST" class="login-container" id="login">
+            <?php 
+                if(!empty($msg)){
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo $msg; ?>
+                    </div>
+                    <?php
+                }
+            ?>
             <div class="top">
-                 
                 <header>Login</header>
             </div> 
             <div class="input-box">

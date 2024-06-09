@@ -7,9 +7,16 @@ require './classes/staff.php';
 use classes\DbConnector;
 use classes\staff;
 
-// Establish database connection
-$db_connector = new DbConnector;
-$con = $db_connector->getConnection();
+$msg = "";
+
+try {
+    // Establish database connection
+    $dbconnector = new DbConnector;
+    $con = $dbconnector->getConnection();
+} catch (PDOException $exc) {
+    // Handle database connection error
+    die("Error in DbConnection on LogIn_process file" . $exc->getMessage());
+}
 
 // Check if username and password are provided
 if(isset($_POST['user_name'], $_POST['password'])){
@@ -49,25 +56,25 @@ if(isset($_POST['user_name'], $_POST['password'])){
             exit();
         }else{
             // Invalid username or password
-            header("Location: login.php?status=1");
+            $_SESSION['msg'] = "Invalid username or password";
+            header("Location: login.php");
             // $locattion = "login.php?status=1";
         }
     }else{
         // Required fields are empty
-        header("Location: login.php?status=2");
+        $_SESSION['msg'] = "Required fields are empty";
+        header("Location: login.php");
         // $locattion = "login.php?status=2";
     }
 }else{
     // Data not received from the form
-    header("Location: login.php?status=3");
+    $_SESSION['msg'] = "Data not received from the form";
+    header("Location: login.php");
     // $locattion = "login.php?status=3";
 }
 
 // Redirect the user based on the determined location
 // header("Location: $location");
-
-// Set HTTP response code
-http_response_code(400);
 
 // Exit to prevent further execution
 exit(); 
