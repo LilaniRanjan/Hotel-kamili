@@ -10,47 +10,10 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<link rel="stylesheet" href="css/contact-us.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="./NavBar/navbar.css">
 
 	</head>
 	<body>
-    <header>
-    <div class="content flex_space">
-      <div class="logo">
-        <img src="Assests/cropped-kamili-Copy-1.png" alt="Image" width="70px" height="70px">
-      </div>
-     
-      <div class="navlinks">
-        <ul id="menulist">
-          <li><a href="./index.php">Home</a> </li>
-          <li><a href="./about-us.php">About</a> </li>
-          <li><a href="#rooms">Rooms</a> </li>
-          <li><a href="#pages">Weddings</a> </li>
-          <li><a href="#news">Services</a> </li>
-          <li><a href="#around_us">Around Us</a> </li>
-          <li><a href="#contact">Contact</a> </li>
-
-          <!-- <li> <i class="fa fa-search"></i> </li> -->
-          <li> <button class="primary-btn">BOOK NOW</button> </li>
-        </ul>
-        <span class="fa fa-bars" onclick="menutoggle()"></span>
-      </div>
-    </div>
-  </header>
-
-  <script>
-    var menulist = document.getElementById('menulist');
-    menulist.style.maxHeight = "0px";
-
-    function menutoggle() {
-      if (menulist.style.maxHeight == "0px") {
-        menulist.style.maxHeight = "100vh";
-      } else {
-        menulist.style.maxHeight = "0px";
-      }
-    }
-  </script>
-
 	<section class="ftco-section">
 		<div class="container">
 			<div class="row justify-content-center">
@@ -152,56 +115,6 @@
 			</div>
 		</div>
 	</section>
-
-    <footer>
-    <div class="container grid">
-      
-      <div class="box">
-        <img src="Assests/cropped-kamili-Copy-1.png" alt="Logo" width="120px" height="120px">
-        <p>We draw our inspiration from the word ‘Kamili’ which denotes the city of Kalutara, an age-old symbol in Buddhism that stands for purity of body, mind and soul.We draw our inspiration from the word ‘Kamili’ which denotes the city of Kalutara, an age-old symbol in Buddhism that stands for purity of body, mind and soul.</p>
-
-        <div class="icon">
-          <i class="fa fa-facebook-f"></i>
-          <i class="fa fa-instagram"></i>
-          <i class="fa fa-twitter"></i>
-          <i class="fa fa-youtube"></i>
-        </div>
-      </div>
-
-      <div class="box">
-        <h2>Links</h2>
-        <ul>
-          <li>Home</li>
-          <li>About Us</li>
-          <li>Contact Us</li>
-          <li>Services</li>
-          <li>Weddings</li>
-          <li>Around Us</li>
-        </ul>
-      </div>
-
-      <div class="box">
-        <h2>Contact Us</h2>
-        <i class="fa fa-location-dot"> Location</i>
-        <label><br>No. 531,<br>
-            First Station Road,<br>
-            Waskaduwa,<br>
-             Kalutara,<br>
-             Sri Lanka.</label> <br>
-        <i class="fa fa-phone">  Hotline</i><br>
-        <label>+ (94) 76 2 760 765</label> <br>
-        <i class="fa fa-envelope">  Email</i><br>
-        <label>reservation@kamilibeach.com</label> <br>
-      </div>
-    </div>
-    <section>
-      
-    </section>
-  </footer>
-
-  <div class="legal">
-    <p class="container" style="margin-left: 600px;">Copyright (c) 2024 - All Rights Reserved.</p>
-  </div> 
 
 	<script src="js/jquery.min.js"></script>
   <script src="js/popper.js"></script>

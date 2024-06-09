@@ -1,10 +1,38 @@
 <!DOCTYPE html>
+<?php 
+    // if(isset($_GET["msg"])){
+    //     $msg = $_GET["msg"];
+    //     if($msg == 1){
+    //         $message = "Your Staff registration was successful!";
+    //     }elseif($msg == 2){
+    //         $message = "Failed to register the Staff. Please try again later.";
+    //     }elseif($msg == 3){
+    //         $message = "Username already exists. Please choose a different username.";
+    //     }elseif($msg == 4){
+    //         $message = "Your Staff registration was successful!";
+    //     }elseif($msg == 5){
+    //         $message = "All fields are required. Please fill in all the fields.";
+    //     }elseif($msg == 6){
+    //         $message = "Data not received. Please check your form submission.";
+    //     }else{
+    //         $message = "Something went wrong, Try Again!";
+    //     }
+    // }
+
+    session_start();
+    $message = "";
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+        unset($_SESSION['message']);
+    }
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="./CSS/login.css">
     <title>Login & Registration</title>
 </head>
@@ -72,8 +100,26 @@
         <!------------------- registration form -------------------------->
 
         <form action="signup_process.php" method="POST" class="register-container" id="register">
+            <?php 
+                if(!empty($message)){
+                    if($message == 'SUCCESS'){
+                        ?>
+                        <div class="alert alert-success" role="alert">
+                            Your Staff registration was successful!
+                        </div>
+                        <?php
+                    }else{
+                        ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $message; ?>
+                        </div>
+                        <?php
+                    }   
+                    
+                }
+            ?>
+
             <div class="top">
-                
                 <header>Sign Up</header>
             </div>
             <div class="two-forms">
@@ -163,6 +209,8 @@
     }
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>
 </html>

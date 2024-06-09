@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 use classes\staff;
 
@@ -58,15 +59,21 @@ if (isset($_POST['first_name'], $_POST['last_name'], $_POST['user_name'], $_POST
             if ($staff->isUsernameUnique($user_name, $dbcon)) {
                 // Attempt to register staff
                 if ($staff->register($dbcon)) {
-                    $message = "Your Staff registration was successful!";
+                    // $message = "Your Staff registration was successful!";
+                    // $location = "login.php?status=1";
+                    $_SESSION['message'] = "SUCCESS";
                     http_response_code(200);
                 } else {
-                    $message = "Failed to register the Staff. Please try again later.";
+                    // $message = "Failed to register the Staff. Please try again later.";
+                    // $location = "login.php?status=2";
+                    $_SESSION['message'] = "Failed to register the Staff. Please try again later.";
                     http_response_code(500);
                 }
             } else {
                 // Username already exists
-                $message = "Username already exists. Please choose a different username.";
+                // $message = "Username already exists. Please choose a different username.";
+                // $location = "login.php?status=3";
+                $_SESSION['message'] = "Username already exists. Please choose a different username.";
                 http_response_code(400);
             }
         } else {
@@ -81,19 +88,30 @@ if (isset($_POST['first_name'], $_POST['last_name'], $_POST['user_name'], $_POST
             if (!validateContactNo($_POST['contact_no'])) {
                 $invalidFields[] = "contact number";
             }
-            $message = "Invalid " . implode(", ", $invalidFields) . " format.";
+            // $message = "Invalid " . implode(", ", $invalidFields) . " format.";
+            // $location = "login.php?status=4";
+            $_SESSION['message'] = "Invalid " . implode(", ", $invalidFields) . " format.";
             http_response_code(400);
         }
     } else {
         // Required fields are empty
-        $message = "All fields are required. Please fill in all the fields.";
+        // $message = "All fields are required. Please fill in all the fields.";
+        // $location = "login.php?status=5";
+        $_SESSION['message'] = "All fields are required. Please fill in all the fields.";
         http_response_code(400);
     }
 } else {
     // Data not received from the form
-    $message = "Data not received. Please check your form submission.";
+    // $message = "Data not received. Please check your form submission.";
+    // $location = "login.php?status=6";
+    $_SESSION['message'] = "Data not received. Please check your form submission.";
     http_response_code(400);
 }
 
-// Output the message
-echo $message;
+
+header("Location:login.php");
+
+
+
+// Exit to prevent further execution
+exit();
