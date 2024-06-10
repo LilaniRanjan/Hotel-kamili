@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && filter_va
             $emailConnector->setToAddress($email);
             $emailConnector->setSubject('Password Reset');
             $emailConnector->setBody(<<<EOT
-                Click <a href="http://localhost:8000/reset-password.php?token=$token">here</a> to reset your password.
+                Click <a href="http://localhost:8000/reset-pwd.php?token=$token">here</a> to reset your password.
             EOT);
 
             // Send the email
