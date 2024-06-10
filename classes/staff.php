@@ -167,6 +167,15 @@ class staff
         return $count == 0;
     }
 
+    public function checkEmailAvailability($email, $con)
+    {
+        $query = "SELECT COUNT(*) FROM staff WHERE email = ?";
+        $pstmt = $con->prepare($query);
+        $pstmt->execute([$email]);
+        $count = $pstmt->fetchColumn();
+        return $count == 0;
+    }
+
     public function authenticate($con)
     {
         try {
