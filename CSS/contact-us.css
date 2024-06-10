@@ -197,7 +197,6 @@
     outline: 5px auto -webkit-focus-ring-color; }
   
   input,
-  button,
   select,
   optgroup,
   textarea {
@@ -8312,4 +8311,8 @@
     display: none;
     font-size: 16px;
     font-weight: bold; }
+
+    a{
+      color: #b6b7b9;
+    }
   

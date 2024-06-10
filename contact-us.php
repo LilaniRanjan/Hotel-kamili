@@ -1,4 +1,13 @@
 <!doctype html>
+<?php 
+    session_start();
+    $message = "";
+
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+        unset($_SESSION['message']);
+    }
+?>
 <html lang="en">
   <head>
   	<title>Contact Form 03</title>
@@ -11,9 +20,14 @@
 	
 	<link rel="stylesheet" href="css/contact-us.css">
     <link rel="stylesheet" href="./NavBar/navbar.css">
+	<link rel="stylesheet" href="./Footer/footer.css">
 
 	</head>
 	<body>
+	<?php
+        require './NavBar/navbar.php';
+    ?>
+
 	<section class="ftco-section">
 		<div class="container">
 			<div class="row justify-content-center">
@@ -66,15 +80,33 @@
 								<div class="contact-wrap w-100 p-md-5 p-4">
 									<h3 class="mb-4">Contact Us</h3>
 									<div id="form-message-warning" class="mb-4"></div> 
-				      		<div id="form-message-success" class="mb-4">
+				      		<!-- <div id="form-message-success" class="mb-4">
 				            Your message was sent, thank you!
-				      		</div>
-									<form method="POST" id="contactForm" name="contactForm" class="contactForm">
+				      		</div> -->
+							  <?php 
+									if(!empty($message)){
+										if($message == 'SUCCESS'){
+											?>
+											<div class="alert alert-success" role="alert">
+												Email sent successfully !
+											</div>
+											<?php
+										}else{
+											?>
+											<div class="alert alert-danger" role="alert">
+												<?php echo $message; ?>
+											</div>
+											<?php
+										}   
+										
+									}
+								?>
+									<form method="POST" action="contact_us_process.php" name="contactForm" class="contactForm">
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
 													<label class="label" for="name">Full Name</label>
-													<input type="text" class="form-control" name="name" id="name" placeholder="Name">
+													<input type="text" class="form-control" name="username" id="name" placeholder="Name">
 												</div>
 											</div>
 											<div class="col-md-6"> 
@@ -92,7 +124,7 @@
 											<div class="col-md-12">
 												<div class="form-group">
 													<label class="label" for="#">Message</label>
-													<textarea name="message" class="form-control" id="message" cols="30" rows="4" placeholder="Message"></textarea>
+													<textarea name="msg" class="form-control" id="message" cols="30" rows="4" placeholder="Message"></textarea>
 												</div>
 											</div>
 											<div class="col-md-12">
@@ -115,6 +147,10 @@
 			</div>
 		</div>
 	</section>
+
+	<?php
+        require './Footer/footer.php';
+    ?>
 
 	<script src="js/jquery.min.js"></script>
   <script src="js/popper.js"></script>
