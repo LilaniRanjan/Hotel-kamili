@@ -1,8 +1,8 @@
 <?php 
 session_start();
 
-require './classes/DbConnector.php';
-require './classes/staff.php';
+require '../classes/DbConnector.php';
+require '../classes/staff.php';
 
 use classes\DbConnector;
 use classes\staff;
@@ -40,17 +40,17 @@ if(isset($_POST['user_name'], $_POST['password'])){
             // Redirect user based on role
             switch($staff->getRole()) {
                 case 'Staff':
-                    header("Location: AdminPanel/initialPage.php");
+                    header("Location: ./initialPage.php");
                     break;
                 case 'Room_manager':
-                    header("Location: AdminPanel/SpecialRoomRequestDetails.php");
+                    header("Location: ./SpecialRoomRequestDetails.php");
                     break;
                 case 'Receptionist':
                 case 'Admin':
-                    header("Location: AdminPanel/Dashboard.php");
+                    header("Location: ./Dashboard.php");
                     break;
                 default:
-                    header("Location: index.php");
+                    header("Location: ../index.php");
             }
             // Exit to prevent further execution
             exit();

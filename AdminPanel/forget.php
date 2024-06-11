@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./CSS/login.css">
+    <link rel="stylesheet" href="../CSS/login.css">
     <title>Forgot Password</title>
 </head>
 <body>
@@ -58,7 +58,7 @@
                 <input type="submit" class="submit" value="Submit">
             </div>
              <div class="account">
-                 <span>Back to the <a href="login.html" >Login</a></span>
+                 <span>Back to the <a href="./login.php" >Login</a></span>
             </div> 
              
         </form>

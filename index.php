@@ -170,7 +170,7 @@ try {
          
           <input type="date" placeholder="Departure Date" name="check_out_date" required>
           <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
-          <!-- <input type="number" placeholder="Childern"> -->
+          <input type="number" placeholder="Childern">
           <input type="submit" value="CHECK AVAILABILITY">
         </form>
       </div>
@@ -392,51 +392,7 @@ try {
       }
     })
   </script>
-
-<section class="services top">
-  <div class="container">
-    <div class="heading">
-      <h1>SERVICES</h1>
-      <h2>Our Services</h2>
-      <p>Exceptional Services for our customers.
-    </div>
-
-
-    <div class="content flex_space">
-      <div class="left grid2">
-        <div class="box">
-          <div class="text">
-            <i class="fa-solid fa-champagne-glasses"></i>
-            <h3>Delicious Food</h3>
-          </div>
-        </div>
-        <div class="box">
-          <div class="text">
-            <i class="fa-solid fa-person-biking"></i>
-            <h3>Fitness</h3>
-          </div>
-        </div>
-        <div class="box">
-          <div class="text">
-            <i class="fa-solid fa-utensils"></i>
-            <h3>Bar</h3>
-          </div>
-        </div>
-        <div class="box">
-          <div class="text">
-            <i class="fa-solid fa-spa"></i>
-            <h3>Beauty Spa</h3>
-          </div>
-        </div>
-      </div>
-      <div class="right">
-        <img src="Assests/tRY.jpg" alt="Image here.">
-      </div>
-    </div>
-  </div>
-</section>
-
-
+  
    <section class="gallery">
     <div class="container top">
       <div class="heading">

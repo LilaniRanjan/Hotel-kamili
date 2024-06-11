@@ -3,8 +3,8 @@ session_start();
 
 use classes\staff;
 
-require './classes/DbConnector.php';
-require './classes/staff.php';
+require '../classes/DbConnector.php';
+require '../classes/staff.php';
 
 $message = "";
 

@@ -20,14 +20,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./CSS/login.css">
+    <link rel="stylesheet" href="../CSS/login.css">
     <title>Login & Registration</title>
 </head>
 <body>
  <div class="wrapper">
     <nav class="nav">
         <div class="nav-logo">
-            <p><img src="./Assests/cropped-kamili-Copy-1.png" width="100px" height="100px" style="margin-top: 20px;"></p>
+            <p><img src="../Assests/cropped-kamili-Copy-1.png" width="100px" height="100px" style="margin-top: 20px;"></p>
         </div>
         <div class="nav-menu" id="navMenu">
             <!--  <ul>
