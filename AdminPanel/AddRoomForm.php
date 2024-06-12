@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<?php 
+    session_start();
+    $message = "";
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+        unset($_SESSION['message']);
+    }
+?>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +16,24 @@
 </head>
 <body>
     <h1>Add a Room</h1>
-    <form action="add_room.php" method="post" enctype="multipart/form-data">
+    <?php 
+        if(!empty($message)){
+            if($message == 'SUCCESS'){
+            ?>
+                <div class="alert alert-success" role="alert">
+                    Your Room registration was successful!
+                </div>
+                <?php
+                }else{
+                ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo $message; ?>
+                </div>
+            <?php
+            }             
+        }
+    ?>
+    <form action="add_room_process.php" method="post" enctype="multipart/form-data">
         <!-- Room Details -->
         <h2>Room Details</h2>
         <label for="room_type">Room Type:</label>
