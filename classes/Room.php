@@ -8,11 +8,14 @@ use PDOException;
 class Room {
     private $room_id;
     private $room_type;
-    private $guest_count;
-    private $price;
+    private $adult_count;
+    private $children_count;
+    private $price_per_night;
     private $room_description;
-    private $room_image;
-    private $view_image_360;
+    private $room_inside_normal_image;
+    private $room_inside_360view_image;
+    private $room_bathroom_360view_image;
+    private $room_outdoor_360view_image;
 
     // Constructor
     public function __construct($room_type, $guest_count, $price, $room_description, $room_image, $view_image_360) {
