@@ -51,6 +51,9 @@
         <label for="room_description">Room Description:</label>
         <textarea id="room_description" name="room_description" required></textarea><br>
 
+        <label for="number_of_rooms">Number of Rooms:</label>
+        <input type="number" id="number_of_rooms" name="number_of_rooms" required><br>
+
         <label for="room_inside_normal_image">Room Inside Normal Image:</label>
         <input type="file" id="room_inside_normal_image" name="room_inside_normal_image" accept="image/*" required><br>
 
@@ -83,7 +86,6 @@
         </div>
         <button type="button" onclick="addPhoto()">Add Another Photo</button>
 
-
         <br><br><br>
         <button type="submit" name="submit">Create Room</button>
     </form>
@@ -110,7 +112,6 @@
             `;
             document.getElementById('additional_photos_section').insertAdjacentHTML('beforeend', newPhoto);
         }
-
     </script>
 </body>
 </html>

@@ -20,14 +20,15 @@ try {
 
 // Check if the form is submitted
 if(isset($_POST['submit'])) {
-    if(isset($_POST['room_type'], $_POST['adult_count'], $_POST['children_count'], $_POST['room_description'], $_POST['price_per_night'])){
-        if(!empty($_POST['room_type']) || !empty($_POST['adult_count']) || !empty($_POST['children_count']) || !empty($_POST['room_description']) || !empty($_POST['price_per_night'])){
+    if(isset($_POST['room_type'], $_POST['adult_count'], $_POST['children_count'], $_POST['room_description'], $_POST['price_per_night'], $_POST['number_of_rooms'])){
+        if(!empty($_POST['room_type']) && !empty($_POST['adult_count']) && !empty($_POST['children_count']) && !empty($_POST['room_description']) && !empty($_POST['price_per_night']) && !empty($_POST['number_of_rooms'])){
             // Retrieve form data
             $room_type = $_POST['room_type'];
             $adult_count = $_POST['adult_count'];
             $children_count = $_POST['children_count'];
             $price_per_night = $_POST['price_per_night'];
             $room_description = $_POST['room_description'];
+            $number_of_rooms = $_POST['number_of_rooms'];
             $room_inside_normal_image = $_FILES['room_inside_normal_image']['name'];
             $room_inside_360view_image = $_FILES['room_inside_360view_image']['name'];
             $room_bathroom_360view_image = $_FILES['room_bathroom_360view_image']['name'];
@@ -50,7 +51,7 @@ if(isset($_POST['submit'])) {
             move_uploaded_file($_FILES["room_outdoor_360view_image"]["tmp_name"], $room_outdoor_360view_image_path);
 
             // Create a new Room instance
-            $room = new \classes\Room($room_type, $adult_count, $children_count, $price_per_night, $room_description, $room_inside_normal_image_path, $room_inside_360view_image_path, $room_bathroom_360view_image_path, $room_outdoor_360view_image_path);
+            $room = new \classes\Room($room_type, $adult_count, $children_count, $price_per_night, $room_description, $room_inside_normal_image_path, $room_inside_360view_image_path, $room_bathroom_360view_image_path, $room_outdoor_360view_image_path, $number_of_rooms);
 
             // Save room details to the database
             $roomId = $room->create($con);
