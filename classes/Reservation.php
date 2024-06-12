@@ -11,7 +11,8 @@ class Reservation {
     private $room_id;
     private $check_in_date;
     private $check_out_date;
-    private $number_of_guests;
+    private $number_of_adult;
+    private $number_of_children;
     private $total_price;
     private $reservation_status;
     private $payment_status;
