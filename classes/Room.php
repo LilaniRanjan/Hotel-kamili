@@ -12,18 +12,20 @@ class Room {
     private $children_count;
     private $price_per_night;
     private $room_description;
+    private $number_of_rooms;
     private $room_inside_normal_image;
     private $room_inside_360view_image;
     private $room_bathroom_360view_image;
     private $room_outdoor_360view_image;
 
     // Constructor
-    public function __construct($room_type, $adult_count, $children_count, $price_per_night, $room_description, $room_inside_normal_image, $room_inside_360view_image, $room_bathroom_360view_image, $room_outdoor_360view_image) {
+    public function __construct($room_type, $adult_count, $children_count, $price_per_night, $room_description, $number_of_rooms, $room_inside_normal_image, $room_inside_360view_image, $room_bathroom_360view_image, $room_outdoor_360view_image) {
         $this->room_type = $room_type;
         $this->adult_count = $adult_count;
         $this->children_count = $children_count;
         $this->price_per_night = $price_per_night;
         $this->room_description = $room_description;
+        $this->number_of_rooms = $number_of_rooms;
         $this->room_inside_normal_image = $room_inside_normal_image;
         $this->room_inside_360view_image = $room_inside_360view_image;
         $this->room_bathroom_360view_image = $room_bathroom_360view_image;
@@ -53,6 +55,10 @@ class Room {
 
     public function getRoomDescription() {
         return $this->room_description;
+    }
+
+    public function getNumberOfRooms() {
+        return $this->number_of_rooms;
     }
 
     public function getRoomInsideNormalImage() {
@@ -92,6 +98,10 @@ class Room {
         $this->room_description = $room_description;
     }
 
+    public function setNumberOfRooms($number_of_rooms) {
+        $this->number_of_rooms = $number_of_rooms;
+    }
+
     public function setRoomInsideNormalImage($room_inside_normal_image) {
         $this->room_inside_normal_image = $room_inside_normal_image;
     }
@@ -111,17 +121,18 @@ class Room {
     // Create a new room record
     public function create($con) {
         try {
-            $query = "INSERT INTO Room (room_type, adult_count, children_count, price_per_night, room_description, room_inside_normal_image, room_inside_360view_image, room_bathroom_360view_image, room_outdoor_360view_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO Room (room_type, adult_count, children_count, price_per_night, room_description, number_of_rooms, room_inside_normal_image, room_inside_360view_image, room_bathroom_360view_image, room_outdoor_360view_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
             $stmt->bindValue(2, $this->adult_count);
             $stmt->bindValue(3, $this->children_count);
             $stmt->bindValue(4, $this->price_per_night);
             $stmt->bindValue(5, $this->room_description);
-            $stmt->bindValue(6, $this->room_inside_normal_image);
-            $stmt->bindValue(7, $this->room_inside_360view_image);
-            $stmt->bindValue(8, $this->room_bathroom_360view_image);
-            $stmt->bindValue(9, $this->room_outdoor_360view_image);
+            $stmt->bindValue(6, $this->number_of_rooms);
+            $stmt->bindValue(7, $this->room_inside_normal_image);
+            $stmt->bindValue(8, $this->room_inside_360view_image);
+            $stmt->bindValue(9, $this->room_bathroom_360view_image);
+            $stmt->bindValue(10, $this->room_outdoor_360view_image);
             $stmt->execute();
             $this->room_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0) ? $this->room_id : false;
@@ -146,18 +157,19 @@ class Room {
     // Update an existing room record
     public function update($con) {
         try {
-            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ? WHERE room_id = ?";
+            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, number_of_rooms = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ? WHERE room_id = ?";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
             $stmt->bindValue(2, $this->adult_count);
             $stmt->bindValue(3, $this->children_count);
             $stmt->bindValue(4, $this->price_per_night);
             $stmt->bindValue(5, $this->room_description);
-            $stmt->bindValue(6, $this->room_inside_normal_image);
-            $stmt->bindValue(7, $this->room_inside_360view_image);
-            $stmt->bindValue(8, $this->room_bathroom_360view_image);
-            $stmt->bindValue(9, $this->room_outdoor_360view_image);
-            $stmt->bindValue(10, $this->room_id);
+            $stmt->bindValue(6, $this->number_of_rooms);
+            $stmt->bindValue(7, $this->room_inside_normal_image);
+            $stmt->bindValue(8, $this->room_inside_360view_image);
+            $stmt->bindValue(9, $this->room_bathroom_360view_image);
+            $stmt->bindValue(10, $this->room_outdoor_360view_image);
+            $stmt->bindValue(11, $this->room_id);
             $stmt->execute();
             return ($stmt->rowCount() > 0);
         } catch (PDOException $e) {
