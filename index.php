@@ -21,8 +21,6 @@ use classes\AvailableOffers;
 use classes\Room;
 
 require './classes/DbConnector.php';
-require './classes/Room.php';
-require './classes/AvailableOffers.php';
 
 try {
     $dbconnector = new classes\DbConnector();
@@ -225,7 +223,7 @@ try {
   </section>
 
 
- <section class="rooms">
+  <section class="rooms">
     <div class="container top">
       <div class="heading">
         <h1>EXPLORE</h1>
@@ -236,20 +234,12 @@ try {
 
       <div class="content mtop">
         <div class="owl-carousel owl-carousel1 owl-theme">
-
-        <?php 
-        $i = 1; 
-        $room_obj = new Room(null, null, null, null, null, null);
-        $rs = $room_obj->getAllRooms($dbcon);
-        
-        foreach ($rs as $room){
-        ?>
           <div class="items">
             <div class="image">
-              <img src="uploads/<?php echo $room['room_image']; ?>" alt="Room here.">
+              <img src="Assests/Luxary.jpg" alt="Room here.">
             </div>
             <div class="text">
-              <h2><?php echo $room['room_type']; ?></h2>
+              <h2>Luxuary Rooms</h2>
               <div class="rate flex">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -258,31 +248,107 @@ try {
                 <i class="fa fa-star"></i>
               </div>
               <p>
-                <ul type="disk">
-                <?php
-                  $j = 1;
-                  $offer_obj = new AvailableOffers($room['room_id'], null, null);
-                  $offers = $offer_obj->readByRoomId($dbcon, $room['room_id']);
-
-                  foreach ($offers as $offer){
-                ?>
-                  <li><?php echo $offer['available_offer']; ?></li>
-                <?php 
-                }
-                ?>
-                </ul>
+              <ul type="disk">
+                <li>Thriple Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
+                
+              </ul>
               </p>
               <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>Rs.<?php echo number_format($room['price']); ?>/=<span> <br><b>Per Night</b> </span> </h3>
-               
+
+                <button class="primary-btn">View More</button>
+
+
               </div>
             </div>
           </div>
-          <?php 
-          }
-          ?>
-          
+          <div class="items">
+            <div class="image">
+              <img src="Assests/Deluxe.jpg" alt="Room Here.">
+            </div>
+            <div class="text">
+              <h2>Deluxe Rooms</h2>
+              <div class="rate flex">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <!-- <i class="fa fa-star"></i> -->
+              </div>
+              <p>
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
+              </ul>
+              </p>
+              <div class="button flex">
+
+                <button class="primary-btn">View More</button>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="items">
+            <div class="image">
+              <img src="Assests/Normal.webp" alt="">
+            </div>
+            <div class="text">
+              <h2>Medium Rooms</h2>
+              <div class="rate flex">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <!-- <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i> -->
+              </div>
+              <p>
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
+              </ul>
+              </p>
+              <div class="button flex">
+
+                <button class="primary-btn">View More</button>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="items">
+            <div class="image">
+              <img src="Assests/Luxary.jpg" alt="Room Here.">
+            </div>
+            <div class="text">
+              <h2>Premium Deluxe</h2>
+              <div class="rate flex">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+              <p>
+
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+              </ul>
+              </p>
+              <div class="button flex">
+                <button class="primary-btn">BOOK NOW</button>
+                <h3>Rs.25000 <span> <br> Per Night </span> </h3>
+              </div>
+            </div>
+          </div>
           <!-- <div class="items">
             <div class="image">
               <img src="Assests/room-5.png" alt="">
@@ -366,9 +432,9 @@ try {
                 <h3>$250 <span> <br> Per Night </span> </h3>
               </div> 
             </div>-->
-          </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
   <script>

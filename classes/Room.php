@@ -18,13 +18,16 @@ class Room {
     private $room_outdoor_360view_image;
 
     // Constructor
-    public function __construct($room_type, $guest_count, $price, $room_description, $room_image, $view_image_360) {
+    public function __construct($room_type, $adult_count, $children_count, $price_per_night, $room_description, $room_inside_normal_image, $room_inside_360view_image, $room_bathroom_360view_image, $room_outdoor_360view_image) {
         $this->room_type = $room_type;
-        $this->guest_count = $guest_count;
-        $this->price = $price;
+        $this->adult_count = $adult_count;
+        $this->children_count = $children_count;
+        $this->price_per_night = $price_per_night;
         $this->room_description = $room_description;
-        $this->room_image = $room_image;
-        $this->view_image_360 = $view_image_360;
+        $this->room_inside_normal_image = $room_inside_normal_image;
+        $this->room_inside_360view_image = $room_inside_360view_image;
+        $this->room_bathroom_360view_image = $room_bathroom_360view_image;
+        $this->room_outdoor_360view_image = $room_outdoor_360view_image;
     }
 
     // Getters
@@ -36,24 +39,36 @@ class Room {
         return $this->room_type;
     }
 
-    public function getGuestCount() {
-        return $this->guest_count;
+    public function getAdultCount() {
+        return $this->adult_count;
     }
 
-    public function getPrice() {
-        return $this->price;
+    public function getChildrenCount() {
+        return $this->children_count;
+    }
+
+    public function getPricePerNight() {
+        return $this->price_per_night;
     }
 
     public function getRoomDescription() {
         return $this->room_description;
     }
 
-    public function getRoomImage() {
-        return $this->room_image;
+    public function getRoomInsideNormalImage() {
+        return $this->room_inside_normal_image;
     }
 
-    public function getViewImage360() {
-        return $this->view_image_360;
+    public function getRoomInside360ViewImage() {
+        return $this->room_inside_360view_image;
+    }
+
+    public function getRoomBathroom360ViewImage() {
+        return $this->room_bathroom_360view_image;
+    }
+
+    public function getRoomOutdoor360ViewImage() {
+        return $this->room_outdoor_360view_image;
     }
 
     // Setters
@@ -61,37 +76,52 @@ class Room {
         $this->room_type = $room_type;
     }
 
-    public function setGuestCount($guest_count) {
-        $this->guest_count = $guest_count;
+    public function setAdultCount($adult_count) {
+        $this->adult_count = $adult_count;
     }
 
-    public function setPrice($price) {
-        $this->price = $price;
+    public function setChildrenCount($children_count) {
+        $this->children_count = $children_count;
+    }
+
+    public function setPricePerNight($price_per_night) {
+        $this->price_per_night = $price_per_night;
     }
 
     public function setRoomDescription($room_description) {
         $this->room_description = $room_description;
     }
 
-    public function setRoomImage($room_image) {
-        $this->room_image = $room_image;
+    public function setRoomInsideNormalImage($room_inside_normal_image) {
+        $this->room_inside_normal_image = $room_inside_normal_image;
     }
 
-    public function setViewImage360($view_image_360) {
-        $this->view_image_360 = $view_image_360;
+    public function setRoomInside360ViewImage($room_inside_360view_image) {
+        $this->room_inside_360view_image = $room_inside_360view_image;
+    }
+
+    public function setRoomBathroom360ViewImage($room_bathroom_360view_image) {
+        $this->room_bathroom_360view_image = $room_bathroom_360view_image;
+    }
+
+    public function setRoomOutdoor360ViewImage($room_outdoor_360view_image) {
+        $this->room_outdoor_360view_image = $room_outdoor_360view_image;
     }
 
     // Create a new room record
     public function create($con) {
         try {
-            $query = "INSERT INTO Room (room_type, guest_count, price, room_description, room_image, view_image_360) VALUES (?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO Room (room_type, adult_count, children_count, price_per_night, room_description, room_inside_normal_image, room_inside_360view_image, room_bathroom_360view_image, room_outdoor_360view_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
-            $stmt->bindValue(2, $this->guest_count);
-            $stmt->bindValue(3, $this->price);
-            $stmt->bindValue(4, $this->room_description);
-            $stmt->bindValue(5, $this->room_image);
-            $stmt->bindValue(6, $this->view_image_360);
+            $stmt->bindValue(2, $this->adult_count);
+            $stmt->bindValue(3, $this->children_count);
+            $stmt->bindValue(4, $this->price_per_night);
+            $stmt->bindValue(5, $this->room_description);
+            $stmt->bindValue(6, $this->room_inside_normal_image);
+            $stmt->bindValue(7, $this->room_inside_360view_image);
+            $stmt->bindValue(8, $this->room_bathroom_360view_image);
+            $stmt->bindValue(9, $this->room_outdoor_360view_image);
             $stmt->execute();
             $this->room_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0) ? $this->room_id : false;
@@ -116,15 +146,18 @@ class Room {
     // Update an existing room record
     public function update($con) {
         try {
-            $query = "UPDATE Room SET room_type = ?, guest_count = ?, price = ?, room_description = ?, room_image = ?, view_image_360 = ? WHERE room_id = ?";
+            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ? WHERE room_id = ?";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
-            $stmt->bindValue(2, $this->guest_count);
-            $stmt->bindValue(3, $this->price);
-            $stmt->bindValue(4, $this->room_description);
-            $stmt->bindValue(5, $this->room_image);
-            $stmt->bindValue(6, $this->view_image_360);
-            $stmt->bindValue(7, $this->room_id);
+            $stmt->bindValue(2, $this->adult_count);
+            $stmt->bindValue(3, $this->children_count);
+            $stmt->bindValue(4, $this->price_per_night);
+            $stmt->bindValue(5, $this->room_description);
+            $stmt->bindValue(6, $this->room_inside_normal_image);
+            $stmt->bindValue(7, $this->room_inside_360view_image);
+            $stmt->bindValue(8, $this->room_bathroom_360view_image);
+            $stmt->bindValue(9, $this->room_outdoor_360view_image);
+            $stmt->bindValue(10, $this->room_id);
             $stmt->execute();
             return ($stmt->rowCount() > 0);
         } catch (PDOException $e) {
@@ -145,48 +178,26 @@ class Room {
         }
     }
 
-    // Get all room records
-    public static function getAllRooms($con) {
-        try {
-            $query = "SELECT * FROM Room";
-            $stmt = $con->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            die("Error fetching rooms: " . $e->getMessage());
-        }
+    // Add an amenity to a room
+    public function addAmenity($con, $amenity_name) {
+        $roomAmenity = new RoomAmenity($this->room_id, $amenity_name);
+        return $roomAmenity->create($con);
     }
 
-    // Add an offer to a room
-    public function addOffer($con, $offer, $offer_price) {
-        $availableOffer = new AvailableOffers($this->room_id, $offer, $offer_price);
-        return $availableOffer->create($con);
+    // Get all amenities for a room
+    public function getAmenities($con) {
+        return RoomAmenity::readByRoomId($con, $this->room_id);
     }
 
-    // Get all offers for a room
-    public function getOffers($con) {
-        return AvailableOffers::readByRoomId($con, $this->room_id);
+    // Add an image to a room
+    public function addImage($con, $image_path) {
+        $roomImage = new RoomImages($this->room_id, $image_path);
+        return $roomImage->create($con);
     }
 
-    public static function getAvailableRooms($con, $check_in_date, $check_out_date, $guest_count) {
-        try {
-            $query = "
-                SELECT * FROM Room r
-                WHERE r.guest_count >= :guest_count
-                AND r.room_id NOT IN (
-                    SELECT room_id FROM Reservation
-                    WHERE (check_in_date <= :check_out_date AND check_out_date >= :check_in_date)
-                )
-            ";
-            $stmt = $con->prepare($query);
-            $stmt->bindValue(':check_in_date', $check_in_date);
-            $stmt->bindValue(':check_out_date', $check_out_date);
-            $stmt->bindValue(':guest_count', $guest_count);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            die("Error fetching available rooms: " . $e->getMessage());
-        }
+    // Get all images for a room
+    public function getImages($con) {
+        return RoomImages::readByRoomId($con, $this->room_id);
     }
 }
 ?>
