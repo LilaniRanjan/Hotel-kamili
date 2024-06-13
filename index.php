@@ -234,97 +234,9 @@ try {
 
       <div class="content mtop">
         <div class="owl-carousel owl-carousel1 owl-theme">
-          <div class="items">
+          <div class="room-item">
             <div class="image">
-              <img src="Assests/Luxary.jpg" alt="Room here.">
-            </div>
-            <div class="text">
-              <h2>Luxuary Rooms</h2>
-              <div class="rate flex">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-              </div>
-              <p>
-              <ul type="disk">
-                <li>Thriple Beds</li>
-                <li>Wi-Fi</li>
-                <li>Air Condition</li>
-                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
-                
-              </ul>
-              </p>
-              <div class="button flex">
-
-                <button class="primary-btn">View More</button>
-
-
-              </div>
-            </div>
-          </div>
-          <div class="items">
-            <div class="image">
-              <img src="Assests/Deluxe.jpg" alt="Room Here.">
-            </div>
-            <div class="text">
-              <h2>Deluxe Rooms</h2>
-              <div class="rate flex">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <!-- <i class="fa fa-star"></i> -->
-              </div>
-              <p>
-              <ul type="disk">
-                <li>Double Beds</li>
-                <li>Wi-Fi</li>
-                <li>Air Condition</li>
-                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
-              </ul>
-              </p>
-              <div class="button flex">
-
-                <button class="primary-btn">View More</button>
-
-
-              </div>
-            </div>
-          </div>
-          <div class="items">
-            <div class="image">
-              <img src="Assests/Normal.webp" alt="">
-            </div>
-            <div class="text">
-              <h2>Medium Rooms</h2>
-              <div class="rate flex">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <!-- <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i> -->
-              </div>
-              <p>
-              <ul type="disk">
-                <li>Double Beds</li>
-                <li>Wi-Fi</li>
-                <li>Air Condition</li>
-                <li style="color: red; font-size: larger;">Rs.15000/= <span style="color: black;">Per Night</span></li>
-              </ul>
-              </p>
-              <div class="button flex">
-
-                <button class="primary-btn">View More</button>
-
-
-              </div>
-            </div>
-          </div>
-          <div class="items">
-            <div class="image">
-              <img src="Assests/Luxary.jpg" alt="Room Here.">
+              <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
             <div class="text">
               <h2>Premium Deluxe</h2>
@@ -336,7 +248,6 @@ try {
                 <i class="fa fa-star"></i>
               </div>
               <p>
-
               <ul type="disk">
                 <li>Double Beds</li>
                 <li>Wi-Fi</li>
@@ -344,17 +255,17 @@ try {
               </ul>
               </p>
               <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>Rs.25000 <span> <br> Per Night </span> </h3>
+                <button class="primary-btn">VIEW MORE</button>
+                <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
           </div>
-          <!-- <div class="items">
+          <div class="room-item">
             <div class="image">
-              <img src="Assests/room-5.png" alt="">
+              <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
             <div class="text">
-              <h2>Suporior Rooms</h2>
+              <h2>Premium Deluxe</h2>
               <div class="rate flex">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -362,20 +273,25 @@ try {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
               </div>
-              <p>Lorem ipsum dolor sit amet constur adipisicing elit sed do eiusmtem por incid.
+              <p>
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+              </ul>
               </p>
               <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>$250 <span> <br> Per Night </span> </h3>
+                <button class="primary-btn">VIEW MORE</button>
+                <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
           </div>
-          <div class="items">
+          <div class="room-item">
             <div class="image">
-              <img src="Assests/room-6.png" alt="">
+              <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
             <div class="text">
-              <h2>Suporior Rooms</h2>
+              <h2>Premium Deluxe</h2>
               <div class="rate flex">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -383,20 +299,25 @@ try {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
               </div>
-              <p>Lorem ipsum dolor sit amet constur adipisicing elit sed do eiusmtem por incid.
+              <p>
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+              </ul>
               </p>
               <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>$250 <span> <br> Per Night </span> </h3>
+                <button class="primary-btn">VIEW MORE</button>
+                <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
           </div>
-          <div class="items">
+          <div class="room-item">
             <div class="image">
-              <img src="Assests/room-7.png" alt="">
+              <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
             <div class="text">
-              <h2>Suporior Rooms</h2>
+              <h2>Premium Deluxe</h2>
               <div class="rate flex">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -404,34 +325,19 @@ try {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
               </div>
-              <p>Lorem ipsum dolor sit amet constur adipisicing elit sed do eiusmtem por incid.
+              <p>
+              <ul type="disk">
+                <li>Double Beds</li>
+                <li>Wi-Fi</li>
+                <li>Air Condition</li>
+              </ul>
               </p>
               <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>$250 <span> <br> Per Night </span> </h3>
+                <button class="primary-btn">VIEW MORE</button>
+                <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
           </div>
-          <div class="items">
-            <div class="image">
-              <img src="Assests/room-8.png" alt="">
-            </div>
-            <div class="text">
-              <h2>Suporior Rooms</h2>
-              <div class="rate flex">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-              </div>
-              <p>Lorem ipsum dolor sit amet constur adipisicing elit sed do eiusmtem por incid.
-              </p>
-              <div class="button flex">
-                <button class="primary-btn">BOOK NOW</button>
-                <h3>$250 <span> <br> Per Night </span> </h3>
-              </div> 
-            </div>-->
         </div>
       </div>
     </div>
