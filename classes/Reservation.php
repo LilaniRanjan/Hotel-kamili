@@ -170,5 +170,38 @@ class Reservation {
             die("Error deleting reservation: " . $e->getMessage());
         }
     }
+
+    // Filter available rooms within the check-in to check-out date range and ensure sufficient adult and children capacity
+    public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
+        try {
+            $query = "
+                SELECT r.*
+                FROM Room r
+                WHERE r.room_id NOT IN (
+                    SELECT rv.room_id
+                    FROM Reservation rv
+                    WHERE NOT (
+                        rv.check_out_date <= ?
+                        OR rv.check_in_date >= ?
+                    )
+                )
+                AND r.adult_count >= ?
+                AND r.children_count >= ?
+            ";
+            
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $check_in_date, PDO::PARAM_STR);
+            $stmt->bindValue(2, $check_out_date, PDO::PARAM_STR);
+            $stmt->bindValue(3, $number_of_adult, PDO::PARAM_INT);
+            $stmt->bindValue(4, $number_of_children, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Error filtering available rooms: " . $e->getMessage());
+        }
+    }
+
+    
 }
 ?>
