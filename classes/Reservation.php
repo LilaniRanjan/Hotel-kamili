@@ -171,7 +171,6 @@ class Reservation {
         }
     }
 
-    // Filter available rooms within the check-in to check-out date range and ensure sufficient adult and children capacity
     public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
         try {
             $query = "
@@ -181,19 +180,19 @@ class Reservation {
                     SELECT rv.room_id
                     FROM Reservation rv
                     WHERE NOT (
-                        rv.check_out_date <= ?
-                        OR rv.check_in_date >= ?
+                        rv.check_out_date <= :check_in_date
+                        OR rv.check_in_date >= :check_out_date
                     )
                 )
-                AND r.adult_count >= ?
-                AND r.children_count >= ?
+                AND r.adult_count >= :number_of_adult
+                AND r.children_count >= :number_of_children
             ";
             
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $check_in_date, PDO::PARAM_STR);
-            $stmt->bindValue(2, $check_out_date, PDO::PARAM_STR);
-            $stmt->bindValue(3, $number_of_adult, PDO::PARAM_INT);
-            $stmt->bindValue(4, $number_of_children, PDO::PARAM_INT);
+            $stmt->bindValue(':check_in_date', $check_in_date, PDO::PARAM_STR);
+            $stmt->bindValue(':check_out_date', $check_out_date, PDO::PARAM_STR);
+            $stmt->bindValue(':number_of_adult', $number_of_adult, PDO::PARAM_INT);
+            $stmt->bindValue(':number_of_children', $number_of_children, PDO::PARAM_INT);
             $stmt->execute();
             
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -201,7 +200,6 @@ class Reservation {
             die("Error filtering available rooms: " . $e->getMessage());
         }
     }
-
     
 }
 ?>

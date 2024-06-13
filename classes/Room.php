@@ -232,5 +232,98 @@ class Room {
     public function getImages($con) {
         return RoomImages::readByRoomId($con, $this->room_id);
     }
+
+    // Filter available rooms within the check-in to check-out date range and ensure sufficient adult and children capacity
+    // public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
+    //     try {
+    //         $query = "
+    //             SELECT r.*
+    //             FROM Room r
+    //             WHERE r.room_id NOT IN (
+    //                 SELECT rv.room_id
+    //                 FROM Reservation rv
+    //                 WHERE NOT (
+    //                     rv.check_out_date <= ?
+    //                     OR rv.check_in_date >= ?
+    //                 )
+    //             )
+    //             AND r.adult_count >= ?
+    //             AND r.children_count >= ?
+    //         ";
+            
+    //         $stmt = $con->prepare($query);
+    //         $stmt->bindValue(1, $check_in_date, PDO::PARAM_STR);
+    //         $stmt->bindValue(2, $check_out_date, PDO::PARAM_STR);
+    //         $stmt->bindValue(3, $number_of_adult, PDO::PARAM_INT);
+    //         $stmt->bindValue(4, $number_of_children, PDO::PARAM_INT);
+    //         $stmt->execute();
+            
+    //         $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //         // Fetch amenities and images for each room
+    //         foreach ($rooms as &$room) {
+    //             $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
+    //             $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
+    //         }
+            
+    //         return $rooms;
+    //     } catch (PDOException $e) {
+    //         die("Error filtering available rooms: " . $e->getMessage());
+    //     }
+    // }
+
+    // Find available room count within a particular room type for the specified date range
+    public static function findAvailableRoomCount($con, $check_in_date, $check_out_date, $room_type) {
+        try {
+            // Query to find the total number of rooms of the specified type
+            $queryTotalRooms = "
+                SELECT number_of_rooms
+                FROM Room
+                WHERE room_type = ?
+            ";
+            
+            $stmtTotalRooms = $con->prepare($queryTotalRooms);
+            $stmtTotalRooms->bindValue(1, $room_type, PDO::PARAM_STR);
+            $stmtTotalRooms->execute();
+            $totalRoomsResult = $stmtTotalRooms->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$totalRoomsResult) {
+                return "No rooms found for the specified type.";
+            }
+
+            $totalRooms = $totalRoomsResult['number_of_rooms'];
+
+            // Query to find the number of booked rooms of the specified type within the date range
+            $queryBookedRooms = "
+                SELECT COUNT(*) as booked_count
+                FROM Reservation rv
+                INNER JOIN Room r ON rv.room_id = r.room_id
+                WHERE r.room_type = ?
+                AND NOT (
+                    rv.check_out_date <= ?
+                    OR rv.check_in_date >= ?
+                )
+            ";
+            
+            $stmtBookedRooms = $con->prepare($queryBookedRooms);
+            $stmtBookedRooms->bindValue(1, $room_type, PDO::PARAM_STR);
+            $stmtBookedRooms->bindValue(2, $check_in_date, PDO::PARAM_STR);
+            $stmtBookedRooms->bindValue(3, $check_out_date, PDO::PARAM_STR);
+            $stmtBookedRooms->execute();
+            $bookedRoomsResult = $stmtBookedRooms->fetch(PDO::FETCH_ASSOC);
+
+            $bookedRooms = $bookedRoomsResult['booked_count'];
+
+            // Calculate the available rooms
+            $availableRooms = $totalRooms - $bookedRooms;
+
+            return $availableRooms;
+        } catch (PDOException $e) {
+            die("Error finding available room count: " . $e->getMessage());
+        }
+    }
+
+
+
 }
 ?>
