@@ -190,6 +190,27 @@ class Room {
         }
     }
 
+    // Get All Room details
+    public static function getAllRooms($con) {
+        try {
+            $query = "SELECT * FROM Room";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Fetch amenities and images for each room
+            foreach ($rooms as &$room) {
+                $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
+                $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
+            }
+
+            return $rooms;
+        } catch (PDOException $e) {
+            die("Error fetching rooms: " . $e->getMessage());
+        }
+    }
+
+
     // Add an amenity to a room
     public function addAmenity($con, $amenity_name) {
         $roomAmenity = new RoomAmenity($this->room_id, $amenity_name);

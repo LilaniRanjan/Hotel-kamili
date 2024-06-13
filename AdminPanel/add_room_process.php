@@ -51,7 +51,7 @@ if(isset($_POST['submit'])) {
             move_uploaded_file($_FILES["room_outdoor_360view_image"]["tmp_name"], $room_outdoor_360view_image_path);
 
             // Create a new Room instance
-            $room = new \classes\Room($room_type, $adult_count, $children_count, $price_per_night, $room_description, $room_inside_normal_image_path, $room_inside_360view_image_path, $room_bathroom_360view_image_path, $room_outdoor_360view_image_path, $number_of_rooms);
+            $room = new \classes\Room($room_type, $adult_count, $children_count, $price_per_night, $room_description, $number_of_rooms, $room_inside_normal_image_path, $room_inside_360view_image_path, $room_bathroom_360view_image_path, $room_outdoor_360view_image_path);
 
             // Save room details to the database
             $roomId = $room->create($con);

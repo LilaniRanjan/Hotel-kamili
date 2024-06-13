@@ -60,9 +60,9 @@ class RoomAmenity {
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $room_id);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure it fetches associative array
         } catch (PDOException $e) {
-            die("Error reading room amenities: " . $e->getMessage());
+            die("Error fetching room amenities: " . $e->getMessage());
         }
     }
 
