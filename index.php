@@ -1,6 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
 
+<?php
+  session_start();
+
+  // Include the necessary files
+  require_once './classes/DbConnector.php';
+  require_once './classes/Room.php';
+  require_once './classes/RoomAmenity.php';
+  require_once './classes/RoomImages.php';
+
+  $message = "";
+
+  try {
+      // Establish database connection
+      $dbConnector = new \classes\DbConnector();
+      $con = $dbConnector->getConnection();
+  } catch (PDOException $exc) {
+      // Handle database connection error
+      die("Error in DbConnection on DisplayRooms file: " . $exc->getMessage());
+  }
+
+  // Fetch all rooms with their details
+  $rooms = \classes\Room::getAllRooms($con);
+?>
+
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,23 +38,6 @@
 </head>
 
 <body>
-
-<?php
-
-use classes\AvailableOffers;
-use classes\Room;
-
-require './classes/DbConnector.php';
-
-try {
-    $dbconnector = new classes\DbConnector();
-    $dbcon = $dbconnector->getConnection();
-} catch (PDOException $exc) {
-    die("ERROR in index's Db Connection");
-}
-?>
-
-
   <header>
     <div class="content flex_space">
       <div class="logo">
@@ -222,7 +229,6 @@ try {
     </div> 
   </section>
 
-
   <section class="rooms">
     <div class="container top">
       <div class="heading">
@@ -231,10 +237,56 @@ try {
         <p>Exceptional Facilities Provide For You - Accomadations.
         </p>
       </div>
-
       <div class="content mtop">
         <div class="owl-carousel owl-carousel1 owl-theme">
-          <div class="room-item">
+
+        <?php 
+          if(!empty($rooms)){
+            foreach ($rooms as $room){
+              ?>
+                <div class="room-item">
+                  <div class="image">
+                    <img src="<?php echo htmlspecialchars($room['room_inside_normal_image']); ?>" alt="Premium Deluxe">
+                  </div>
+                  <div class="text">
+                    <h2><?php echo htmlspecialchars($room['room_type']); ?></h2>
+                    <div class="rate flex">
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                    </div>
+                    <p>
+                    <ul type="disk">
+                      <?php 
+                      $amenities_displayed = 0;
+                      foreach ($room['amenities'] as $amenity): 
+                        if ($amenities_displayed < 3):
+                      ?>
+                        <li><?php echo htmlspecialchars($amenity['amenity_name']); ?></li>
+                      <?php 
+                          $amenities_displayed++;
+                        endif;
+                      endforeach; 
+                      ?>
+                    </ul>
+                    </p>
+                    <div class="button flex">
+                      <button class="primary-btn">VIEW</button>
+                      <h3>Rs.<?php echo htmlspecialchars($room['price_per_night']); ?> <span><br> Per Night </span></h3>
+                    </div>
+                  </div>
+                </div>
+              <?php
+            }
+          }else{
+            ?>
+            <p>No rooms found.</p>
+            <?php
+          }
+        ?>
+          <!-- <div class="room-item">
             <div class="image">
               <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
@@ -259,8 +311,8 @@ try {
                 <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
-          </div>
-          <div class="room-item">
+          </div> -->
+          <!-- <div class="room-item">
             <div class="image">
               <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
@@ -285,8 +337,8 @@ try {
                 <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
-          </div>
-          <div class="room-item">
+          </div> -->
+          <!-- <div class="room-item">
             <div class="image">
               <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
@@ -311,8 +363,8 @@ try {
                 <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
-          </div>
-          <div class="room-item">
+          </div> -->
+          <!-- <div class="room-item">
             <div class="image">
               <img src="Assests/Luxary.jpg" alt="Premium Deluxe">
             </div>
@@ -337,7 +389,7 @@ try {
                 <h3>Rs.25000 <span><br> Per Night </span></h3>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -376,6 +428,7 @@ try {
 
     <div class="content mtop">
       <div class="owl-carousel owl-carousel1 owl-theme">
+
         <div class="items">
           <div class="img">
             <img src="Assests/laya-safari.jpg" alt="">
@@ -385,6 +438,7 @@ try {
             <h3>Photo Title Here.</h3>
           </div>
         </div>
+        
         <div class="items">
           <div class="img">
             <img src="Assests/kamili-02-1024x683.jpg" alt="">
