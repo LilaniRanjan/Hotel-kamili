@@ -13,21 +13,20 @@ class Reservation {
     private $check_out_date;
     private $number_of_adult;
     private $number_of_children;
+    private $number_of_room;
     private $total_price;
-    private $reservation_status;
     private $payment_status;
-    private $additional_request;
 
-    public function __construct($customer_id, $room_id, $check_in_date, $check_out_date, $number_of_guests, $total_price, $reservation_status = 'pending', $payment_status = 'pending', $additional_request = '') {
+    public function __construct($customer_id, $room_id, $check_in_date, $check_out_date, $number_of_adult, $number_of_children, $number_of_room, $total_price, $payment_status = 'pending') {
         $this->customer_id = $customer_id;
         $this->room_id = $room_id;
         $this->check_in_date = $check_in_date;
         $this->check_out_date = $check_out_date;
-        $this->number_of_guests = $number_of_guests;
+        $this->number_of_adult = $number_of_adult;
+        $this->number_of_children = $number_of_children;
+        $this->number_of_room = $number_of_room;
         $this->total_price = $total_price;
-        $this->reservation_status = $reservation_status;
         $this->payment_status = $payment_status;
-        $this->additional_request = $additional_request;
     }
 
     public function getReservationId() {
@@ -50,24 +49,24 @@ class Reservation {
         return $this->check_out_date;
     }
 
-    public function getNumberOfGuests() {
-        return $this->number_of_guests;
+    public function getNumberOfAdult() {
+        return $this->number_of_adult;
+    }
+
+    public function getNumberOfChildren() {
+        return $this->number_of_children;
+    }
+
+    public function getNumberOfRoom() {
+        return $this->number_of_room;
     }
 
     public function getTotalPrice() {
         return $this->total_price;
     }
 
-    public function getReservationStatus() {
-        return $this->reservation_status;
-    }
-
     public function getPaymentStatus() {
         return $this->payment_status;
-    }
-
-    public function getAdditionalRequest() {
-        return $this->additional_request;
     }
 
     public function setCustomerId($customer_id) {
@@ -86,39 +85,39 @@ class Reservation {
         $this->check_out_date = $check_out_date;
     }
 
-    public function setNumberOfGuests($number_of_guests) {
-        $this->number_of_guests = $number_of_guests;
+    public function setNumberOfAdult($number_of_adult) {
+        $this->number_of_adult = $number_of_adult;
+    }
+
+    public function setNumberOfChildren($number_of_children) {
+        $this->number_of_children = $number_of_children;
+    }
+
+    public function setNumberOfRoom($number_of_room) {
+        $this->number_of_room = $number_of_room;
     }
 
     public function setTotalPrice($total_price) {
         $this->total_price = $total_price;
     }
 
-    public function setReservationStatus($reservation_status) {
-        $this->reservation_status = $reservation_status;
-    }
-
     public function setPaymentStatus($payment_status) {
         $this->payment_status = $payment_status;
     }
 
-    public function setAdditionalRequest($additional_request) {
-        $this->additional_request = $additional_request;
-    }
-
     public function create($con) {
         try {
-            $query = "INSERT INTO Reservation (customer_id, room_id, check_in_date, check_out_date, number_of_guests, total_price, reservation_status, payment_status, additional_request) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO Reservation (customer_id, room_id, check_in_date, check_out_date, number_of_adult, number_of_children, number_of_room, total_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->customer_id);
             $stmt->bindValue(2, $this->room_id);
             $stmt->bindValue(3, $this->check_in_date);
             $stmt->bindValue(4, $this->check_out_date);
-            $stmt->bindValue(5, $this->number_of_guests);
-            $stmt->bindValue(6, $this->total_price);
-            $stmt->bindValue(7, $this->reservation_status);
-            $stmt->bindValue(8, $this->payment_status);
-            $stmt->bindValue(9, $this->additional_request);
+            $stmt->bindValue(5, $this->number_of_adult);
+            $stmt->bindValue(6, $this->number_of_children);
+            $stmt->bindValue(7, $this->number_of_room);
+            $stmt->bindValue(8, $this->total_price);
+            $stmt->bindValue(9, $this->payment_status);
             $stmt->execute();
             $this->reservation_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0);
@@ -141,17 +140,17 @@ class Reservation {
 
     public function update($con) {
         try {
-            $query = "UPDATE Reservation SET customer_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, number_of_guests = ?, total_price = ?, reservation_status = ?, payment_status = ?, additional_request = ? WHERE reservation_id = ?";
+            $query = "UPDATE Reservation SET customer_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, number_of_adult = ?, number_of_children = ?, number_of_room = ?, total_price = ?, payment_status = ? WHERE reservation_id = ?";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->customer_id);
             $stmt->bindValue(2, $this->room_id);
             $stmt->bindValue(3, $this->check_in_date);
             $stmt->bindValue(4, $this->check_out_date);
-            $stmt->bindValue(5, $this->number_of_guests);
-            $stmt->bindValue(6, $this->total_price);
-            $stmt->bindValue(7, $this->reservation_status);
-            $stmt->bindValue(8, $this->payment_status);
-            $stmt->bindValue(9, $this->additional_request);
+            $stmt->bindValue(5, $this->number_of_adult);
+            $stmt->bindValue(6, $this->number_of_children);
+            $stmt->bindValue(7, $this->number_of_room);
+            $stmt->bindValue(8, $this->total_price);
+            $stmt->bindValue(9, $this->payment_status);
             $stmt->bindValue(10, $this->reservation_id);
             $stmt->execute();
             return ($stmt->rowCount() > 0);
@@ -172,7 +171,4 @@ class Reservation {
         }
     }
 }
-?>
-
-
 ?>
