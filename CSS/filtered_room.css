@@ -49,3 +49,65 @@
     color: rgb(182, 183, 185);
   }
   
+    /* Filter Panel Styling */
+    .filter-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-header h3 {
+      margin: 0;
+    }
+
+    .filter-header .fa-times {
+      cursor: pointer;
+    }
+
+    .filter-body {
+      margin-top: 20px;
+    }
+
+    .filter-body label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    .filter-body select,
+    .filter-body input[type="range"],
+    .filter-body input[type="submit"] {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .filter-body #price_value {
+      display: block;
+      text-align: center;
+      margin-top: -10px;
+    }
+
+    .filter-icon {
+      padding: 10px;
+      text-align: right;
+    }
+
+    .filter-icon .fa-filter {
+      cursor: pointer;
+      font-size: 30px;
+      color: rgb(112, 41, 99);
+      border: 3px solid rgb(112, 41, 99);
+      padding: 5px; 
+    }

@@ -11,40 +11,24 @@
 </head>
 
 <body>
-
-<header>
-  <div class="content flex_space">
-    <div class="logo">
-      <img src="Assests/cropped-kamili-Copy-1.png" alt="Image" width="70px" height="70px">
-    </div>
-    
-    <div class="navlinks">
-      <ul id="menulist">
-        <li><a href="./index.php">Home</a> </li>
-        <li><a href="./about-us.php">About</a> </li>
-        <li><a href="#rooms">Rooms</a> </li>
-        <li><a href="#pages">Weddings</a> </li>
-        <li><a href="#news">Services</a> </li>
-        <li><a href="#around_us">Around Us</a> </li>
-        <li><a href="#contact">Contact</a> </li>
-        <li> <button class="primary-btn">BOOK NOW</button> </li>
-      </ul>
-      <span class="fa fa-bars" onclick="menutoggle()"></span>
-    </div>
-  </div>
-</header>
+<?php
+    require './NavBar/navbar.php';
+?>
 
 <script>
-  var menulist = document.getElementById('menulist');
-  menulist.style.maxHeight = "0px";
 
-  function menutoggle() {
-    if (menulist.style.maxHeight == "0px") {
-      menulist.style.maxHeight = "100vh";
-    } else {
-      menulist.style.maxHeight = "0px";
+  function toggleFilterPanel() {
+      var filterPanel = document.getElementById('filter-panel');
+      if (filterPanel.style.display === 'block') {
+        filterPanel.style.display = 'none';
+      } else {
+        filterPanel.style.display = 'block';
+      }
     }
-  }
+
+    function updatePriceValue(value) {
+      document.getElementById('price_value').textContent = 'Rs. ' + value;
+    }
 </script>
 
 <section class="book">
@@ -71,6 +55,36 @@
       <h2>Our Accommodations</h2>
       <p>Exceptional Facilities Provided For You - Accommodations.</p>
     </div>
+
+    <!-- Filter function Start -->
+ <section>
+    <div class="filter-icon">
+        <span class="fa fa-filter" onclick="toggleFilterPanel()"> </span>
+    </div>
+
+    <div id="filter-panel" class="filter-panel">
+        <div class="filter-header">
+          <h3>Filter Rooms</h3>
+          <span class="fa fa-times" onclick="toggleFilterPanel()"></span>
+        </div>
+        <div class="filter-body">
+          <form id="filter-form" action="filteredRoom.php" method="post">
+            <label for="room_type">Room Type</label>
+            <select name="room_type" id="room_type">
+              <option value="">Select Type</option>
+              <option value="Premium Deluxe">Premium Deluxe</option>
+              <!-- Add more room types as needed -->
+            </select>
+            <label for="price_range">Price Range</label>
+            <input type="range" name="price_range" id="price_range" min="0" max="50000" step="1000" oninput="updatePriceValue(this.value)">
+            <span id="price_value">Rs. 0</span>
+            <input type="submit" value="Apply Filters">
+          </form>
+        </div>
+      </div>
+  </section>
+
+  <!-- Filter function end -->
 
     <div class="content mtop rooms-grid">
     <div class="room-item">
