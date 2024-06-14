@@ -358,10 +358,37 @@ class Room {
             die("Error filtering available rooms: " . $e->getMessage());
         }
     }
-    
-    
 
+    //select distinct room types
+    public static function getAllRoomTypes($con) {
+        try {
+            // Define the SQL query to select distinct room types
+            $query = "SELECT DISTINCT room_type FROM Room";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $roomTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $roomTypes;
+        } catch (PDOException $e) {
+            die("Error fetching room types: " . $e->getMessage());
+        }
+    }
 
+    //select the minimum and maximum room prices
+    public static function getMinAndMaxRoomPrice($con) {
+        try {
+            // Define the SQL query to select the minimum and maximum room prices
+            $query = "SELECT MIN(price_per_night) AS min_price, MAX(price_per_night) AS max_price FROM Room";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $priceRange = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            // Return the price range
+            return $priceRange;
+        } catch (PDOException $e) {
+            die("Error fetching room prices: " . $e->getMessage());
+        }
+    }
+    
 
 }
 ?>

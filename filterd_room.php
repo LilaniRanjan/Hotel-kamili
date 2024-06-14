@@ -33,6 +33,15 @@
     $rooms = \classes\Room::getAllRooms($con);
   }
 
+  // Fetch all unique room types
+  $roomTypes = Room::getAllRoomTypes($con);
+
+  // Fetch the minimum and maximum room prices
+  $priceRange = Room::getMinAndMaxRoomPrice($con);
+
+  $minPrice = $priceRange['min_price'];
+  $maxPrice = $priceRange['max_price'];
+
 ?>
 
 <html lang="en" dir="ltr">
@@ -120,15 +129,24 @@
             </div>
             <div class="filter-body">
               <form id="filter-form" action="filterd_room_process.php" method="post">
+                <!-- HTML to display the room types in a dropdown menu -->
                 <label for="room_type">Room Type</label>
                 <select name="room_type" id="room_type">
-                  <option value="">Select Type</option>
-                  <option value="Premium Deluxe">Premium Deluxe</option>
-                  <!-- Add more room types as needed -->
+                    <option value="">Select Type</option>
+                    <?php foreach ($roomTypes as $type): ?>
+                        <option value="<?php echo htmlspecialchars($type['room_type']); ?>">
+                            <?php echo htmlspecialchars($type['room_type']); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <label for="price_range">Price Range</label>
-                <input type="range" name="price_range" id="price_range" min="0" max="50000" step="1000" oninput="updatePriceValue(this.value)">
-                <span id="price_value">Rs. 0</span>
+                <input type="range" name="price_range" id="price_range" min="<?php echo htmlspecialchars($minPrice); ?>" max="<?php echo htmlspecialchars($maxPrice); ?>" step="1000" oninput="updatePriceValue(this.value)">
+                <span id="price_value">Rs. <?php echo htmlspecialchars($minPrice); ?></span>
+                <script>
+                  function updatePriceValue(value) {
+                      document.getElementById('price_value').textContent = 'Rs. ' + value;
+                  }
+                </script>
                 <input type="submit" value="Apply Filters">
               </form>
             </div>
