@@ -290,12 +290,12 @@ class Room {
             if (!$totalRoomsResult) {
                 return "No rooms found for the specified type.";
             }
-
+    
             $totalRooms = $totalRoomsResult['number_of_rooms'];
-
+    
             // Query to find the number of booked rooms of the specified type within the date range
             $queryBookedRooms = "
-                SELECT COUNT(*) as booked_count
+                SELECT SUM(rv.number_of_room) as booked_count
                 FROM Reservation rv
                 INNER JOIN Room r ON rv.room_id = r.room_id
                 WHERE r.room_type = ?
@@ -311,17 +311,55 @@ class Room {
             $stmtBookedRooms->bindValue(3, $check_out_date, PDO::PARAM_STR);
             $stmtBookedRooms->execute();
             $bookedRoomsResult = $stmtBookedRooms->fetch(PDO::FETCH_ASSOC);
-
-            $bookedRooms = $bookedRoomsResult['booked_count'];
-
+    
+            $bookedRooms = $bookedRoomsResult['booked_count'] ? $bookedRoomsResult['booked_count'] : 0;
+    
             // Calculate the available rooms
             $availableRooms = $totalRooms - $bookedRooms;
-
+    
             return $availableRooms;
         } catch (PDOException $e) {
             die("Error finding available room count: " . $e->getMessage());
         }
     }
+
+    public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
+        try {
+            // Query to find the rooms that match the criteria
+            $query = "
+                SELECT r.*, 
+                       (r.number_of_rooms - COALESCE(SUM(rv.number_of_room), 0)) AS available_rooms
+                FROM Room r
+                LEFT JOIN Reservation rv ON r.room_id = rv.room_id
+                  AND NOT (rv.check_out_date <= ? OR rv.check_in_date >= ?)
+                WHERE r.adult_count >= ? 
+                  AND r.children_count >= ?
+                GROUP BY r.room_id
+                HAVING available_rooms > 0
+            ";
+            
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $check_in_date, PDO::PARAM_STR);
+            $stmt->bindValue(2, $check_out_date, PDO::PARAM_STR);
+            $stmt->bindValue(3, $number_of_adult, PDO::PARAM_INT);
+            $stmt->bindValue(4, $number_of_children, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            // Fetch amenities and images for each room
+            foreach ($rooms as &$room) {
+                $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
+                $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
+            }
+    
+            return $rooms;
+        } catch (PDOException $e) {
+            die("Error filtering available rooms: " . $e->getMessage());
+        }
+    }
+    
+    
 
 
 

@@ -1,6 +1,29 @@
 <!DOCTYPE html>
-<html>
+<?php
+  session_start();
 
+  // Include the necessary files
+  require_once './classes/DbConnector.php';
+  require_once './classes/Room.php';
+  require_once './classes/RoomAmenity.php';
+  require_once './classes/RoomImages.php';
+
+  try {
+      // Establish database connection
+      $dbConnector = new \classes\DbConnector();
+      $con = $dbConnector->getConnection();
+  } catch (PDOException $exc) {
+      // Handle database connection error
+      die("Error in DbConnection on DisplayRooms file: " . $exc->getMessage());
+  }
+
+  $room_id = $_GET['id'];
+
+  //Fetch single room details by Id
+  $room = \classes\Room::read($con, $room_id);
+?>
+
+<html>
 <head>
     <meta charset="utf-8">
     <title>Deluxe Room - Kamili Beach Resort</title>
@@ -75,7 +98,7 @@
             <script>
                 pannellum.viewer('panorama', {
                     "type": "equirectangular",
-                    "panorama": './outroom.jpeg',
+                    "panorama": '<?php echo $room['room_inside_360view_image'] ?>',
                     "autoLoad": true
                 });
             </script>
