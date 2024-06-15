@@ -479,35 +479,35 @@ class Room {
     }
 
     public static function filterByTypeAndPrice($con, $room_type, $selected_price) {
-        try {
-            // Define the SQL query to filter rooms by type and selected price
-            $query = "
-                SELECT * FROM Room
-                WHERE room_type = ?
-                AND price_per_night <= ?
-            ";
-    
-            // Prepare and execute the query
-            $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $room_type, PDO::PARAM_STR);
-            $stmt->bindValue(2, $selected_price, PDO::PARAM_INT);
-            $stmt->execute();
-    
-            // Fetch the results
-            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            // Fetch amenities and images for each room
-            foreach ($rooms as &$room) {
-                $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
-                $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
-            }
-    
-            return $rooms;
-        } catch (PDOException $e) {
-            die("Error filtering rooms by type and price: " . $e->getMessage());
+    try {
+        // Define the SQL query to filter rooms by type and selected price
+        $query = "
+            SELECT * FROM Room
+            WHERE room_type = ?
+            AND price_per_night <= ?
+        ";
+
+        // Prepare and execute the query
+        $stmt = $con->prepare($query);
+        $stmt->bindValue(1, $room_type, PDO::PARAM_STR);
+        $stmt->bindValue(2, $selected_price, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Fetch the results
+        $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch amenities and images for each room
+        foreach ($rooms as &$room) {
+            $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
+            $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
         }
+
+        return $rooms;
+    } catch (PDOException $e) {
+        die("Error filtering rooms by type and price: " . $e->getMessage());
     }
-    
+}
+
 
     
 

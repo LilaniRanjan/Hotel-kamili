@@ -119,11 +119,11 @@
       if(isset($_POST['check_in_date']) && isset($_POST['check_out_date']) && isset($_POST['guest_count']) && isset($_POST['children_count']) && isset($_POST['room_type']) && isset($_POST['selected_price'])){
         // echo "Filtering with all criteria";
         $rooms = Room::filterRooms($con, $_POST['check_in_date'], $_POST['check_out_date'], $_POST['guest_count'], $_POST['children_count'], $_POST['selected_price'], $_POST['room_type']);
-      } elseif (isset($_POST['room_type']) && isset($_POST['selected_price'])) {
-        // echo "Filtering with type and price only";
-        $rooms = Room::filterByTypeAndPrice($con, $_POST['room_type'], $_POST['selected_price']);
-      } else {
-        $rooms = \classes\Room::getAllRooms($con);
+      } else{
+        if (isset($_POST['room_type']) && isset($_POST['selected_price'])) {
+          // echo "Filtering with type and price only";
+          $rooms = Room::filterByTypeAndPrice($con, $_POST['room_type'], $_POST['selected_price']);
+        }
       }
     ?>
 
