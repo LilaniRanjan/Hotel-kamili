@@ -21,6 +21,7 @@
 
   //Fetch single room details by Id
   $room = \classes\Room::read($con, $room_id);
+  
 ?>
 
 <html>
@@ -73,14 +74,9 @@
             <!--Introduction -->
             <article class="service">
                 <div class="service-content">
-                    <h2>Deluxe Rooms</h2>
-                    <p>Experience the epitome of comfort and elegance in our Deluxe Rooms. Thoughtfully designed to
-                        provide a serene and luxurious retreat, each room features plush bedding, modern furnishings,
-                        and stunning views. Enjoy premium amenities including complimentary high-speed Wi-Fi, a
-                        flat-screen TV, a well-stocked minibar, and an en-suite bathroom with a rain shower and designer
-                        toiletries. Unwind in your private balcony or terrace, perfect for soaking up the natural beauty
-                        of our resort's surroundings. Whether you're here for relaxation or adventure, our Deluxe Rooms
-                        offer the ideal sanctuary for a memorable stay.
+                    <h2><?php echo htmlspecialchars($room['room_type']); ?></h2>
+                    <p>
+                        <?php echo htmlspecialchars($room['room_description']); ?>
                     </p>
                     <br>
                     <button type="button" class="btn">BOOK NOW</button>
@@ -113,7 +109,7 @@
             <div class="rooms-container">
                 <article class="room">
                     <div class="room-image">
-                        <img src="./Assests/images/picture_23.webp" alt="room image">
+                        <img src="<?php echo htmlspecialchars($room['room_inside_normal_image']); ?>" alt="room image">
                     </div>
                     <div class="room-text">
                         <div class="text">
@@ -172,12 +168,12 @@
     <script>
         pannellum.viewer('panorama2', {
             "type": "equirectangular",
-            "panorama": './outroom.jpeg',
+            "panorama": '<?php echo htmlspecialchars($room['room_bathroom_360view_image']); ?>',
             "autoLoad": true
         });
         pannellum.viewer('panorama3', {
             "type": "equirectangular",
-            "panorama": './outroom.jpeg',
+            "panorama": '<?php echo htmlspecialchars($room['room_outdoor_360view_image']); ?>',
             "autoLoad": true
         });
     </script>
@@ -190,30 +186,11 @@
                 <br>
                 <br>
                 <div class="owl-carousel owl-theme">
-                    <div class="item">
-                        <img src="./Assests/images/picture_4.jpg" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_23.webp" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_16.webp" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_13.jpg" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_2.webp" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_14.jpg" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_10.jpg" alt="">
-                    </div>
-                    <div class="item">
-                        <img src="./Assests/images/picture_9.jpg" alt="">
-                    </div>
+                    <?php foreach ($room['images'] as $image): ?>
+                        <div class="item">
+                            <img src="<?php echo htmlspecialchars($image['image_path']); ?>" alt="Additional Image">
+                        </div>
+                    <?php endforeach; ?>
                 </div>
 
     </section>

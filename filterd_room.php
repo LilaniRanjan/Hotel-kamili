@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <?php 
   // Include the necessary files
   use classes\Room;
@@ -28,6 +26,7 @@
 
     // Fetch available rooms based on the filter
     $rooms = Room::filterAvailableRooms($con, $check_in_date, $check_out_date, $guest_count, $children_count);
+
   } else {
     // Fetch all rooms with their details if no filter is applied
     $rooms = \classes\Room::getAllRooms($con);
@@ -116,6 +115,18 @@
       <p>Exceptional Facilities Provided For You - Accommodations.</p>
     </div>
 
+    <?php 
+      if(isset($_POST['check_in_date']) && isset($_POST['check_out_date']) && isset($_POST['guest_count']) && isset($_POST['children_count']) && isset($_POST['room_type']) && isset($_POST['selected_price'])){
+        // echo "Filtering with all criteria";
+        $rooms = Room::filterRooms($con, $_POST['check_in_date'], $_POST['check_out_date'], $_POST['guest_count'], $_POST['children_count'], $_POST['selected_price'], $_POST['room_type']);
+      } elseif (isset($_POST['room_type']) && isset($_POST['selected_price'])) {
+        // echo "Filtering with type and price only";
+        $rooms = Room::filterByTypeAndPrice($con, $_POST['room_type'], $_POST['selected_price']);
+      } else {
+        $rooms = \classes\Room::getAllRooms($con);
+      }
+    ?>
+
     <!-- Filter function Start -->
     <section>
         <div class="filter-icon">
@@ -128,7 +139,7 @@
               <span class="fa fa-times" onclick="toggleFilterPanel()"></span>
             </div>
             <div class="filter-body">
-              <form id="filter-form" action="filterd_room_process.php" method="post">
+              <form id="filter-form" action="filterd_room.php" method="post">
                 <!-- HTML to display the room types in a dropdown menu -->
                 <label for="room_type">Room Type</label>
                 <select name="room_type" id="room_type">
@@ -142,11 +153,26 @@
                 <label for="price_range">Price Range</label>
                 <input type="range" name="price_range" id="price_range" min="<?php echo htmlspecialchars($minPrice); ?>" max="<?php echo htmlspecialchars($maxPrice); ?>" step="1000" oninput="updatePriceValue(this.value)">
                 <span id="price_value">Rs. <?php echo htmlspecialchars($minPrice); ?></span>
+                <input type="hidden" name="selected_price" id="selected_price" value="<?php echo htmlspecialchars($minPrice); ?>">
+
                 <script>
                   function updatePriceValue(value) {
                       document.getElementById('price_value').textContent = 'Rs. ' + value;
+                      document.getElementById('selected_price').value = value;
                   }
                 </script>
+
+                <?php 
+                  if(!empty($check_in_date) || !empty($check_out_date) || !empty($guest_count) || !empty($children_count)){
+                    ?>
+                    <input type="hidden" name="check_in_date" id="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>">
+                    <input type="hidden" name="check_out_date" id="check_out_date" value="<?php echo htmlspecialchars($check_out_date); ?>">
+                    <input type="hidden" placeholder="Guest Count" name="guest_count" value="<?php echo $guest_count; ?>">
+                    <input type="hidden" placeholder="Children count" name="children_count" value="<?php echo $children_count; ?>">
+                    <?php
+                  }
+                ?>
+
                 <input type="submit" value="Apply Filters">
               </form>
             </div>
