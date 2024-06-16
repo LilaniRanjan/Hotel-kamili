@@ -85,7 +85,7 @@
 
             <!-- Image -->
             <article class="service">
-                <div id="panorama" class="service-content">
+                <div id="panorama" class="service-content" style="width: 600px; height: 400px;">
                     <!-- <img src="./Assests/images/picture_4.jpg" alt="room image"> -->
                     <!-- <div id="panorama"></div> -->
                 </div>

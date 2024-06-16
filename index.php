@@ -249,7 +249,7 @@
                     </ul>
                     </p>
                     <div class="button flex">
-                      <button class="primary-btn">VIEW</button>
+                    <button class="primary-btn" onclick="window.location.href='singleRoom.php?id=<?php echo $room['room_id']; ?>'">VIEW</button>
                       <h3>Rs.<?php echo htmlspecialchars($room['price_per_night']); ?> <span><br> Per Night </span></h3>
                     </div>
                   </div>
