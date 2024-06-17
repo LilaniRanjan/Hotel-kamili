@@ -52,6 +52,7 @@ if(isset($_POST['submit'])) {
 
             // Create a new Room instance
             $room = new \classes\Room($room_type, $adult_count, $children_count, $price_per_night, $room_description, $number_of_rooms, $room_inside_normal_image_path, $room_inside_360view_image_path, $room_bathroom_360view_image_path, $room_outdoor_360view_image_path);
+            $room->setCreatedBy($_SESSION['staff_id']);
 
             // Save room details to the database
             $roomId = $room->create($con);
@@ -60,6 +61,7 @@ if(isset($_POST['submit'])) {
             if($roomId && !empty($amenities)) {
                 foreach($amenities as $amenity) {
                     $roomAmenity = new \classes\RoomAmenity($roomId, $amenity);
+                    $roomAmenity->setCreatedBy($_SESSION['staff_id']);
                     $roomAmenity->create($con);
                 }
             }
@@ -71,6 +73,7 @@ if(isset($_POST['submit'])) {
                     move_uploaded_file($additional_photos['tmp_name'][$key], $additional_photo_path);
                     
                     $roomImages = new \classes\RoomImages($roomId, $additional_photo_path);
+                    $roomImages->setCreatedBy($_SESSION['staff_id']);
                     $roomImages->create($con);
                 }
             }

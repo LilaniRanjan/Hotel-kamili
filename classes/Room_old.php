@@ -17,8 +17,6 @@ class Room {
     private $room_inside_360view_image;
     private $room_bathroom_360view_image;
     private $room_outdoor_360view_image;
-    private $created_by;
-    private $modified_by;
 
     // Constructor
     public function __construct($room_type, $adult_count, $children_count, $price_per_night, $room_description, $number_of_rooms, $room_inside_normal_image, $room_inside_360view_image, $room_bathroom_360view_image, $room_outdoor_360view_image) {
@@ -79,14 +77,6 @@ class Room {
         return $this->room_outdoor_360view_image;
     }
 
-    public function getCreatedBy() {
-        return $this->created_by;
-    }
-
-    public function getUpdatedBy() {
-        return $this->modified_by;
-    }
-
     // Setters
     public function setRoomType($room_type) {
         $this->room_type = $room_type;
@@ -128,18 +118,10 @@ class Room {
         $this->room_outdoor_360view_image = $room_outdoor_360view_image;
     }
 
-    public function setCreatedBy($created_by) {
-        $this->created_by = $created_by;
-    }
-
-    public function setUpdatedBy($modified_by) {
-        $this->modified_by = $modified_by;
-    }
-
     // Create a new room record
     public function create($con) {
         try {
-            $query = "INSERT INTO Room (room_type, adult_count, children_count, price_per_night, room_description, number_of_rooms, room_inside_normal_image, room_inside_360view_image, room_bathroom_360view_image, room_outdoor_360view_image, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO Room (room_type, adult_count, children_count, price_per_night, room_description, number_of_rooms, room_inside_normal_image, room_inside_360view_image, room_bathroom_360view_image, room_outdoor_360view_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
             $stmt->bindValue(2, $this->adult_count);
@@ -151,7 +133,6 @@ class Room {
             $stmt->bindValue(8, $this->room_inside_360view_image);
             $stmt->bindValue(9, $this->room_bathroom_360view_image);
             $stmt->bindValue(10, $this->room_outdoor_360view_image);
-            $stmt->bindValue(11, $this->created_by);
             $stmt->execute();
             $this->room_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0) ? $this->room_id : false;
@@ -215,7 +196,7 @@ class Room {
     // Update an existing room record
     public function update($con) {
         try {
-            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, number_of_rooms = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ?, modified_by = ? WHERE room_id = ?";
+            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, number_of_rooms = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ? WHERE room_id = ?";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->room_type);
             $stmt->bindValue(2, $this->adult_count);
@@ -227,8 +208,7 @@ class Room {
             $stmt->bindValue(8, $this->room_inside_360view_image);
             $stmt->bindValue(9, $this->room_bathroom_360view_image);
             $stmt->bindValue(10, $this->room_outdoor_360view_image);
-            $stmt->bindValue(11, $this->modified_by);
-            $stmt->bindValue(12, $this->room_id);
+            $stmt->bindValue(11, $this->room_id);
             $stmt->execute();
             return ($stmt->rowCount() > 0);
         } catch (PDOException $e) {
@@ -291,6 +271,45 @@ class Room {
     public function getImages($con) {
         return RoomImages::readByRoomId($con, $this->room_id);
     }
+
+    // Filter available rooms within the check-in to check-out date range and ensure sufficient adult and children capacity
+    // public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
+    //     try {
+    //         $query = "
+    //             SELECT r.*
+    //             FROM Room r
+    //             WHERE r.room_id NOT IN (
+    //                 SELECT rv.room_id
+    //                 FROM Reservation rv
+    //                 WHERE NOT (
+    //                     rv.check_out_date <= ?
+    //                     OR rv.check_in_date >= ?
+    //                 )
+    //             )
+    //             AND r.adult_count >= ?
+    //             AND r.children_count >= ?
+    //         ";
+            
+    //         $stmt = $con->prepare($query);
+    //         $stmt->bindValue(1, $check_in_date, PDO::PARAM_STR);
+    //         $stmt->bindValue(2, $check_out_date, PDO::PARAM_STR);
+    //         $stmt->bindValue(3, $number_of_adult, PDO::PARAM_INT);
+    //         $stmt->bindValue(4, $number_of_children, PDO::PARAM_INT);
+    //         $stmt->execute();
+            
+    //         $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //         // Fetch amenities and images for each room
+    //         foreach ($rooms as &$room) {
+    //             $room['amenities'] = RoomAmenity::readByRoomId($con, $room['room_id']);
+    //             $room['images'] = RoomImages::readByRoomId($con, $room['room_id']);
+    //         }
+            
+    //         return $rooms;
+    //     } catch (PDOException $e) {
+    //         die("Error filtering available rooms: " . $e->getMessage());
+    //     }
+    // }
 
     // Find available room count within a particular room type for the specified date range
     public static function findAvailableRoomCount($con, $check_in_date, $check_out_date, $room_type) {

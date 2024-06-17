@@ -7,12 +7,14 @@ use PDOException;
 
 class RoomAmenity {
     private $room_amenity_id;
-    private $room_id;
+    private $room;
     private $amenity_name;
+    private $created_by;
+    private $modified_by;
 
     // Constructor
-    public function __construct($room_id, $amenity_name) {
-        $this->room_id = $room_id;
+    public function __construct($room, $amenity_name) {
+        $this->room = $room;
         $this->amenity_name = $amenity_name;
     }
 
@@ -22,7 +24,7 @@ class RoomAmenity {
     }
 
     public function getRoomId() {
-        return $this->room_id;
+        return $this->room;
     }
 
     public function getAmenityName() {
@@ -30,21 +32,30 @@ class RoomAmenity {
     }
 
     // Setters
-    public function setRoomId($room_id) {
-        $this->room_id = $room_id;
+    public function setRoomId($room) {
+        $this->room = $room;
     }
 
     public function setAmenityName($amenity_name) {
         $this->amenity_name = $amenity_name;
     }
 
+    public function setCreatedBy($created_by) {
+        $this->created_by = $created_by;
+    }
+
+    public function setUpdatedBy($modified_by) {
+        $this->modified_by = $modified_by;
+    }
+
     // Create a new room amenity record
     public function create($con) {
         try {
-            $query = "INSERT INTO RoomAmenity (room_id, amenity_name) VALUES (?, ?)";
+            $query = "INSERT INTO RoomAmenity (room_id, amenity_name, created_by) VALUES (?, ?, ?)";
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $this->room_id);
+            $stmt->bindValue(1, $this->room);
             $stmt->bindValue(2, $this->amenity_name);
+            $stmt->bindValue(3, $this->created_by);
             $stmt->execute();
             $this->room_amenity_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0) ? $this->room_amenity_id : false;
@@ -54,11 +65,11 @@ class RoomAmenity {
     }
 
     // Read room amenities by room ID
-    public static function readByRoomId($con, $room_id) {
+    public static function readByRoomId($con, $room) {
         try {
             $query = "SELECT * FROM RoomAmenity WHERE room_id = ?";
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $room_id);
+            $stmt->bindValue(1, $room);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure it fetches associative array
         } catch (PDOException $e) {

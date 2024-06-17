@@ -7,8 +7,8 @@ use PDOException;
 
 class Reservation {
     private $reservation_id;
-    private $customer_id;
-    private $room_id;
+    private $customer;
+    private $room;
     private $check_in_date;
     private $check_out_date;
     private $number_of_adult;
@@ -16,10 +16,12 @@ class Reservation {
     private $number_of_room;
     private $total_price;
     private $payment_status;
+    private $created_by;
+    private $modified_by;
 
-    public function __construct($customer_id, $room_id, $check_in_date, $check_out_date, $number_of_adult, $number_of_children, $number_of_room, $total_price, $payment_status = 'pending') {
-        $this->customer_id = $customer_id;
-        $this->room_id = $room_id;
+    public function __construct($customer, $room, $check_in_date, $check_out_date, $number_of_adult, $number_of_children, $number_of_room, $total_price, $payment_status = 'pending') {
+        $this->customer = $customer;
+        $this->room = $room;
         $this->check_in_date = $check_in_date;
         $this->check_out_date = $check_out_date;
         $this->number_of_adult = $number_of_adult;
@@ -34,11 +36,11 @@ class Reservation {
     }
 
     public function getCustomerId() {
-        return $this->customer_id;
+        return $this->customer;
     }
 
     public function getRoomId() {
-        return $this->room_id;
+        return $this->room;
     }
 
     public function getCheckInDate() {
@@ -69,12 +71,12 @@ class Reservation {
         return $this->payment_status;
     }
 
-    public function setCustomerId($customer_id) {
-        $this->customer_id = $customer_id;
+    public function setCustomerId($customer) {
+        $this->customer = $customer;
     }
 
-    public function setRoomId($room_id) {
-        $this->room_id = $room_id;
+    public function setRoomId($room) {
+        $this->room = $room;
     }
 
     public function setCheckInDate($check_in_date) {
@@ -109,8 +111,8 @@ class Reservation {
         try {
             $query = "INSERT INTO Reservation (customer_id, room_id, check_in_date, check_out_date, number_of_adult, number_of_children, number_of_room, total_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $this->customer_id);
-            $stmt->bindValue(2, $this->room_id);
+            $stmt->bindValue(1, $this->customer);
+            $stmt->bindValue(2, $this->room);
             $stmt->bindValue(3, $this->check_in_date);
             $stmt->bindValue(4, $this->check_out_date);
             $stmt->bindValue(5, $this->number_of_adult);
@@ -142,8 +144,8 @@ class Reservation {
         try {
             $query = "UPDATE Reservation SET customer_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, number_of_adult = ?, number_of_children = ?, number_of_room = ?, total_price = ?, payment_status = ? WHERE reservation_id = ?";
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $this->customer_id);
-            $stmt->bindValue(2, $this->room_id);
+            $stmt->bindValue(1, $this->customer);
+            $stmt->bindValue(2, $this->room);
             $stmt->bindValue(3, $this->check_in_date);
             $stmt->bindValue(4, $this->check_out_date);
             $stmt->bindValue(5, $this->number_of_adult);
