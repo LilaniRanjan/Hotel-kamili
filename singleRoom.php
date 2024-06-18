@@ -79,7 +79,7 @@
                         <?php echo htmlspecialchars($room['room_description']); ?>
                     </p>
                     <br>
-                    <button type="button" class="btn">BOOK NOW</button>
+                    <button type="button"  onclick="window.location.href='reservation-form.php'" class="btn">BOOK NOW</button>
                 </div>
             </article>
 
