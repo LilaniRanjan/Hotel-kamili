@@ -1,4 +1,5 @@
 <?php 
+session_start();
   // Include the necessary files
   use classes\Room;
   require_once './classes/DbConnector.php';
@@ -82,6 +83,10 @@
     <div class="form">
       <?php 
         if (isset($_POST['check_in_date']) && isset($_POST['check_out_date']) && isset($_POST['guest_count']) && isset($_POST['children_count'])){
+          $_SESSION['check_in_date'] = $_POST['check_in_date'];
+          $_SESSION['check_out_date'] = $_POST['check_out_date'];
+          $_SESSION['guest_count'] = $_POST['guest_count'];
+          $_SESSION['children_count'] = $_POST['children_count'];
           ?>
           <form class="grid" action="filterd_room.php" method="post">
             <input type="date" placeholder="Arrival Date" name="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>" required>
@@ -117,7 +122,10 @@
 
     <?php 
       if(isset($_POST['check_in_date']) && isset($_POST['check_out_date']) && isset($_POST['guest_count']) && isset($_POST['children_count']) && isset($_POST['room_type']) && isset($_POST['selected_price'])){
-        // echo "Filtering with all criteria";
+        $_SESSION['check_in_date'] = $_POST['check_in_date'];
+        $_SESSION['check_out_date'] = $_POST['check_out_date'];
+        $_SESSION['guest_count'] = $_POST['guest_count'];
+        $_SESSION['children_count'] = $_POST['children_count'];
         $rooms = Room::filterRooms($con, $_POST['check_in_date'], $_POST['check_out_date'], $_POST['guest_count'], $_POST['children_count'], $_POST['selected_price'], $_POST['room_type']);
       } else{
         if (isset($_POST['room_type']) && isset($_POST['selected_price'])) {

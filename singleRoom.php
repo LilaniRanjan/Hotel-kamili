@@ -18,9 +18,11 @@
   }
 
   $room_id = $_GET['id'];
+  $_SESSION['room_id'] = $_GET['id'];
 
   //Fetch single room details by Id
   $room = \classes\Room::read($con, $room_id);
+  $_SESSION['room_type'] = $room['room_type'];
   
 ?>
 
