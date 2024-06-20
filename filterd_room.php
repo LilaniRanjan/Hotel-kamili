@@ -13,7 +13,7 @@ session_start();
     $con = $dbConnector->getConnection();
   } catch (PDOException $exc) {
       // Handle database connection error
-      die("Error in DbConnection on DisplayRooms file: " . $exc->getMessage());
+      die("Error in DbConnection on filtered_room file: " . $exc->getMessage());
   }
 
   $availableRoomCount = "";

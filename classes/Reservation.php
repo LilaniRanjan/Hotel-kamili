@@ -107,9 +107,17 @@ class Reservation {
         $this->payment_status = $payment_status;
     }
 
+    public function setCreatedBy($created_by) {
+        $this->created_by = $created_by;
+    }
+
+    public function setUpdatedBy($modified_by) {
+        $this->modified_by = $modified_by;
+    }
+
     public function create($con) {
         try {
-            $query = "INSERT INTO Reservation (customer_id, room_id, check_in_date, check_out_date, number_of_adult, number_of_children, number_of_room, total_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO Reservation (customer_id, room_id, check_in_date, check_out_date, number_of_adult, number_of_children, number_of_room, total_price, payment_status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $con->prepare($query);
             $stmt->bindValue(1, $this->customer);
             $stmt->bindValue(2, $this->room);
@@ -120,6 +128,7 @@ class Reservation {
             $stmt->bindValue(7, $this->number_of_room);
             $stmt->bindValue(8, $this->total_price);
             $stmt->bindValue(9, $this->payment_status);
+            $stmt->bindValue(10, $this->created_by);
             $stmt->execute();
             $this->reservation_id = $con->lastInsertId();
             return ($stmt->rowCount() > 0);
