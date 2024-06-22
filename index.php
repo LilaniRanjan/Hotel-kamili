@@ -138,6 +138,19 @@
     })
   </script>
 
+  <script>
+        window.onload = function() {
+            var today = new Date();
+            var day = ("0" + today.getDate()).slice(-2);
+            var month = ("0" + (today.getMonth() + 1)).slice(-2);
+            var year = today.getFullYear();
+            var todayDate = year + "-" + month + "-" + day;
+            
+            document.getElementById("check_in_date").setAttribute("min", todayDate);
+            document.getElementById("check_out_date").setAttribute("min", todayDate);
+        };
+  </script>
+
 
 <div id="ww_2ad46a8f3424f" v='1.3' loc='id' a='{"t":"ticker","lang":"en","sl_lpl":1,"ids":["wl11769"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'><a href="https://weatherwidget.org/" id="ww_2ad46a8f3424f_u" target="_blank">Html weather widget</a></div><script async src="https://app2.weatherwidget.org/js/?id=ww_2ad46a8f3424f"></script>
 
@@ -148,8 +161,8 @@
       </div>
       <div class="form">
         <form class="grid" action="filterd_room.php" method="post">
-          <input type="date" placeholder="Araival Date" name="check_in_date" required>
-          <input type="date" placeholder="Departure Date" name="check_out_date" required>
+          <input type="date" id="check_in_date" placeholder="Araival Date" name="check_in_date" required>
+          <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" required>
           <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
           <input type="number" placeholder="Childern count" name="children_count" min="0" required>
           <input type="submit" value="CHECK AVAILABILITY">
