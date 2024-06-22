@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 use classes\Customer as ClassesCustomer;
 use classes\DbConnector;
@@ -70,7 +70,7 @@ if (!empty($_POST['stripeToken'])) {
     $payDetails = \Stripe\Charge::create(array(
         'customer' => $customer->id,
         'amount' => $amountInCents,
-        'currency' => 'usd',
+        'currency' => 'lkr',
         'description' => 'Room Booking',
         'metadata' => array(
             'room_id' => $room_id,
@@ -95,10 +95,14 @@ if (!empty($_POST['stripeToken'])) {
         $paymentStatus = $paymentResponse['status'];
         $paymentDate = date("Y-m-d H:i:s");
 
+        // Insert customer into the database
         $customer = new ClassesCustomer($fullName, $email, $telephone, $address, $country);
+        $customer->create($con); // Create customer record in the database
 
-        $customer_id = $customer->create($con);
+        // Retrieve the last inserted customer ID
+        $customer_id = ClassesCustomer::getLastInsertedId($con);
 
+        // Create reservation with the correct customer ID
         $reservation = new Reservation($customer_id, $room_id, $check_in_date, $check_out_date, $number_of_adult, $number_of_children, $number_of_room, $total_price, 'Completed');
         $reservation->setCreatedBy($customer_id);
 

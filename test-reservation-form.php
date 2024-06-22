@@ -16,6 +16,28 @@
     </style>
 </head>
 <body>
+    <?php
+
+use classes\Customer;
+
+        require_once './classes/DbConnector.php';
+        require_once './classes/Reservation.php';
+        require_once './classes/Customer.php';
+
+        try {
+            // Establish database connection
+            $dbConnector = new \classes\DbConnector();
+            $con = $dbConnector->getConnection();
+        } catch (PDOException $exc) {
+            // Handle database connection error
+            die("Error in DbConnection on payment-process file: " . $exc->getMessage());
+        }
+
+        $cus = new Customer(null, null, null, null, null);
+        $cus_id = $cus->getLastInsertedId($con);
+
+        echo $cus_id;
+    ?>
     <form id="paymentForm" action="payment-process.php" method="POST">
         <!-- Customer Details -->
         <label for="fullName">Full Name:</label>

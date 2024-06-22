@@ -121,5 +121,13 @@ class Customer {
             die("Error deleting customer: " . $e->getMessage());
         }
     }
+
+    public static function getLastInsertedId($con) {
+        try {
+            return $con->lastInsertId();
+        } catch (PDOException $e) {
+            die("Error retrieving last inserted ID: " . $e->getMessage());
+        }
+    }
 }
 ?>
