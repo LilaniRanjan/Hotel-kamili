@@ -75,6 +75,19 @@ session_start();
     }
 </script>
 
+<script>
+        window.onload = function() {
+            var today = new Date();
+            var day = ("0" + today.getDate()).slice(-2);
+            var month = ("0" + (today.getMonth() + 1)).slice(-2);
+            var year = today.getFullYear();
+            var todayDate = year + "-" + month + "-" + day;
+            
+            document.getElementById("check_in_date").setAttribute("min", todayDate);
+            document.getElementById("check_out_date").setAttribute("min", todayDate);
+        };
+</script>
+
 <section class="book">
   <div class="container flex_space">
     <div class="text">
@@ -89,8 +102,8 @@ session_start();
           $_SESSION['children_count'] = $_POST['children_count'];
           ?>
           <form class="grid" action="filterd_room.php" method="post">
-            <input type="date" placeholder="Arrival Date" name="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>" required>
-            <input type="date" placeholder="Departure Date" name="check_out_date" value="<?php echo htmlspecialchars($check_out_date); ?>" required>
+            <input type="date" id="check_in_date" placeholder="Arrival Date" name="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>" required>
+            <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" value="<?php echo htmlspecialchars($check_out_date); ?>" required>
             <input type="number" placeholder="Guest Count" name="guest_count" value="<?php echo $guest_count; ?>" min="1" required>
             <input type="number" placeholder="Children count" name="children_count" value="<?php echo $children_count; ?>" min="0" required>
             <input type="submit" value="CHECK AVAILABILITY">
@@ -99,8 +112,8 @@ session_start();
         }else{
           ?>
           <form class="grid" action="filterd_room.php" method="post">
-            <input type="date" placeholder="Arrival Date" name="check_in_date" required>
-            <input type="date" placeholder="Departure Date" name="check_out_date" required>
+            <input type="date" id="check_in_date" placeholder="Arrival Date" name="check_in_date" required>
+            <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" required>
             <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
             <input type="number" placeholder="Children count" name="children_count" min="0" required>
             <input type="submit" value="CHECK AVAILABILITY">
