@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <?php 
     session_start();
+    use classes\Room;
+
+    require_once './classes/DbConnector.php';
+    require_once './classes/Room.php';
+
+    try {
+        // Establish database connection
+        $dbConnector = new \classes\DbConnector();
+        $con = $dbConnector->getConnection();
+    } catch (PDOException $exc) {
+        // Handle database connection error
+        die("Error in DbConnection on filtered_room file: " . $exc->getMessage());
+    }
+
+    $availableRoomCount = "";
 
     if(!empty($_SESSION['check_in_date']) || !empty($_SESSION['check_out_date']) || !empty($_SESSION['guest_count']) || !empty($_SESSION['children_count'])){
         if(!empty($_SESSION['room_id']) || !empty($_SESSION['room_type'])){
@@ -18,6 +33,8 @@
         unset($_SESSION['guest_count']);
         unset($_SESSION['children_count']);
     }
+
+    if(!empty($check_in_date) || !empty($check_out_date) || !empty($guest_count) || !empty($children_count)){
 ?>
 <html lang="en">
     <head>
@@ -147,9 +164,14 @@
                                             <i class="fas fa-door-closed date-icon"></i>
                                             <select id="numberOfRooms" name="number_of_room" class="date-input-field" required>
                                                 <option value="" disabled>Select no of Rooms</option>
-                                                <option value="1" selected>1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
+                                                <?php 
+                                                    $availableRoomCount = Room::findAvailableRoomCount($con, $check_in_date ?? '', $check_out_date ?? '', $room_type);
+                                                    for($i=1; $i<=$availableRoomCount; $i++){
+                                                        ?>
+                                                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                                                        <?php
+                                                    }
+                                                ?>
                                             </select>
                                         </div>
                                         <?php
@@ -416,3 +438,8 @@
         </script>
     </body>
 </html>
+<?php 
+    }else{
+        header("Location: filterd_room.php");
+    }
+?>
