@@ -171,7 +171,10 @@
                                                         <option value="<?php echo $i ?>"><?php echo $i ?></option>
                                                         <?php
                                                     }
+
+                                                    $room_price = Room::getRoomPriceByRoomId($con, $room_id);
                                                 ?>
+                                                <input type="hidden" name="room_price" value="<?php echo $room_price ?>"/>
                                             </select>
                                         </div>
                                         <?php

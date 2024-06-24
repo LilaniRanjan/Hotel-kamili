@@ -40,7 +40,7 @@ if (!empty($_POST['stripeToken'])) {
     $number_of_children = $_POST['number_of_children'];
     $number_of_room = $_POST['number_of_room'];
     $room_id = $_POST['room_id'];
-    $total_price = 1000;
+    $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
     $amountInCents = $total_price * 100;
 
     // Include Stripe PHP library

@@ -489,6 +489,26 @@ class Room {
     }
 }
 
+// Add this method to the Room class
+public static function getRoomPriceByRoomId($con, $room_id) {
+    try {
+        // Define the SQL query to get the price per night by room ID
+        $query = "SELECT price_per_night FROM Room WHERE room_id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Fetch the result
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Return the price if found, otherwise return false
+        return $result ? $result['price_per_night'] : false;
+    } catch (PDOException $e) {
+        die("Error fetching room price: " . $e->getMessage());
+    }
+}
+
+
 
     
 
