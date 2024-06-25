@@ -68,8 +68,8 @@ class EmailConnector {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'ranjanlilani@gmail.com'; // Change this
-            $mail->Password = 'ssxl mbdo jhut pvko'; // Change this
+            $mail->Username = 'ranjanlilani@gmail.com'; 
+            $mail->Password = 'ssxl mbdo jhut pvko';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             return $mail;
