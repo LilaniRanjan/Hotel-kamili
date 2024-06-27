@@ -11,6 +11,11 @@
     <script src="JS/aboutus.js"></script>
     <script src="https://kit.fontawesome.com/dbed6b6114.js" crossorigin="anonymous"></script>
     <link rel="icon" href="./Assests/images/picture_1.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -42,7 +47,11 @@
             <!-- single service -->
             <article class="service">
                 <div class="service-content">
-                    <h2>About Us</h2>
+                    <!-- <h2>About Us</h2> -->
+                    <div class="about top container flex left heading">
+                        <h1>WELCOME</h1>
+                        <h2>About Us</h2>
+                    </div>
                     <p>We draw our inspiration from the word ‘Kamili’ which denotes the city of Kalutara, an age-old
                         symbol in Buddhism that stands for purity of body, mind and soul.
                         The unfolding of the petals as depicted in our logo stands for an awakening of the soul, a
@@ -59,7 +68,7 @@
             <!-- single service -->
             <article class="service">
                 <div class="service-content">
-                    <img src="./Assests/images/picture_18.jpg" alt="room image">
+                    <img style="height: 500px;" src="./Assests/laya-safari.jpg" alt="room image">
                 </div>
             </article>
         </div>

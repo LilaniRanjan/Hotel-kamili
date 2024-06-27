@@ -511,3 +511,42 @@ footer .container {
         grid-template-columns: repeat(1, 1fr);
     }
 }
+
+.left, .right {
+    width: 50%;
+    padding: 30px;
+  }
+  
+  .top {
+    margin-top: 80px;
+  }
+  
+  .mtop {
+    margin-top: 40px;
+  }
+  
+  .heading h1 {
+    font-size: 75px;
+    font-weight: 500;
+    opacity: 0.1;
+    font-family: serif;
+    position: absolute;
+  }
+  
+  .heading h2 {
+    font-size: 55px;
+    font-family: serif;
+    font-weight: 400;
+  }
+  
+  .about .heading h1 {
+    top: 55px;
+  }
+  
+  .about {
+    position: relative;
+  }
+  
+  .about .left {
+    margin-top: 30px;
+  }
