@@ -213,13 +213,13 @@ $maxPrice = $priceRange['max_price'];
               </div>
               <div class="text">
                 <h2><?php echo htmlspecialchars($room['room_type']); ?></h2>
-                <div class="rate flex">
+                <!-- <div class="rate flex">
                   <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i>
-                </div>
+                </div> -->
                 <h4 style="text-align: right; color: rgb(255, 0, 255);">
                   <?php
                   $availableRoomCount = Room::findAvailableRoomCount($con, $check_in_date ?? '', $check_out_date ?? '', $room['room_type']);
