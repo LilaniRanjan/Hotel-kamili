@@ -28,6 +28,15 @@
         require './NavBar/navbar.php';
     ?>
 
+	<br>
+
+	<section>
+		<div class="about top container flex left heading" style="align-items: center; margin-left: 500px;">
+			<h1>WELCOME</h1>
+			<h2 style="margin-left: 75px;">Contact Us</h2>
+		</div>
+	</section>
+
 	<section class="ftco-section">
 		<div class="container">
 			<div class="row justify-content-center">
@@ -78,7 +87,8 @@
 						<div class="row no-gutters">
 							<div class="col-md-7">
 								<div class="contact-wrap w-100 p-md-5 p-4">
-									<h3 class="mb-4">Contact Us</h3>
+									<h3 class="mb-4">Reach out anytime</h3>
+									<br>
 									<div id="form-message-warning" class="mb-4"></div> 
 				      		<!-- <div id="form-message-success" class="mb-4">
 				            Your message was sent, thank you!
