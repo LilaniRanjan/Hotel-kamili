@@ -127,8 +127,8 @@ $maxPrice = $priceRange['max_price'];
 
   <section class="rooms">
     <div class="container top">
-      <div class="heading">
-        <h1>EXPLORE</h1>
+      <div class="heading" style="text-align: center;">
+        <h1 style="margin-left: 400px;">EXPLORE</h1>
         <h2>Our Accommodations</h2>
         <p>Exceptional Facilities Provided For You - Accommodations.</p>
       </div>
