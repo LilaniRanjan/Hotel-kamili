@@ -68,7 +68,7 @@
             <!-- single service -->
             <article class="service">
                 <div class="service-content">
-                    <img style="height: 500px;" src="./Assests/laya-safari.jpg" alt="room image">
+                    <img style="height: 500px; border-radius: 15px;" src="./Assests/laya-safari.jpg" alt="room image">
                 </div>
             </article>
         </div>

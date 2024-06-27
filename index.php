@@ -180,14 +180,16 @@
           <h1>WELCOME</h1>
           <h2>KAMILI BEACH RESORT</h2>
         </div>
-        <p><b>We draw our inspiration from the word ‘Kamili’ which denotes the city of Kalutara,
+        <br>
+        <p style="font-size: medium;">We draw our inspiration from the word ‘Kamili’ which denotes the city of Kalutara,
           an age-old symbol in Buddhism that stands for purity of body, mind and soul.The unfolding of the petals as depicted in our logo stands
           for an awakening of the soul, a guaranteed experience as you enjoy your stay with us.The lotus seed is buried in a pool of mud,
-           on which it grows, heading towards the sunshine and air, to finally blossom on long stalks floating above the muddy waters it grew in.</b> </p>
-        <button class="primary-btn">ABOUT US</button>
+           on which it grows, heading towards the sunshine and air, to finally blossom on long stalks floating above the muddy waters it grew in.</p>
+        <br>
+           <button onclick="window.location.href='about-us.php'" class="primary-btn">ABOUT US</button>
       </div>
       <div class="right">
-        <img src="Assests/laya-safari.jpg" alt="Image here">
+        <img style="margin-top: 35px; border-radius: 15px;" src="Assests/laya-safari.jpg" alt="Image here">
       </div>
     </div>
   </section>
@@ -239,13 +241,14 @@
                   </div>
                   <div class="text">
                     <h2><?php echo htmlspecialchars($room['room_type']); ?></h2>
-                    <div class="rate flex">
+                    <br>
+                    <!-- <div class="rate flex">
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
-                    </div>
+                    </div> -->
                     <p>
                     <ul type="disk">
                       <?php 
@@ -524,7 +527,7 @@
 
       
       </p>
-      <button class="primary-btn">Know More</button>
+      <button onclick="window.location.href='contact-us.php'" class="primary-btn">Contact Us</button>
    
       
     </div>
