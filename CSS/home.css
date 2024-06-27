@@ -11,7 +11,7 @@ body {
 }
 
 h1, h2 {
-  font-family: sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 400;
 }
 
@@ -378,7 +378,9 @@ h1 {
 }
 
 /*--------rooms---------*/
-/*--------gallery---------*/
+
+/* --------gallery--------- */
+
 .gallery {
   position: relative;
 }
@@ -397,13 +399,19 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(126, 193, 65, 0.86);
+  /* background: rgba(162, 173, 149, 0.86); */
+
   width: 255px;
   height: 251px;
   z-index: 2;
   opacity: 0;
   transition: 0.5s;
 }
+
+.gallery .img:hover {
+  transform: scale(1.4);
+}
+
 
 .overlay {
   position: absolute;
@@ -449,7 +457,8 @@ h1 {
   top: -40%;
 }
 
-/*--------gallery---------*/
+/* --------gallery--------- */
+
 /*--------services---------*/
 .services {
   position: relative;

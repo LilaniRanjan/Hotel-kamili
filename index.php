@@ -60,7 +60,7 @@
     <div class="content">
       <div class="owl-carousel owl-theme">
         <div class="item">
-          <img src="Assests/one.jpg" alt="Image here.">
+          <img src="Assests/banner-1.png" alt="Image here.">
           <div class="text">
              <!-- <h1>Your Perfect Costal Escape</h1> 
              <p>Lorem ipsum dolor sit amet constur adipisicing elit sed do eiusmtem por incid.
@@ -235,7 +235,7 @@
               ?>
                 <div class="room-item">
                   <div class="image">
-                    <img src="<?php echo htmlspecialchars($room['room_inside_normal_image']); ?>" alt="Premium Deluxe">
+                    <img style="height: 300px;" src="<?php echo htmlspecialchars($room['room_inside_normal_image']); ?>" alt="Premium Deluxe">
                   </div>
                   <div class="text">
                     <h2><?php echo htmlspecialchars($room['room_type']); ?></h2>
@@ -422,82 +422,46 @@
           <div class="img">
             <img src="Assests/laya-safari.jpg" alt="">
           </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
-          </div>
         </div>
         
         <div class="items">
           <div class="img">
             <img src="Assests/kamili-02-1024x683.jpg" alt="">
           </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
-          </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/Kamili 5.jpg" alt="">
-          </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
           </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/wedding.jpg" alt="">
           </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
-          </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/kamili-beach-villa.jpg" alt="">
-          </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
           </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/Luxary.jpg" alt="">
           </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
-          </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/tRY.jpg" alt="">
-          </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
           </div>
         </div>
         <div class="items">
           <div class="img">
             <img src="Assests/Deluxe.jpg" alt="">
           </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
-          </div>
         </div>
        <div class="items">
           <div class="img">
             <img src="Assests/Kamili 5.jpg" alt="">
-          </div>
-          <div class="overlay">
-            <span class="fa fa-plus"> </span>
-            <h3>Photo Title Here.</h3>
           </div>
         </div>
        <!-- <div class="items">

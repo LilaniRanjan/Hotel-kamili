@@ -120,7 +120,8 @@ if (!empty($_POST['stripeToken'])) {
 
                 echo "Success";
             } else {
-            
+                echo "Fail";
+            }
         } else {
             echo "Payment Failed";
         }
@@ -134,27 +135,51 @@ if (!empty($_POST['stripeToken'])) {
 function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room) {
     $pdf = new FPDF();
     $pdf->AddPage();
-    $pdf->SetFont('Arial', 'B', 16);
-    $pdf->Cell(40, 10, 'Invoice Details');
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Customer Name: ' . $fullName);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Email: ' . $email);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Telephone: ' . $telephone);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Address: ' . $address . ', ' . $country);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Check-in Date: ' . $check_in_date);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Check-out Date: ' . $check_out_date);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Room ID: ' . $room_id);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Number of Rooms: ' . $number_of_room);
-    $pdf->Ln();
-    $pdf->Cell(40, 10, 'Total Price: LKR ' . $total_price);
     
+    // Add Logo
+    $pdf->Image('./Assests/cropped-kamili-Copy-1.png', 10, 10, 30);
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(120); // Move to the right
+    $pdf->Cell(30, 10, 'INVOICE', 0, 1, 'C');
+    
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(120); // Move to the right
+    $pdf->Cell(30, 10, 'Your Company', 0, 1, 'C');
+    $pdf->Cell(120); // Move to the right
+    $pdf->Cell(30, 10, 'Your Address', 0, 1, 'C');
+    $pdf->Ln(20);
+    
+    $pdf->Cell(0, 10, 'Buyer Name', 0, 1);
+    $pdf->Cell(0, 10, '123 Buyer Lane', 0, 1);
+    $pdf->Cell(0, 10, '123 BLUE COUNTY', 0, 1);
+    $pdf->Cell(0, 10, 'UNITED STATES', 0, 1);
+    $pdf->Ln(10);
+    
+    $pdf->Cell(0, 10, 'Invoice Date: ' . date("d/m/Y"), 0, 1);
+    $pdf->Cell(0, 10, 'Invoice No: ' . rand(100000, 999999), 0, 1);
+    $pdf->Cell(0, 10, 'Due Date: ' . date("d/m/Y", strtotime("+30 days")), 0, 1);
+    $pdf->Ln(10);
+
+    // Table headers
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(80, 10, 'DESCRIPTION', 1);
+    $pdf->Cell(40, 10, 'PRICE', 1);
+    $pdf->Cell(40, 10, 'QTY', 1);
+    $pdf->Cell(30, 10, 'AMOUNT', 1);
+    $pdf->Ln();
+
+    // Table data
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(80, 10, 'Room Booking', 1);
+    $pdf->Cell(40, 10, number_format($total_price / $number_of_room, 2), 1);
+    $pdf->Cell(40, 10, $number_of_room, 1);
+    $pdf->Cell(30, 10, number_format($total_price, 2), 1);
+    $pdf->Ln();
+
+    // Total
+    $pdf->Cell(160, 10, 'Total', 1);
+    $pdf->Cell(30, 10, number_format($total_price, 2), 1);
+
     return $pdf->Output('S'); // Output as string
 }
 
