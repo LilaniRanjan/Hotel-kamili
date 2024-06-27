@@ -120,8 +120,7 @@ if (!empty($_POST['stripeToken'])) {
 
                 echo "Success";
             } else {
-                echo "Fail";
-            }
+            
         } else {
             echo "Payment Failed";
         }
