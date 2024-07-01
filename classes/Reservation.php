@@ -137,6 +137,19 @@ class Reservation {
         }
     }
 
+    public function insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id) {
+        try {
+            $query = "INSERT INTO ReservedRoomTypeId (reservation_id, reserved_room_type_id) VALUES (?, ?)";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $reservation_id);
+            $stmt->bindValue(2, $reserved_room_type_id);
+            $stmt->execute();
+            return ($stmt->rowCount() > 0);
+        } catch (PDOException $e) {
+            die("Error inserting reserved room type ID: " . $e->getMessage());
+        }
+    }
+
     public static function read($con, $reservation_id) {
         try {
             $query = "SELECT * FROM Reservation WHERE reservation_id = ?";

@@ -508,6 +508,36 @@ public static function getRoomPriceByRoomId($con, $room_id) {
     }
 }
 
+public static function getReservedRoomCount($con, $room_id, $check_in_date, $check_out_date) {
+    try {
+        // Query to find the total number of rooms reserved for the specified room ID within the date range
+        $query = "
+            SELECT SUM(rv.number_of_room) as reserved_count
+            FROM Reservation rv
+            WHERE rv.room_id = ?
+            AND NOT (
+                rv.check_out_date <= ?
+                OR rv.check_in_date >= ?
+            )
+        ";
+
+        $stmt = $con->prepare($query);
+        $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
+        $stmt->bindValue(2, $check_in_date, PDO::PARAM_STR);
+        $stmt->bindValue(3, $check_out_date, PDO::PARAM_STR);
+        $stmt->execute();
+        $reservedRoomsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $reservedRooms = $reservedRoomsResult['reserved_count'] ? $reservedRoomsResult['reserved_count'] : 0;
+
+        return $reservedRooms;
+    } catch (PDOException $e) {
+        die("Error finding reserved room count: " . $e->getMessage());
+    }
+}
+
+
+
 
 
     

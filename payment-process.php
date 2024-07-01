@@ -2,6 +2,7 @@
 use classes\Customer as ClassesCustomer;
 use classes\DbConnector;
 use classes\Reservation;
+use classes\Room;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Stripe\Stripe;
@@ -43,6 +44,7 @@ if (!empty($_POST['stripeToken'])) {
     $number_of_adult = $_POST['number_of_adult'];
     $number_of_children = $_POST['number_of_children'];
     $number_of_room = $_POST['number_of_room'];
+    $room_type = $_POST['room_type'];
     $room_id = $_POST['room_id'];
     $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
     $amountInCents = $total_price * 100;
@@ -106,12 +108,20 @@ if (!empty($_POST['stripeToken'])) {
             // Retrieve the last inserted customer ID
             $customer_id = ClassesCustomer::getLastInsertedId($con);
 
+            $reservedRoomCount = Room::getReservedRoomCount($con, $room_id, $check_in_date, $check_out_date);
+
             // Create reservation with the correct customer ID
             $reservation = new Reservation($customer_id, $room_id, $check_in_date, $check_out_date, $number_of_adult, $number_of_children, $number_of_room, $total_price, 'Completed');
             $reservation->setCreatedBy($customer_id);
             $reservation->create($con);
 
             if ($reservation) {
+                $reservation_id = $reservation->getReservationId();
+
+                $reserved_room_type_id = $room_type . " " . strval($reservedRoomCount + 1);
+
+                $reservation->insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id);
+
                 // Generate PDF invoice
                 $invoicePdf = generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room);
 

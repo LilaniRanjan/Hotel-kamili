@@ -136,7 +136,7 @@
                                         <p>Room Type</p>
                                         <div class="date-input-container">
                                             <i class="fas fa-bed date-icon"></i>
-                                            <input class="date-input-field" type="text" value="<?php echo htmlspecialchars($room_type); ?>" required>
+                                            <input class="date-input-field" type="text" value="<?php echo htmlspecialchars($room_type); ?>" name="room_type" required>
                                             <input type="hidden" id="roomID" name="room_id" value="<?php echo $room_id; ?>"/>
                                         </div>
                                         <?php
