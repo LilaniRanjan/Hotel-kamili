@@ -15,7 +15,7 @@ require_once './classes/Customer.php';
 require_once './classes/Room.php';
 require_once './classes/RoomAmenity.php';
 require_once './classes/RoomImages.php';
-require_once 'vendor/autoload.php'; // Ensure you have PHPMailer and Stripe PHP library installed
+require_once 'vendor/autoload.php'; 
 
 try {
     // Establish database connection
