@@ -274,5 +274,83 @@ class staff
         }
     }
     
-    
-}
+    public function getAllStaff($con){
+        try {
+            $query = "SELECT * FROM staff";
+            $pstmt = $con->prepare($query);
+            $pstmt->execute();
+            return $pstmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exc) {
+            die("Error fetching all staff: " . $exc->getMessage());
+        }
+    }
+
+    public function getStaffById($con, $staff_id)
+    {
+        try {
+            $query = "SELECT * FROM staff WHERE staff_id = ?";
+            $pstmt = $con->prepare($query);
+            $pstmt->execute([$staff_id]);
+            $staffDetails = $pstmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($staffDetails) {
+                $this->staff_id = $staffDetails['staff_id'];
+                $this->first_name = $staffDetails['firstname'];
+                $this->last_name = $staffDetails['lastname'];
+                $this->user_name = $staffDetails['username'];
+                $this->nic_no = $staffDetails['nic'];
+                $this->email = $staffDetails['email'];
+                $this->contact_no = $staffDetails['contact_no'];
+                $this->role = $staffDetails['role'];
+
+                return $staffDetails;
+            } else {
+                return false;
+            }
+        } catch (PDOException $exc) {
+            die("Error fetching staff by ID: " . $exc->getMessage());
+        }
+    }
+
+    public function updateStaff($con, $staff_id, $first_name, $last_name, $nic_no, $email, $contact_no, $role) {
+        try {
+            $query = "UPDATE staff SET firstname = ?, lastname = ?, nic = ?, email = ?, contact_no = ?, role = ? WHERE staff_id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $first_name);
+            $stmt->bindValue(2, $last_name);
+            $stmt->bindValue(3, $nic_no);
+            $stmt->bindValue(4, $email);
+            $stmt->bindValue(5, $contact_no);
+            $stmt->bindValue(6, $role);
+            $stmt->bindValue(7, $staff_id);
+
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                error_log("No rows affected");
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Error updating staff: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    // Delete a staff record
+    public static function delete($con, $staff_id)
+    {
+        try {
+            $query = "DELETE FROM staff WHERE staff_id = ?";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $staff_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return ($stmt->rowCount() > 0);
+        } catch (PDOException $e) {
+            error_log("Error deleting staff: " . $e->getMessage()); // Log the error
+            return false;
+        }
+    }
+        
+    }

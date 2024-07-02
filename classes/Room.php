@@ -536,6 +536,43 @@ public static function getReservedRoomCount($con, $room_id, $check_in_date, $che
     }
 }
 
+// Fetch room details by ID
+public static function getRoomById($con, $room_id) {
+    try {
+        // Query to fetch room details by ID
+        $query = "
+            SELECT *
+            FROM Room
+            WHERE room_id = ?
+        ";
+
+        $stmt = $con->prepare($query);
+        $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $room = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($room) {
+            return new Room(
+                $room['room_type'],
+                $room['adult_count'],
+                $room['children_count'],
+                $room['price_per_night'],
+                $room['room_description'],
+                $room['number_of_rooms'],
+                $room['room_inside_normal_image'],
+                $room['room_inside_360view_image'],
+                $room['room_bathroom_360view_image'],
+                $room['room_outdoor_360view_image']
+            );
+        } else {
+            return null; // Return null if room not found
+        }
+    } catch (PDOException $e) {
+        die("Error fetching room details: " . $e->getMessage());
+    }
+}
+
 
 
 

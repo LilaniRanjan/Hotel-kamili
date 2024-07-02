@@ -224,6 +224,40 @@ class Reservation {
             die("Error filtering available rooms: " . $e->getMessage());
         }
     }
+
+    public static function getAllReservations($con)
+    {
+        try {
+            $query = "
+                SELECT reservation.*, customer.full_name, room.room_id
+                FROM Reservation
+                JOIN Customer ON reservation.customer_id = customer.customer_id
+                JOIN Room ON reservation.room_id = room.room_id
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Error fetching all reservations: " . $e->getMessage());
+        }
+    }
+    
+
+    // cancel reservation
+
+    public static function cancelReservation($con, $reservation_id)
+    {
+        try {
+            $query = "UPDATE reservation SET reservation_status = 'cancelled' WHERE reservation_id = :reservation_id";
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(':reservation_id', $reservation_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            die("Error canceling reservation: " . $e->getMessage());
+        }
+    }
+
     
 }
 ?>
