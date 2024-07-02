@@ -118,9 +118,12 @@ if (!empty($_POST['stripeToken'])) {
             if ($reservation) {
                 $reservation_id = $reservation->getReservationId();
 
-                $reserved_room_type_id = $room_type . " " . strval($reservedRoomCount + 1);
+                for($i=1; $i<=$number_of_room; $i++){
+                    $reserved_room_type_id = $room_type . " " . strval($reservedRoomCount + 1);
+                    $reservation->insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id);
 
-                $reservation->insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id);
+                    $reservedRoomCount++;
+                }
 
                 // Generate PDF invoice
                 $invoicePdf = generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room);
@@ -190,7 +193,8 @@ function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $
     $pdf->Cell(160, 10, 'Total', 1);
     $pdf->Cell(30, 10, number_format($total_price, 2), 1);
 
-    return $pdf->Output('S'); // Output as string
+    // Output as string
+    return $pdf->Output('S'); 
 }
 
 function sendEmailWithAttachment($to, $subject, $message, $attachmentContent) {
@@ -198,10 +202,10 @@ function sendEmailWithAttachment($to, $subject, $message, $attachmentContent) {
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // Specify your SMTP server
+        $mail->Host = 'smtp.gmail.com'; 
         $mail->SMTPAuth = true;
-        $mail->Username = 'ranjanlilani@gmail.com'; // SMTP username
-        $mail->Password = 'ssxl mbdo jhut pvko'; // SMTP password
+        $mail->Username = 'ranjanlilani@gmail.com'; 
+        $mail->Password = 'ssxl mbdo jhut pvko';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
