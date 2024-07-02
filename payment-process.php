@@ -1,4 +1,5 @@
 <?php
+
 use classes\Customer as ClassesCustomer;
 use classes\DbConnector;
 use classes\Reservation;
@@ -15,7 +16,7 @@ require_once './classes/Customer.php';
 require_once './classes/Room.php';
 require_once './classes/RoomAmenity.php';
 require_once './classes/RoomImages.php';
-require_once 'vendor/autoload.php'; 
+require_once 'vendor/autoload.php';
 
 try {
     // Establish database connection
@@ -27,6 +28,7 @@ try {
 }
 
 $paymentMessage = '';
+
 if (!empty($_POST['stripeToken'])) {
     // Get token and reservation details
     $stripeToken  = $_POST['stripeToken'];
@@ -118,7 +120,7 @@ if (!empty($_POST['stripeToken'])) {
             if ($reservation) {
                 $reservation_id = $reservation->getReservationId();
 
-                for($i=1; $i<=$number_of_room; $i++){
+                for ($i = 1; $i <= $number_of_room; $i++) {
                     $reserved_room_type_id = $room_type . " " . strval($reservedRoomCount + 1);
                     $reservation->insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id);
 
@@ -131,43 +133,44 @@ if (!empty($_POST['stripeToken'])) {
                 // Send email with invoice attached
                 sendEmailWithAttachment($email, 'Your Invoice', 'Thank you for your payment.', $invoicePdf);
 
-                echo "Success";
+                $paymentMessage = "Your payment is success, Check your mail";
             } else {
-                echo "Fail";
+                $paymentMessage = "Your payment is Failed";
             }
         } else {
-            echo "Payment Failed";
+            $paymentMessage = "Your payment is Failed";
         }
     } catch (\Stripe\Exception\ApiErrorException $e) {
         echo 'Stripe error: ' . $e->getMessage();
     }
 } else {
-    echo "No Stripe token";
+    $paymentMessage = "Your payment is Failed";
 }
 
-function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room) {
+function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room)
+{
     $pdf = new FPDF();
     $pdf->AddPage();
-    
+
     // Add Logo
     $pdf->Image('./Assests/cropped-kamili-Copy-1.png', 10, 10, 30);
     $pdf->SetFont('Arial', 'B', 12);
     $pdf->Cell(120); // Move to the right
     $pdf->Cell(30, 10, 'INVOICE', 0, 1, 'C');
-    
+
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(120); // Move to the right
     $pdf->Cell(30, 10, 'Your Company', 0, 1, 'C');
     $pdf->Cell(120); // Move to the right
     $pdf->Cell(30, 10, 'Your Address', 0, 1, 'C');
     $pdf->Ln(20);
-    
+
     $pdf->Cell(0, 10, 'Buyer Name', 0, 1);
     $pdf->Cell(0, 10, '123 Buyer Lane', 0, 1);
     $pdf->Cell(0, 10, '123 BLUE COUNTY', 0, 1);
     $pdf->Cell(0, 10, 'UNITED STATES', 0, 1);
     $pdf->Ln(10);
-    
+
     $pdf->Cell(0, 10, 'Invoice Date: ' . date("d/m/Y"), 0, 1);
     $pdf->Cell(0, 10, 'Invoice No: ' . rand(100000, 999999), 0, 1);
     $pdf->Cell(0, 10, 'Due Date: ' . date("d/m/Y", strtotime("+30 days")), 0, 1);
@@ -194,17 +197,18 @@ function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $
     $pdf->Cell(30, 10, number_format($total_price, 2), 1);
 
     // Output as string
-    return $pdf->Output('S'); 
+    return $pdf->Output('S');
 }
 
-function sendEmailWithAttachment($to, $subject, $message, $attachmentContent) {
+function sendEmailWithAttachment($to, $subject, $message, $attachmentContent)
+{
     $mail = new PHPMailer(true);
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; 
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'ranjanlilani@gmail.com'; 
+        $mail->Username = 'ranjanlilani@gmail.com';
         $mail->Password = 'ssxl mbdo jhut pvko';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
@@ -227,4 +231,3 @@ function sendEmailWithAttachment($to, $subject, $message, $attachmentContent) {
         echo "Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
-?>
