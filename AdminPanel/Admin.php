@@ -15,11 +15,17 @@ use classes\staff;
 use classes\Reservation;
 use classes\faq;
 
+// Initialize $selectedDate with a default value if not set
+$selectedDate = isset($_POST['date']) ? $_POST['date'] : date('Y-m-d');
+
 
 $dbConnector = new DbConnector();
 $con = $dbConnector->getConnection();
 
 $rooms = Room::getAllRooms($con);
+
+$availableRooms = Room::getAllRoomAvailableCountWithinASpecificDate($con, $selectedDate);
+$reservedRooms = Room::getReservedRoomCountByDate($con, $selectedDate);
 
 
 $staff = new staff('', '', '', '', '', '', '', '');
@@ -153,21 +159,45 @@ $faqList = $faq->getAllFaq($con);
                     <i id="calendar-icon" class='bx bxs-calendar-check'></i>
                     <span class="text">
                         <h3>Pick a date</h3>
-                        <input type="date" name="date" id="date">
+                        <form method="post">
+                        <input type="date" name="date" id="date" value="<?php echo htmlspecialchars($selectedDate); ?>" onchange="updateDate()">
+                        </form>
                     </span>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', (event) => {
+                            // Function to update date input if not already set
+                            const updateDate = () => {
+                                const dateInput = document.getElementById('date');
+                                if (!dateInput.value) {
+                                    const today = new Date().toISOString().split('T')[0];
+                                    dateInput.value = today;
+                                }
+                            };
+
+                            // Call updateDate on DOMContentLoaded and when date input changes
+                            updateDate();
+                            
+                            // Function to submit form when date changes
+                            const dateInput = document.getElementById('date');
+                            dateInput.addEventListener('change', function() {
+                                this.form.submit();
+                            });
+                        });
+                    </script>
+
                 </li>
                 <li>
                     <i class='bx bxs-group'></i>
                     <span class="text">
-                        <h3>12</h3>
-                        <p>Available</p>
+                        <h3><?php echo $availableRooms; ?></h3>
+                        <p>Available Rooms</p>
                     </span>
                 </li>
                 <li>
                     <i class='bx bx-registered'></i>
                     <span class="text">
-                        <h3>10</h3>
-                        <p>Not Available</p>
+                        <h3><?php echo $reservedRooms; ?></h3>
+                        <p>Reserved Rooms</p>
                     </span>
                 </li>
             </ul>

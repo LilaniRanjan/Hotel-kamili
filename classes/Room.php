@@ -573,6 +573,89 @@ public static function getRoomById($con, $room_id) {
     }
 }
 
+public static function getAllRoomAvailableCountWithinASpecificDate($con, $specific_date) {
+    try {
+        // Convert the specific date to a format that can be compared in SQL queries
+        $formatted_date = date('Y-m-d', strtotime($specific_date));
+        
+        // Query to find the total number of rooms for each type
+        $queryTotalRooms = "
+            SELECT room_type, SUM(number_of_rooms) AS total_rooms
+            FROM Room
+            GROUP BY room_type
+        ";
+        
+        $stmtTotalRooms = $con->prepare($queryTotalRooms);
+        $stmtTotalRooms->execute();
+        $totalRoomsResult = $stmtTotalRooms->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Initialize an array to store the available room counts by type
+        $availableRoomCounts = [];
+        
+        foreach ($totalRoomsResult as $row) {
+            $room_type = $row['room_type'];
+            $total_rooms = $row['total_rooms'];
+            
+            // Query to find the number of booked rooms for the specific date
+            $queryBookedRooms = "
+                SELECT SUM(rv.number_of_room) as booked_count
+                FROM Reservation rv
+                INNER JOIN Room r ON rv.room_id = r.room_id
+                WHERE r.room_type = ?
+                AND ? BETWEEN rv.check_in_date AND rv.check_out_date
+            ";
+            
+            $stmtBookedRooms = $con->prepare($queryBookedRooms);
+            $stmtBookedRooms->bindValue(1, $room_type, PDO::PARAM_STR);
+            $stmtBookedRooms->bindValue(2, $formatted_date, PDO::PARAM_STR);
+            $stmtBookedRooms->execute();
+            $bookedRoomsResult = $stmtBookedRooms->fetch(PDO::FETCH_ASSOC);
+            
+            $booked_rooms = $bookedRoomsResult['booked_count'] ? $bookedRoomsResult['booked_count'] : 0;
+            
+            // Calculate the available rooms for the specific date
+            $available_rooms = $total_rooms - $booked_rooms;
+            
+            // Store the available room count by type
+            $availableRoomCounts[$room_type] = $available_rooms;
+        }
+        
+        // Calculate the total number of available rooms across all types
+        $totalAvailableRooms = array_sum($availableRoomCounts);
+        
+        return $totalAvailableRooms;
+    } catch (PDOException $e) {
+        die("Error finding available room count: " . $e->getMessage());
+    }
+}
+
+// Fetch reserved room count for a specific date
+public static function getReservedRoomCountByDate($con, $specific_date) {
+    try {
+        // Convert the specific date to a format that can be compared in SQL queries
+        $formatted_date = date('Y-m-d', strtotime($specific_date));
+        
+        // Query to find the total number of reserved rooms for the specific date
+        $query = "
+            SELECT SUM(rv.number_of_room) as reserved_count
+            FROM Reservation rv
+            WHERE ? BETWEEN rv.check_in_date AND rv.check_out_date
+        ";
+
+        $stmt = $con->prepare($query);
+        $stmt->bindValue(1, $formatted_date, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $reservedRooms = $result['reserved_count'] ? $result['reserved_count'] : 0;
+
+        return $reservedRooms;
+    } catch (PDOException $e) {
+        die("Error finding reserved room count: " . $e->getMessage());
+    }
+}
+
 
 
 
