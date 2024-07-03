@@ -8,6 +8,10 @@ require_once './classes/Room.php';
 require_once './classes/RoomAmenity.php';
 require_once './classes/RoomImages.php';
 
+if(!empty($_GET['res'])){
+  $response_status = $_GET['res'];
+}
+
 try {
   // Establish database connection
   $dbConnector = new \classes\DbConnector();
@@ -124,6 +128,20 @@ $maxPrice = $priceRange['max_price'];
       </div>
     </div>
   </section>
+
+  <?php 
+    if(!empty($response_status)){
+      if($response_status == 1){
+        ?>
+          <br>
+          <br>
+          <div style="text-align: center; color: red;">
+            <b>Please First filter by your Check-in and Check-out date with Adult and Children count..</b>
+          </div>
+        <?php
+      }
+    }
+  ?>
 
   <section class="rooms">
     <div class="container top">

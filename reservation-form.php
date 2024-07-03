@@ -440,6 +440,6 @@
 </html>
 <?php 
     }else{
-        header("Location: filterd_room.php");
+        header("Location: filterd_room.php?res=1");
     }
 ?>
