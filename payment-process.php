@@ -133,7 +133,7 @@ if (!empty($_POST['stripeToken'])) {
                 // Send email with invoice attached
                 sendEmailWithAttachment($email, 'Your Invoice', 'Thank you for your payment.', $invoicePdf);
 
-                $_SESSION['paymentMessage'] = "Your payment is success, Check your mail";
+                $_SESSION['paymentMessage'] = "SUCCESS";
                 header("Location: payment_response.php");
             } else {
                 $_SESSION['paymentMessage'] = "Your payment is Failed";

@@ -78,9 +78,22 @@
         <div class="container d-flex flex-column justify-content-center align-items-center vh-100 text-center" style="margin-top: 100px; margin-bottom: 190px;">
             <div class="card p-4">
                 <div class="card-body">
-                    <i class="fa-solid fa-check" style="font-size: 50px; color: rgb(40, 167, 69);"></i>
+                    <?php 
+                        if(isset($paymentMessage)){
+                            ?>
+                            <i class="fa-solid fa-check" style="font-size: 50px; color: rgb(40, 167, 69);"></i><br><br>
+                            <h2 class="card-title mb-3">Your payment is success, Check your mail !</h2>
+                            <?php
+                        }else{
+                            ?>
+                            <i class="fa-regular fa-circle-xmark" style="font-size: 50px; color: red;"></i><br><br>
+                            <h2 class="card-title mb-3">Your payment is Failed</h2>
+                            <?php
+                        }
+                    ?>
+                    <!-- <i class="fa-solid fa-check" style="font-size: 50px; color: rgb(40, 167, 69);"></i>
                     
-                    <h2 class="card-title mb-3">Your payment is success, Check your mail !</h2>
+                    <h2 class="card-title mb-3">Your payment is success, Check your mail !</h2> -->
                     <!-- <p class="card-text"><b>Your information has been successfully saved. We will get back to you soon with the access info.</b></p> -->
                     <a href="./index.php" class="btn mt-3">Home</a>
                 </div>
