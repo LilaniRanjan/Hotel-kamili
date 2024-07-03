@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <?php 
     session_start();
+
+    $paymentMessage = "";
+
+    if (isset($_SESSION['paymentMessage'])) {
+        $paymentMessage = $_SESSION['paymentMessage'];
+        unset($_SESSION['paymentMessage']);
+    }
+
     use classes\Room;
 
     require_once './classes/DbConnector.php';
@@ -71,9 +79,10 @@
             <div class="card p-4">
                 <div class="card-body">
                     <i class="fa-solid fa-check" style="font-size: 50px; color: rgb(40, 167, 69);"></i>
-                    <h2 class="card-title mb-3">Registration Successful!</h2>
+                    
+                    <h2 class="card-title mb-3">Your payment is success, Check your mail !</h2>
                     <!-- <p class="card-text"><b>Your information has been successfully saved. We will get back to you soon with the access info.</b></p> -->
-                    <a href="./login.php" class="btn mt-3">Sign In</a>
+                    <a href="./index.php" class="btn mt-3">Home</a>
                 </div>
             </div>
         </div>

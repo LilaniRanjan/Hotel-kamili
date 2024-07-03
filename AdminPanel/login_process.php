@@ -43,14 +43,14 @@ if(isset($_POST['user_name'], $_POST['password'])){
                     header("Location: ./initialPage.php");
                     break;
                 case 'Room_manager':
-                    header("Location: ./SpecialRoomRequestDetails.php");
+                    header("Location: ./Admin.php");
                     break;
                 case 'Receptionist':
                 case 'Admin':
-                    header("Location: ./Dashboard.php");
+                    header("Location: ./Admin.php");
                     break;
                 default:
-                    header("Location: ../index.php");
+                    header("Location: ../login.php");
             }
             // Exit to prevent further execution
             exit();

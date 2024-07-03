@@ -133,18 +133,22 @@ if (!empty($_POST['stripeToken'])) {
                 // Send email with invoice attached
                 sendEmailWithAttachment($email, 'Your Invoice', 'Thank you for your payment.', $invoicePdf);
 
-                $paymentMessage = "Your payment is success, Check your mail";
+                $_SESSION['paymentMessage'] = "Your payment is success, Check your mail";
+                header("Location: payment_response.php");
             } else {
-                $paymentMessage = "Your payment is Failed";
+                $_SESSION['paymentMessage'] = "Your payment is Failed";
+                header("Location: payment_response.php");
             }
         } else {
-            $paymentMessage = "Your payment is Failed";
+            $_SESSION['paymentMessage'] = "Your payment is Failed";
+            header("Location: payment_response.php");
         }
     } catch (\Stripe\Exception\ApiErrorException $e) {
         echo 'Stripe error: ' . $e->getMessage();
     }
 } else {
-    $paymentMessage = "Your payment is Failed";
+    $_SESSION['paymentMessage'] = "Your payment is Failed";
+    header("Location: payment_response.php");
 }
 
 function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $check_in_date, $check_out_date, $room_id, $total_price, $number_of_room)
