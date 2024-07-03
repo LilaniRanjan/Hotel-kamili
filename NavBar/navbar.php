@@ -24,9 +24,8 @@
                             <li><a href="./index.php">Home</a></li>
                             <li><a href="./about-us.php">About</a></li>
                             <li><a href="./rooms.php">Rooms</a></li>
-                            <li><a href="#pages">Weddings</a></li>
                             <li><a href="#news">Services</a></li>
-                            <li><a href="#around_us">Around Us</a></li>
+                            <li><a href="#around_us">FAQ</a></li>
                             <li><a href="../contact-us.php">Contact</a></li>
                             <li><button onclick="window.location.href='../filterd_room.php'" class="primary-btn">BOOK NOW</button></li>
                         </ul>
