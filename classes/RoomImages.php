@@ -89,5 +89,11 @@ class RoomImages {
             die("Error deleting room image: " . $e->getMessage());
         }
     }
+
+    public static function getImagesByRoomId($con, $room_id) {
+        $stmt = $con->prepare("SELECT DISTINCT image_path FROM RoomImages WHERE room_id = ?");
+        $stmt->execute([$room_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
