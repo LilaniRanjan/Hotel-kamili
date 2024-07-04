@@ -136,7 +136,7 @@ $maxPrice = $priceRange['max_price'];
           <br>
           <br>
           <div style="text-align: center; color: red;">
-            <b>Please First filter by your Check-in and Check-out date with Adult and Children count..</b>
+            <b>Please first filter by your check-in and check-out dates, along with the adult and children count.</b>
           </div>
         <?php
       }
