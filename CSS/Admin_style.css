@@ -52,7 +52,7 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 280px;
+	width: 200px;
 	height: 100%;
 	background: var(--light);
 	z-index: 2000;
@@ -192,8 +192,8 @@ body {
 /* CONTENT */
 #content {
 	position: relative;
-	width: calc(100% - 280px);
-	left: 280px;
+	width: calc(100% - 200px);
+	left: 200px;
 	transition: .3s ease;
 }
 
@@ -548,6 +548,38 @@ body {
 
 }
 
+/* pagination */
+
+.pagination {
+	position: fixed;
+    bottom: 20px;
+    right: 20px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.pagination-link {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 0 4px;
+    border: 1px solid #ccc;
+    background-color: #AAAAAA;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.pagination-link.active {
+    background-color: #8d437f;
+    color: #fff;
+    border-color: #8d437f;
+}
+
+.pagination-link:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
 
 
 /* Responsive styling for small screens */
@@ -731,6 +763,46 @@ body {
 .btn-add:hover {
 	background: #5a6268;
 }
+
+/* add moadl faq */
+
+/* Modal styles */
+.modal {
+    display: flex; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 50%; 
+    height: 50%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+}
+
+.close {
+    color: #000000;
+    float: right;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 
 /* Settings */
 

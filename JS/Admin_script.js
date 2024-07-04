@@ -70,20 +70,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Toggle FAQ Answer
-function toggleAnswer(element) {
-	const answer = element.nextElementSibling;
-	if (answer.style.display === "block") {
-		answer.style.display = "none";
-	} else {
-		answer.style.display = "block";
-	}
-}
-
-
-document.addEventListener('DOMContentLoaded', (event) => {
-	const today = new Date().toISOString().split('T')[0];
-	document.getElementById('date').value = today;
+document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', () => {
+        const answer = question.nextElementSibling;
+        if (answer.style.display === 'none' || !answer.style.display) {
+            answer.style.display = 'block';
+        } else {
+            answer.style.display = 'none';
+        }
+    });
 });
+
+// date
+
+
+// document.addEventListener('DOMContentLoaded', (event) => {
+// 	const today = new Date().toISOString().split('T')[0];
+// 	document.getElementById('date').value = today;
+// });
 
 
 // Initial Hide All Sections Except Dashboard

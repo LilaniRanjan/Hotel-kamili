@@ -225,7 +225,7 @@ class Reservation {
         }
     }
 
-    public static function getAllReservations($con)
+    public static function getAllReservations($con, $limit = 10, $offset = 0)
     {
         try {
             $query = "
@@ -233,14 +233,31 @@ class Reservation {
                 FROM Reservation
                 JOIN Customer ON reservation.customer_id = customer.customer_id
                 JOIN Room ON reservation.room_id = room.room_id
+                ORDER BY reservation.created_at DESC
+                LIMIT :limit OFFSET :offset
             ";
             $stmt = $con->prepare($query);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             die("Error fetching all reservations: " . $e->getMessage());
         }
     }
+
+    public static function getTotalReservations($con)
+{
+    try {
+        $query = "SELECT COUNT(*) as total FROM Reservation";
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    } catch (PDOException $e) {
+        die("Error fetching total reservations: " . $e->getMessage());
+    }
+}
     
 
     // cancel reservation
@@ -255,6 +272,25 @@ class Reservation {
             return true;
         } catch (PDOException $e) {
             die("Error canceling reservation: " . $e->getMessage());
+        }
+    }
+
+    public static function getReservationById($con, $reservationId)
+    {
+        try {
+            $query = "
+                SELECT reservation.*, customer.full_name, room.room_id
+                FROM Reservation
+                JOIN Customer ON reservation.customer_id = customer.customer_id
+                JOIN Room ON reservation.room_id = room.room_id
+                WHERE reservation.reservation_id = ?
+                ORDER BY reservation.created_at DESC
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->execute([$reservationId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Error fetching reservation by ID: " . $e->getMessage());
         }
     }
 

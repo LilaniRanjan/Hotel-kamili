@@ -9,11 +9,14 @@ require_once '../classes/Reservation.php';
 require_once '../classes/RoomAmenity.php';
 require_once '../classes/RoomImages.php';
 
+
+
 use classes\DbConnector;
 use classes\Room;
 use classes\staff;
 use classes\Reservation;
 use classes\faq;
+
 
 // Initialize $selectedDate with a default value if not set
 $selectedDate = isset($_POST['date']) ? $_POST['date'] : date('Y-m-d');
@@ -35,6 +38,16 @@ $reservations = Reservation::getAllReservations($con);
 
 $faq = new faq('', '');
 $faqList = $faq->getAllFaq($con);
+
+// pagination for reservation
+
+$totalReservations = Reservation::getTotalReservations($con);
+$limit = 10;
+$totalPages = ceil($totalReservations / $limit);
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max($page, 1);
+$offset = ($page - 1) * $limit;
+$reservations = Reservation::getAllReservations($con, $limit, $offset);
 
 ?>
 
@@ -63,7 +76,7 @@ $faqList = $faq->getAllFaq($con);
     <section id="sidebar">
         <a href="#" class="brand">
             <img class="img" src="../Assests/cropped-kamili-Copy-1.png" alt="Kamili Beach Resort"><br>
-            <span class="text">Kamili Beach Resort</span>
+            <!-- <span class="text">Kamili Beach Resort</span> -->
         </a>
         <ul class="side-menu top">
             <li class="active">
@@ -139,7 +152,9 @@ $faqList = $faq->getAllFaq($con);
 
         <!-- MAIN -->
         <main>
+            <?php include('message.php'); ?>
             <div class="head-title">
+
                 <div class="left">
                     <h1>Dashboard</h1>
                     <ul class="breadcrumb">
@@ -160,7 +175,7 @@ $faqList = $faq->getAllFaq($con);
                     <span class="text">
                         <h3>Pick a date</h3>
                         <form method="post">
-                        <input type="date" name="date" id="date" value="<?php echo htmlspecialchars($selectedDate); ?>" onchange="updateDate()">
+                            <input type="date" name="date" id="date" value="<?php echo htmlspecialchars($selectedDate); ?>" onchange="updateDate()">
                         </form>
                     </span>
                     <script>
@@ -176,7 +191,7 @@ $faqList = $faq->getAllFaq($con);
 
                             // Call updateDate on DOMContentLoaded and when date input changes
                             updateDate();
-                            
+
                             // Function to submit form when date changes
                             const dateInput = document.getElementById('date');
                             dateInput.addEventListener('change', function() {
@@ -232,10 +247,20 @@ $faqList = $faq->getAllFaq($con);
                                             <td><?php echo htmlspecialchars($reservation['payment_status']); ?></td>
                                             <td>
                                                 <div class="icon-button">
-                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                    </a>
+
+                                                    <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
+
+                                                        <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)" style="color: red; background-color: white; border: none; border-radius: 5px; padding: 8px; width: 100px; ">
+                                                            <span><b>Cancelled</b></span>
+                                                        </button>
+
+                                                    <?php else : ?>
+
+                                                        <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                            <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                                                        </a>
                                                 </div>
+                                            <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -246,6 +271,20 @@ $faqList = $faq->getAllFaq($con);
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                        <!-- Pagination Links -->
+                        <div class="pagination">
+                            <?php if ($page > 1) : ?>
+                                <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
+                            <?php endif; ?>
+                            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                                <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
+                                                                    else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
+                            <?php endfor; ?>
+                            <?php if ($page < $totalPages) : ?>
+                                <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
+                            <?php endif; ?>
+                        </div>
+
                     </div>
                 </form>
 
@@ -298,8 +337,6 @@ $faqList = $faq->getAllFaq($con);
                     <div class="order" id="reservation" style="display:none;">
                         <div class="head" style="margin-top: -32px;">
                             <h3>Reservations</h3>
-                            <i class='bx bx-search'></i>
-                            <i class='bx bx-filter'></i>
                         </div>
                         <table>
                             <thead>
@@ -309,6 +346,7 @@ $faqList = $faq->getAllFaq($con);
                                     <th>Amount</th>
                                     <th>Guest count</th>
                                     <th>Payment status</th>
+                                    <th>Resrvation status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -321,30 +359,74 @@ $faqList = $faq->getAllFaq($con);
                                         <td><?php echo htmlspecialchars($reservation['number_of_adult'] + $reservation['number_of_children']); ?></td>
                                         <td><?php echo htmlspecialchars($reservation['payment_status']); ?></td>
                                         <td>
-                                            <div class="icon-button">
-                                                <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
-                                                    <button type="button" style="color: red;">
-                                                        <span><b>Reservation Cancelled</b></span>
-                                                    </button>
-                                                <?php else : ?>
-                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                    </a>
-                                                    <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)">
-                                                        <img src="../Assests/icons8-cancel-30.png" alt="Cancel">
-                                                    </button>
-                                                    <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
-                                                        <img src="../Assests/delete.png" alt="Delete">
-                                                    </button>
-                                                <?php endif; ?>
-                                            </div>
+                                            <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
+
+                                                <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)" style="color: red; background-color: white; border: none; border-radius: 5px; padding: 8px; width: 100px; ">
+                                                    <span><b>Cancelled</b></span>
+                                                </button>
+
+                                            <?php else : ?>
+                                                <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)" style="color: black; background-color: #b89bb1; border: none; border-radius: 5px; padding:8px; width: 100px; cursor:pointer;">
+                                                    <span><b>Cancel</b></span>
+                                                </button>
                                         </td>
+                                    <?php endif; ?>
+
+
+                                    <td>
+                                        <div class="icon-button">
+
+                                            <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
+
+
+                                                <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                    <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                                                </a>
+
+                                                <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                                    <img src="../Assests/delete.png" alt="Delete">
+                                                </button>
+
+                                            <?php else : ?>
+
+                                                <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                    <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                                                </a>
+
+                                                <a href="EditReservation.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                    <button type="button" class="editButton">
+                                                        <img src="../Assests/edit.png" alt="Edit">
+                                                    </button>
+                                                </a>
+
+                                                <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                                    <img src="../Assests/delete.png" alt="Delete">
+                                                </button>
+
+                                            <?php endif; ?>
+
+                                        </div>
+                                    </td>
                                     </tr>
                                 <?php endforeach; ?>
 
                             </tbody>
                         </table>
                         <div><button class="btn-add" id="show-staff">Add +</button></div>
+
+                        <!-- Pagination Links -->
+                        <div class="pagination">
+                            <?php if ($page > 1) : ?>
+                                <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
+                            <?php endif; ?>
+                            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                                <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
+                                                                    else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
+                            <?php endfor; ?>
+                            <?php if ($page < $totalPages) : ?>
+                                <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </form>
                 <!-- Reservation end -->
@@ -356,8 +438,7 @@ $faqList = $faq->getAllFaq($con);
                     <div class="order" id="staff" style="display:none;">
                         <div class="head" style="margin-top: -32px;">
                             <h3>Staff details</h3>
-                            <i class='bx bx-search'></i>
-                            <i class='bx bx-filter'></i>
+
                         </div>
                         <table>
                             <thead>
@@ -415,42 +496,36 @@ $faqList = $faq->getAllFaq($con);
                         </div>
 
                         <div class="faq" style="background-color: #cebcca; padding: 10px;">
-                            <?php $count = 1; ?>
-                            <?php foreach ($faqList as $faqItem) : ?>
-                                <div class="faq-item" style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                                    <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div style="flex-grow: 1;">
-                                            <?php echo $count . ". " . htmlspecialchars($faqItem['faq_question']); ?>
+                            <?php if (!empty($reservations)) : ?>
+                                <?php $count = 1; ?>
+                                <?php foreach ($faqList as $faqItem) : ?>
+                                    <div class="faq-item" style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div style="flex-grow: 1;">
+                                                <?php echo $count . ". " . htmlspecialchars($faqItem['faq_question']); ?>
+                                            </div>
+                                            <div class="icon-button" style="display: flex; gap: 5px;">
+                                                <button type="button"><img src="../Assests/edit.png" alt="Edit" style="width: 20px; height: 20px;"></button>
+                                                <button type="button" onclick="DeleteProcess(<?php echo $faqId; ?>, 'faq', event)">
+                                                    <img src="../Assests/delete.png" alt="Delete" style="width: 20px; height: 20px;">
+                                                </button>
+                                                <button type="button"><img src="../Assests/icons8-upload-26.png" alt="upload" style="width: 20px; height: 20px;"></button>
+                                            </div>
                                         </div>
-                                        <div class="icon-button" style="display: flex; gap: 5px;">
-                                            <button type="button" style="background: none; border: none;"><img src="../Assests/edit.png" alt="Edit" style="width: 20px; height: 20px;"></button>
-                                            <button type="button" style="background: none; border: none;"><img src="../Assests/delete.png" alt="Delete" style="width: 20px; height: 20px;"></button>
-                                            <button type="button" style="background: none; border: none;"><img src="../Assests/icons8-upload-26.png" alt="upload" style="width: 20px; height: 20px;"></button>
-
+                                        <div class="faq-answer" style="display: none; padding: 10px; background-color: #f9f9f9; margin-top: 10px;">
+                                            <?php echo htmlspecialchars($faqItem['faq_answer']); ?>
                                         </div>
                                     </div>
-                                    <div class="faq-answer" style="display: none; padding: 10px; background-color: #f9f9f9; margin-top: 10px;">
-                                        <?php echo htmlspecialchars($faqItem['faq_answer']); ?>
-                                    </div>
-                                </div>
-                                <?php $count++; ?>
-                            <?php endforeach; ?>
+                                    <?php $count++; ?>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="5">No FAQ found.</td>
+                                </tr>
+                            <?php endif; ?>
                         </div>
 
                         <div><button class="btn-add" id="show-faq">Add +</button></div>
-
-                        <script>
-                            document.querySelectorAll('.faq-question').forEach(question => {
-                                question.addEventListener('click', () => {
-                                    const answer = question.nextElementSibling;
-                                    if (answer.style.display === 'none' || !answer.style.display) {
-                                        answer.style.display = 'block';
-                                    } else {
-                                        answer.style.display = 'none';
-                                    }
-                                });
-                            });
-                        </script>
 
                     </div>
                 </form>
@@ -473,8 +548,8 @@ $faqList = $faq->getAllFaq($con);
                             <button>Home Settings</button>
                         </li>
                         <li>
-                            <i class='ContactUs'></i>
-                            <button>ContactUs</button>
+                            <i class='gallary'></i>
+                            <button>Gallary</button>
                         </li>
                         <li>
                             <i class='Feedback'></i>
@@ -504,13 +579,13 @@ $faqList = $faq->getAllFaq($con);
     <!-- Include Date Range Picker JS -->
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
 
         });
-    </script>
+    </script> -->
 
 </body>
 
