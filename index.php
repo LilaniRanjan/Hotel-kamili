@@ -163,7 +163,7 @@
         <form class="grid" action="filterd_room.php" method="post">
           <input type="date" id="check_in_date" placeholder="Araival Date" name="check_in_date" required>
           <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" required>
-          <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
+          <input type="number" placeholder="Adult Count" name="guest_count" min="1" required>
           <input type="number" placeholder="Childern count" name="children_count" min="0" required>
           <input type="submit" value="CHECK AVAILABILITY">
         </form>

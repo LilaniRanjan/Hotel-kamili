@@ -108,7 +108,7 @@ $maxPrice = $priceRange['max_price'];
           <form class="grid" action="filterd_room.php" method="post">
             <input type="date" id="check_in_date" placeholder="Arrival Date" name="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>" required>
             <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" value="<?php echo htmlspecialchars($check_out_date); ?>" required>
-            <input type="number" placeholder="Guest Count" name="guest_count" value="<?php echo $guest_count; ?>" min="1" required>
+            <input type="number" placeholder="Adult Count" name="guest_count" value="<?php echo $guest_count; ?>" min="1" required>
             <input type="number" placeholder="Children count" name="children_count" value="<?php echo $children_count; ?>" min="0" required>
             <input type="submit" value="CHECK AVAILABILITY">
           </form>
@@ -118,7 +118,7 @@ $maxPrice = $priceRange['max_price'];
           <form class="grid" action="filterd_room.php" method="post">
             <input type="date" id="check_in_date" placeholder="Arrival Date" name="check_in_date" required>
             <input type="date" id="check_out_date" placeholder="Departure Date" name="check_out_date" required>
-            <input type="number" placeholder="Guest Count" name="guest_count" min="1" required>
+            <input type="number" placeholder="Adult Count" name="guest_count" min="1" required>
             <input type="number" placeholder="Children count" name="children_count" min="0" required>
             <input type="submit" value="CHECK AVAILABILITY">
           </form>
@@ -172,10 +172,10 @@ $maxPrice = $priceRange['max_price'];
           <span class="fa fa-filter" onclick="toggleFilterPanel()"> </span>
         </div>
 
-        <div id="filter-panel" class="filter-panel">
+        <div id="filter-panel" class="filter-panel" style="background-color: #282834;">
           <div class="filter-header">
-            <h3>Filter Rooms</h3>
-            <span class="fa fa-times" onclick="toggleFilterPanel()"></span>
+            <h1>Filter Rooms</h1>
+            <span class="fa fa-times" style="color: #702963;" onclick="toggleFilterPanel()"></span>
           </div>
           <div class="filter-body">
             <form id="filter-form" action="filterd_room.php" method="post">
@@ -189,6 +189,9 @@ $maxPrice = $priceRange['max_price'];
                   </option>
                 <?php endforeach; ?>
               </select>
+
+              <br>
+              <br>
               <label for="price_range">Price Range</label>
               <input type="range" name="price_range" id="price_range" min="<?php echo htmlspecialchars($minPrice); ?>" max="<?php echo htmlspecialchars($maxPrice); ?>" step="1000" oninput="updatePriceValue(this.value)">
               <span id="price_value">Rs. <?php echo htmlspecialchars($minPrice); ?></span>
@@ -206,13 +209,15 @@ $maxPrice = $priceRange['max_price'];
               ?>
                 <input type="hidden" name="check_in_date" id="check_in_date" value="<?php echo htmlspecialchars($check_in_date); ?>">
                 <input type="hidden" name="check_out_date" id="check_out_date" value="<?php echo htmlspecialchars($check_out_date); ?>">
-                <input type="hidden" placeholder="Guest Count" name="guest_count" value="<?php echo $guest_count; ?>">
+                <input type="hidden" placeholder="Adult Count" name="guest_count" value="<?php echo $guest_count; ?>">
                 <input type="hidden" placeholder="Children count" name="children_count" value="<?php echo $children_count; ?>">
               <?php
               }
               ?>
+              <br>
+              <br>
 
-              <input type="submit" value="Apply Filters">
+              <input type="submit" value="Apply">
             </form>
           </div>
         </div>
