@@ -119,22 +119,22 @@
             </div>
             <div class="two-forms">
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Firstname" name="first_name">
+                    <input type="text" class="input-field" placeholder="First name" name="first_name">
                     <i class="bx bx-user"></i>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Lastname" name="last_name">
+                    <input type="text" class="input-field" placeholder="Last name" name="last_name">
                     <i class="bx bx-user"></i>
                 </div>
             </div>
 
             
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="National_Identity_Card" name="nic_no">
+                    <input type="text" class="input-field" placeholder="NIC" name="nic_no">
                     <i class="bx bx-id-card"></i>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Contact_No" name="contact_no">
+                    <input type="text" class="input-field" placeholder="Contact No" name="contact_no">
                     <i class="bx bx-phone"></i>
                 </div>
           
