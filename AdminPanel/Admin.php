@@ -42,7 +42,7 @@ $faqList = $faq->getAllFaq($con);
 // pagination for reservation
 
 $totalReservations = Reservation::getTotalReservations($con);
-$limit = 10;
+$limit = 2;
 $totalPages = ceil($totalReservations / $limit);
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max($page, 1);

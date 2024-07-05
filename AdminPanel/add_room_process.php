@@ -78,7 +78,7 @@ if (isset($_POST['RoomSubmit'])) {
                 }
             }
 
-            $_SESSION['message'] = "SUCCESS";
+            $_SESSION['message'] = "Room added Successfully";
         } else {
             $_SESSION['message'] = "Required fields are empty";
         }

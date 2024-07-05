@@ -3,10 +3,12 @@ session_start();
 require '../classes/DbConnector.php';
 require '../classes/staff.php';
 require '../classes/room.php';
+require '../classes/Reservation.php';
 
 use classes\DbConnector;
 use classes\staff;
 use classes\Room;
+use classes\Reservation;
 
 $dbConnector = new DbConnector();
 $con = $dbConnector->getConnection();
@@ -140,4 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: EditRoom.php?room_id=$room_id");
         exit();
     }
+
+    
 }

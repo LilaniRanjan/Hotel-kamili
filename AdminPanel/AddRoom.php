@@ -1,3 +1,8 @@
+<?php 
+session_start();
+include('message.php'); 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,6 +38,7 @@
     <div class="addroom-container">
 
         <div class="container mt-5 mb-5 w-75 p-3 .h-25">
+         <?php include('message.php'); ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
