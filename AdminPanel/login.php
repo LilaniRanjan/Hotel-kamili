@@ -130,7 +130,7 @@
 
             
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="NIC" name="nic_no">
+                    <input type="text" class="input-field" placeholder="National Identity Card" name="nic_no">
                     <i class="bx bx-id-card"></i>
                 </div>
                 <div class="input-box">
