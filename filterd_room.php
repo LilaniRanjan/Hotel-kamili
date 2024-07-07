@@ -135,8 +135,8 @@ $maxPrice = $priceRange['max_price'];
         ?>
           <br>
           <br>
-          <div style="text-align: center; color: red;">
-            <b>Please first filter by your check-in and check-out dates, along with the adult and children count.</b>
+          <div style="background-color:#f8d7da; border:none; padding: 1rem 1rem; font-size: 14px; text-align: center;">
+            <b>Please check the room availability to book</b>
           </div>
         <?php
       }
