@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <i class="lni lni-checkmark-circle success-icon mb-3"></i>
                     <h2 class="card-title mb-3">Registration Successful!</h2>
-                    <p class="card-text"><b>Your information has been successfully saved. We will get back to you soon with the access info.</b></p>
+                    <p class="card-text"><b>You have successfully registered to Kamili Beach Resort.</b></p>
                     <a href="./login.php" class="btn mt-3">Sign In</a>
                 </div>
             </div>
