@@ -213,27 +213,26 @@ class Room {
 
 
     // Update an existing room record
-    public function update($con) {
+    public function update($con, $room_id, $roomType, $adultCount, $childrenCount, $pricePerNight, $room_description, $number_of_rooms, $room_inside_normal_image, $room_inside_360view_image, $room_bathroom_360view_image, $room_outdoor_360view_image) {
         try {
-            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, number_of_rooms = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ?, modified_by = ? WHERE room_id = ?";
+            $query = "UPDATE Room SET room_type = ?, adult_count = ?, children_count = ?, price_per_night = ?, room_description = ?, number_of_rooms = ?, room_inside_normal_image = ?, room_inside_360view_image = ?, room_bathroom_360view_image = ?, room_outdoor_360view_image = ? WHERE room_id = ?";
             $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $this->room_type);
-            $stmt->bindValue(2, $this->adult_count);
-            $stmt->bindValue(3, $this->children_count);
-            $stmt->bindValue(4, $this->price_per_night);
-            $stmt->bindValue(5, $this->room_description);
-            $stmt->bindValue(6, $this->number_of_rooms);
-            $stmt->bindValue(7, $this->room_inside_normal_image);
-            $stmt->bindValue(8, $this->room_inside_360view_image);
-            $stmt->bindValue(9, $this->room_bathroom_360view_image);
-            $stmt->bindValue(10, $this->room_outdoor_360view_image);
-            $stmt->bindValue(11, $this->modified_by);
-            $stmt->bindValue(12, $this->room_id);
+            $stmt->bindValue(1, $roomType);
+            $stmt->bindValue(2, $adultCount);
+            $stmt->bindValue(3, $childrenCount);
+            $stmt->bindValue(4, $pricePerNight);
+            $stmt->bindValue(5, $room_description);
+            $stmt->bindValue(6, $number_of_rooms);
+            $stmt->bindValue(7, $room_inside_normal_image);
+            $stmt->bindValue(8, $room_inside_360view_image);
+            $stmt->bindValue(9, $room_bathroom_360view_image);
+            $stmt->bindValue(10, $room_outdoor_360view_image);
+            $stmt->bindValue(11, $room_id);
             $stmt->execute();
             return ($stmt->rowCount() > 0);
         } catch (PDOException $e) {
             die("Error updating room: " . $e->getMessage());
-        }
+        } 
     }
 
     // Delete a room record
