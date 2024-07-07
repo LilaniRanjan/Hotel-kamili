@@ -50,6 +50,7 @@ if (!empty($_POST['stripeToken'])) {
     $room_id = $_POST['room_id'];
     $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
     $amountInCents = $total_price * 100;
+    $room_price = $_POST['room_price'];
 
     // Include Stripe PHP library
     require_once('stripe-php/init.php');
@@ -164,20 +165,20 @@ function generatePDFInvoice($fullName, $email, $telephone, $address, $country, $
 
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(120); // Move to the right
-    $pdf->Cell(30, 10, 'Your Company', 0, 1, 'C');
+    $pdf->Cell(30, 10, 'Kamili Breach Villa', 0, 1, 'C');
     $pdf->Cell(120); // Move to the right
-    $pdf->Cell(30, 10, 'Your Address', 0, 1, 'C');
+    $pdf->Cell(30, 10, 'No. 531,First Station Road, Kalutara,Sri Lanka.', 0, 1, 'C');
     $pdf->Ln(20);
 
-    $pdf->Cell(0, 10, 'Buyer Name', 0, 1);
-    $pdf->Cell(0, 10, '123 Buyer Lane', 0, 1);
-    $pdf->Cell(0, 10, '123 BLUE COUNTY', 0, 1);
-    $pdf->Cell(0, 10, 'UNITED STATES', 0, 1);
+    $pdf->Cell(0, 10, $fullName, 0, 1);
+    $pdf->Cell(0, 10, $address, 0, 1);
+    $pdf->Cell(0, 10, $country, 0, 1);
+    $pdf->Cell(0, 10, $telephone, 0, 1);
     $pdf->Ln(10);
 
     $pdf->Cell(0, 10, 'Invoice Date: ' . date("d/m/Y"), 0, 1);
     $pdf->Cell(0, 10, 'Invoice No: ' . rand(100000, 999999), 0, 1);
-    $pdf->Cell(0, 10, 'Due Date: ' . date("d/m/Y", strtotime("+30 days")), 0, 1);
+    $pdf->Cell(0, 10, 'Due Date: ' . $check_in_date . " - " . $check_out_date, 0, 1);
     $pdf->Ln(10);
 
     // Table headers
