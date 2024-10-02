@@ -25,11 +25,12 @@ $room = \classes\Room::read($con, $room_id);
 $_SESSION['room_type'] = $room['room_type'];
 
 // Fetch room images
-$images = \classes\RoomImages::getImagesByRoomId($con, $room_id);   
+$images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
 
 ?>
 
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Deluxe Room - Kamili Beach Resort</title>
@@ -79,7 +80,7 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
                         <?php echo htmlspecialchars($room['room_description']); ?>
                     </p>
                     <br>
-                    <button type="button"  onclick="window.location.href='reservation-form.php'" class="btn">BOOK NOW</button>
+                    <button type="button" onclick="window.location.href='reservation-form.php'" class="btn">BOOK NOW</button>
                 </div>
             </article>
 
@@ -173,7 +174,6 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
         });
     </script>
 
-    <!--Gallery-->
     <section class="gallary mtop " id="gallary">
         <div class="container">
             <div class="heading_top flex1">
@@ -217,4 +217,5 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
     <?php require './Footer/footer.php'; ?>
     <!--end of footer-->
 </body>
+
 </html>

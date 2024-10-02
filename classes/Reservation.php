@@ -4,6 +4,7 @@ namespace classes;
 
 use PDO;
 use PDOException;
+use Exception;
 
 class Reservation {
     private $reservation_id;
@@ -293,6 +294,96 @@ class Reservation {
             die("Error fetching reservation by ID: " . $e->getMessage());
         }
     }
+
+    public static function getanotherReservationById($con, $reservationId)
+    {
+        try {
+            $query = "
+                SELECT reservation.*, customer.full_name, room.room_id
+                FROM Reservation
+                JOIN Customer ON reservation.customer_id = customer.customer_id
+                JOIN Room ON reservation.room_id = room.room_id
+                WHERE reservation.reservation_id = ?
+                ORDER BY reservation.created_at DESC
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->execute([$reservationId]);
+            
+            // Use fetch() to get a single row instead of fetchAll()
+            return $stmt->fetch(PDO::FETCH_ASSOC); // This will return a single associative array or false if no rows found
+        } catch (PDOException $e) {
+            die("Error fetching reservation by ID: " . $e->getMessage());
+        }
+    }
+
+    public static function cancelAndMoveToCancellation($con, $reservationId, $cancellationReason) {
+        try {
+            // Start a transaction
+            $con->beginTransaction();
+    
+            // Fetch reservation data first to insert into Cancellation table
+            $reservationDataQuery = "SELECT * FROM Reservation WHERE reservation_id = ?";
+            $stmtFetch = $con->prepare($reservationDataQuery);
+            $stmtFetch->execute([$reservationId]);
+            $reservationData = $stmtFetch->fetch(PDO::FETCH_ASSOC);
+    
+            // If the reservation data exists, insert into the Cancellation table
+            if ($reservationData) {
+                $insertCancellationQuery = "
+                    INSERT INTO Cancellation 
+                    (reservation_id, customer_id, room_id, check_in_date, check_out_date, number_of_adult, number_of_children, number_of_room, total_price, payment_status, cancellation_reason) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                $stmtInsert = $con->prepare($insertCancellationQuery);
+                $success = $stmtInsert->execute([
+                    $reservationData['reservation_id'],
+                    $reservationData['customer_id'],
+                    $reservationData['room_id'],
+                    $reservationData['check_in_date'],
+                    $reservationData['check_out_date'],
+                    $reservationData['number_of_adult'],
+                    $reservationData['number_of_children'],
+                    $reservationData['number_of_room'],
+                    $reservationData['total_price'],
+                    $reservationData['payment_status'],
+                    $cancellationReason
+                ]);
+    
+                // Only proceed to delete if the insert into Cancellation was successful
+                if ($success) {
+                    // Delete the reservation after moving it to Cancellation
+                    $deleteReservationQuery = "DELETE FROM Reservation WHERE reservation_id = ?";
+                    $stmtDelete = $con->prepare($deleteReservationQuery);
+                    $stmtDelete->execute([$reservationId]);
+    
+                    // Commit the transaction after both operations succeed
+                    $con->commit();
+                    return true;
+                } else {
+                    // Rollback and return error if insertion to Cancellation fails
+                    $con->rollBack();
+                    throw new Exception("Failed to insert into Cancellation table. Reservation was not deleted.");
+                }
+            } else {
+                throw new Exception("Reservation not found.");
+            }
+        } catch (PDOException $e) {
+            // Roll back the transaction if something fails
+            $con->rollBack();
+            die("Error canceling reservation and moving to cancellation: " . $e->getMessage());
+        } catch (Exception $e) {
+            $con->rollBack();
+            die($e->getMessage());
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     
 }

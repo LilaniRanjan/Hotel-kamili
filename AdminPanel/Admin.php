@@ -359,54 +359,47 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                                         <td><?php echo htmlspecialchars($reservation['number_of_adult'] + $reservation['number_of_children']); ?></td>
                                         <td><?php echo htmlspecialchars($reservation['payment_status']); ?></td>
                                         <td>
-                                            <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
-
-                                                <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)" style="color: red; background-color: white; border: none; border-radius: 5px; padding: 8px; width: 100px; ">
-                                                    <span><b>Cancelled</b></span>
-                                                </button>
-
-                                            <?php else : ?>
-                                                <button type="button" onclick="cancelReservation(<?php echo htmlspecialchars($reservation['reservation_id']); ?>)" style="color: black; background-color: #b89bb1; border: none; border-radius: 5px; padding:8px; width: 100px; cursor:pointer;">
-                                                    <span><b>Cancel</b></span>
-                                                </button>
+                                            <form action="./cancel_reservation.php" method="POST" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                                                <input type="hidden" name="cancel_reservation_id" value="<?php echo htmlspecialchars($reservation['reservation_id']); ?>" />
+                                                <input type="hidden" name="reason" value="Customer request" />
+                                                <input type="submit" value="Cancel" style="color: black; background-color: #b89bb1; border: none; border-radius: 5px; padding: 8px; width: 100px; cursor: pointer;">
+                                            </form>
                                         </td>
-                                    <?php endif; ?>
+
+                                        <td>
+                                            <div class="icon-button">
+
+                                                <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
 
 
-                                    <td>
-                                        <div class="icon-button">
+                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                                                    </a>
 
-                                            <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
-
-
-                                                <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                    <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                </a>
-
-                                                <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
-                                                    <img src="../Assests/delete.png" alt="Delete">
-                                                </button>
-
-                                            <?php else : ?>
-
-                                                <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                    <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                </a>
-
-                                                <a href="EditReservation.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                    <button type="button" class="editButton">
-                                                        <img src="../Assests/edit.png" alt="Edit">
+                                                    <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                                        <img src="../Assests/delete.png" alt="Delete">
                                                     </button>
-                                                </a>
 
-                                                <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
-                                                    <img src="../Assests/delete.png" alt="Delete">
-                                                </button>
+                                                <?php else : ?>
 
-                                            <?php endif; ?>
+                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                                                    </a>
 
-                                        </div>
-                                    </td>
+                                                    <a href="EditReservation.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                                        <button type="button" class="editButton">
+                                                            <img src="../Assests/edit.png" alt="Edit">
+                                                        </button>
+                                                    </a>
+
+                                                    <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                                        <img src="../Assests/delete.png" alt="Delete">
+                                                    </button>
+
+                                                <?php endif; ?>
+
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
 
