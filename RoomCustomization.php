@@ -1,4 +1,31 @@
 <!DOCTYPE html>
+
+<?php
+session_start();
+
+use classes\CakeOptions;
+
+  require_once './classes/DbConnector.php';
+  require_once './classes/EventTypes.php';
+  require_once './classes/DecorationOptions.php';
+  require_once './classes/CakeOptions.php';
+
+  $message = "";
+
+  try {
+      // Establish database connection
+      $dbConnector = new \classes\DbConnector();
+      $con = $dbConnector->getConnection();
+  } catch (PDOException $exc) {
+      // Handle database connection error
+      die("Error in DbConnection on DisplayRooms file: " . $exc->getMessage());
+  }
+
+  // Fetch all EventType
+  $eventTypes = EventTypes::getAllEventType($con);
+
+?>
+
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -9,8 +36,6 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
             integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css"> -->
         <link rel="stylesheet" href="./CSS/form.css">
         <link rel="stylesheet" href="/CSS/booking.css">
         <link rel="stylesheet" href="/CSS/payment.css">
@@ -30,72 +55,98 @@
         ?>
 
 
-        <form action="customize_event.php" method="POST" enctype="multipart/form-data">
+        <form action="RoomCustomization.php" method="POST" enctype="multipart/form-data">
+
+            <?php 
+                $eventId = "";
+            ?>
+
             <!-- Event Type Dropdown -->
-            <!-- Event Type Dropdown -->
-            <label for="event_type">Event Type:</label>
-            <select name="event_type" id="event_type" required onchange="showDecorationOptions()">
-                <option value="" disabled selected>Select Event Type</option>
-                <option value="birthday">Birthday</option>
-                <option value="wedding">Wedding</option>
-                <option value="corporate">Corporate Event</option>
-                <option value="anniversary">Anniversary</option>
-            </select>
+            <!-- <form method="POST" action="RoomCustomization.php"> -->
+                <label for="event_type">Event Type:</label>
+                <select name="event_type" id="event_type" onchange="this.form.submit()">
+                    <?php
+                    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_type'])){
+                        $eventId = $_POST['event_type'];
+                        $event = EventTypes::getEventNameById($con, $eventId)
+                        ?>
+                        <option value="<?php echo $eventId; ?>" disabled selected><?php echo htmlspecialchars($event); ?></option>
+                        <?php
+                    }else{
+                    ?>
+                    <option value="" disabled selected>Select Event Type</option>
+                    <?php 
+                    }
+                        foreach ($eventTypes as $eventType){
+                            // Correcting double dollar sign
+                            $eventId = $eventType['event_type_id'];
+                            if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_type'])){
+                                if($_POST['event_type'] == $eventId){
+                                    $_SESSION['event_type'] = $_POST['event_type'];
+                                    continue;
+                                }
+                            }
+                            ?>
+                            <option value="<?php echo $eventId; ?>"><?php echo htmlspecialchars($eventType['event_name']); ?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            <!-- </form> -->
             <br><br>
 
-            <!-- Decoration Options -->
-            <div id="decoration_options" style="display: none;">
-                <h4><label>Select your preferable Room Decorations:</label></h4>
-                <div id="birthday_decorations" class="decoration-section" style="display: none;">
-                    <div class="decoration-option" onclick="selectDecoration('birthday_banner', this)">
-                        <img src="https://cheetah.cherishx.com/uploads/1608553443_large.jpg" alt="Birthday Decoration 1">
-                        <p>Birthday Banner - $20</p>
-                        <input type="hidden" name="decoration" value="birthday_banner">
+            <?php 
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_type'])){
+                $eventId = $_POST['event_type'];
+                
+                $decorations = DecorationOptions::getDecorationOptionsByEventTypeID($con, $eventId);
+                ?>
+                <!-- Decoration Options -->
+                <div id="decoration_options">
+                    <h4><label>Select Your Preferred Room Decoration:</label></h4>
+                    <div id="birthday_decorations" class="decoration-section">
+                        <?php 
+                            if (!empty($decorations)) {
+                                foreach ($decorations as $decoration) {
+                                    ?>
+                                    <div class="decoration-option" onclick="selectDecoration(this, '<?php echo $decoration['decoration_id']; ?>')">
+                                        <img src="<?php echo $decoration['decoration_image']; ?>" alt="<?php echo $decoration['decoration_name']; ?>">
+                                        <p><?php echo $decoration['decoration_name'] . ' - Rs ' . $decoration['decoration_price']; ?></p>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                        ?>
                     </div>
-                    <div class="decoration-option" onclick="selectDecoration('colorful_balloons', this)">
-                        <img src="https://cheetah.cherishx.com/uploads/1608553443_large.jpg" alt="Birthday Decoration 2">
-                        <p>Colorful Balloons - $15</p>
-                        <input type="hidden" name="decoration" value="colorful_balloons">
-                    </div>
+                    <!-- Hidden input to store the selected decoration ID -->
+                    <input type="hidden" id="selected_decoration" name="selected_decoration" value="">
                 </div>
 
-                <div id="anniversary_decorations" class="decoration-section" style="display: none;">
-                    <div class="decoration-option" onclick="selectDecoration('romantic_candles', this)">
-                        <img src="https://www.miraculousmemories.com/cdn/shop/products/IMG-20230117-WA0006.jpg?v=1678182760&width=1445" alt="Anniversary Decoration 1">
-                        <p>Romantic Candles - $25</p>
-                        <input type="hidden" name="decoration" value="romantic_candles">
-                    </div>
-                    <div class="decoration-option" onclick="selectDecoration('elegant_flowers', this)">
-                        <img src="https://www.miraculousmemories.com/cdn/shop/products/IMG-20230117-WA0006.jpg?v=1678182760&width=1445" alt="Anniversary Decoration 2">
-                        <p>Elegant Flowers - $30</p>
-                        <input type="hidden" name="decoration" value="elegant_flowers">
-                    </div>
-                </div>
-            </div>
+                <?php
+            }
+            ?>
 
             <script>
-                function showDecorationOptions() {
-                    const eventType = document.getElementById('event_type').value;
-                    document.getElementById('birthday_decorations').style.display = eventType === 'birthday' ? 'block' : 'none';
-                    document.getElementById('anniversary_decorations').style.display = eventType === 'anniversary' ? 'block' : 'none';
-                    document.getElementById('decoration_options').style.display = 'block';
-                }
+                function selectDecoration(element, decorationId) {
+                    // Remove the 'selected' class from all decoration options
+                    const allOptions = document.querySelectorAll('.decoration-option');
+                    allOptions.forEach(option => option.classList.remove('selected'));
 
-                function selectDecoration(decorationValue, element) {
-                    // Remove selected class from all options
-                    const options = document.querySelectorAll('.decoration-option');
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-
-                    // Highlight the selected option
+                    // Add the 'selected' class to the clicked option
                     element.classList.add('selected');
 
-                    // Update the hidden input field with the selected decoration value
-                    document.querySelector(`input[name="decoration"][value="${decorationValue}"]`).checked = true;
+                    // Set the hidden input field with the selected decoration ID
+                    document.getElementById('selected_decoration').value = decorationId;
                 }
             </script>
 
+            <style>
+                /* Styling for selected decoration option */
+                .decoration-option.selected {
+                    border: 3px solid #ff9900; /* Orange border for selected item */
+                    border-radius: 5px;
+                }
+            </style>
 
 
             <!-- Theme Color Selection -->
@@ -126,11 +177,38 @@
                 <!-- Cake Kg Dropdown -->
                 <label for="cake_kg">Cake Size (Kg):</label>
                 <select name="cake_kg" id="cake_kg">
-                    <option value="1">1 Kg</option>
-                    <option value="1.5">1.5 Kg</option>
-                    <option value="2">2 Kg</option>
-                    <option value="2.5">2.5 Kg</option>
-                    <option value="3">3 Kg</option>
+                    <option value="1">1 kg</option>
+                    <option value="1.5">1.5 kg</option>
+                    <option value="2">2 kg</option>
+                    <option value="2.5">2.5 kg</option>
+                    <option value="3">3 kg</option>
+                    <option value="4">4 kg</option>
+                    <option value="5">5 kg</option>
+                    <option value="6">6 kg</option>
+                    <option value="7">7 kg</option>
+                </select>
+                <br><br>
+
+                <?php 
+                    $cakeOptions = CakeOptions::getAllCakeOptions($con);
+                ?>
+
+                <!-- Cake Type Dropdown -->
+                <label for="cake_type">Select Cake Type:</label>
+                <select name="cake_type" id="cake_type" required>
+                    <option value="" disabled selected>Select your cake type</option>
+                    <?php 
+                        if(!empty($cakeOptions)){
+                            foreach ($cakeOptions as $cakeOption){
+                                ?>
+                                <option value="<?php echo $cakeOption['cake_option_id']; ?>">
+                                    <span style="text-align: left;"><?php echo $cakeOption['cake_type']; ?></span>
+                                    <span style="text-align: right;"><?php echo $cakeOption['cake_price']; ?> (1 kg)</span>
+                                </option>
+                                <?php
+                            }
+                        }
+                    ?>
                 </select>
                 <br><br>
 
@@ -173,6 +251,81 @@
                 });
             });
         </script>
+
+        <?php 
+            if($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['event_type'])){
+
+            }elseif($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST['event_type'])){
+
+                // Retrieve and sanitize form data
+                $event_type = $eventId;
+                $selected_decoration = isset($_POST['selected_decoration']) ? intval($_POST['selected_decoration']) : null;
+                $theme_color = isset($_POST['theme_color']) ? htmlspecialchars($_POST['theme_color']) : null;
+                $cake_order = isset($_POST['cake_order']) ? htmlspecialchars($_POST['cake_order']) : null;
+                $cake_kg = isset($_POST['cake_kg']) ? floatval($_POST['cake_kg']) : null;
+                $cake_type = isset($_POST['cake_type']) ? intval($_POST['cake_type']) : null;
+                $cake_message = isset($_POST['cake_message']) ? htmlspecialchars($_POST['cake_message']) : null;
+                $suggestions = isset($_POST['suggestions']) ? htmlspecialchars($_POST['suggestions']) : null;
+
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Handle the file upload
+                    if (isset($_FILES['cake_design']) && $_FILES['cake_design']['error'] === UPLOAD_ERR_OK) {
+                        $fileTmpPath = $_FILES['cake_design']['tmp_name'];
+                        $fileName = $_FILES['cake_design']['name'];
+                        $fileSize = $_FILES['cake_design']['size'];
+                        $fileType = $_FILES['cake_design']['type'];
+                        $fileNameCmps = explode(".", $fileName);
+                        $fileExtension = strtolower(end($fileNameCmps));
+                
+                        // Define allowed file extensions
+                        $allowedfileExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                        // Check if the file has an allowed extension
+                        if (in_array($fileExtension, $allowedfileExtensions)) {
+                            // Set the upload path for the file (e.g., to an 'uploads' directory)
+                            $uploadFileDir = './uploads/';
+                            $dest_path = $uploadFileDir . $fileName;
+                
+                            // Move the file to the specified directory
+                            // if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                            //     echo 'File is successfully uploaded: ' . $dest_path;
+                            // } else {
+                            //     echo 'There was some error moving the file to the upload directory.';
+                            // }
+                            $_SESSION['fileTmpPath'] = $fileTmpPath;
+                            $_SESSION['dest_path'] = $dest_path;
+
+                        } else {
+                            echo 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
+                        }
+                    } else {
+                        echo 'No file uploaded or an error occurred.';
+                    }
+                }
+                
+                $_SESSION['selected_decoration'] = $selected_decoration;
+                $_SESSION['theme_color'] = $theme_color;
+                $_SESSION['cake_order'] = $cake_order;
+                $_SESSION['cake_kg'] = $cake_kg;
+                $_SESSION['cake_type'] = $cake_type;
+                $_SESSION['cake_message'] = $cake_message;
+                $_SESSION['suggestions'] = $suggestions;
+
+                $decoration_price = DecorationOptions::getDecorationPriceByDecorationId($con, $selected_decoration);
+                // echo $decoration_price;
+
+                if($cake_order == 'yes'){
+                    $cake_unit_price = CakeOptions::getCakePriceByCakeOptionId($con, $cake_type);
+                    $total_cake_price = $cake_unit_price * $cake_kg;
+                }
+                
+                $total_decoration_price = $decoration_price + $total_cake_price;
+                
+                $_SESSION['total_decoration_price'] = $total_decoration_price;
+            
+
+            }
+        ?>
 
 
 
