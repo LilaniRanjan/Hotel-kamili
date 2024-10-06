@@ -177,6 +177,7 @@ use classes\CakeOptions;
                 <!-- Cake Kg Dropdown -->
                 <label for="cake_kg">Cake Size (Kg):</label>
                 <select name="cake_kg" id="cake_kg">
+                    <option value="" disabled selected>Select kg</option>
                     <option value="1">1 kg</option>
                     <option value="1.5">1.5 kg</option>
                     <option value="2">2 kg</option>
@@ -195,7 +196,7 @@ use classes\CakeOptions;
 
                 <!-- Cake Type Dropdown -->
                 <label for="cake_type">Select Cake Type:</label>
-                <select name="cake_type" id="cake_type" required>
+                <select name="cake_type" id="cake_type">
                     <option value="" disabled selected>Select your cake type</option>
                     <?php 
                         if(!empty($cakeOptions)){
@@ -314,12 +315,17 @@ use classes\CakeOptions;
                 $decoration_price = DecorationOptions::getDecorationPriceByDecorationId($con, $selected_decoration);
                 // echo $decoration_price;
 
+                $total_decoration_price=0;
+
                 if($cake_order == 'yes'){
                     $cake_unit_price = CakeOptions::getCakePriceByCakeOptionId($con, $cake_type);
                     $total_cake_price = $cake_unit_price * $cake_kg;
+                    $total_decoration_price = $decoration_price + $total_cake_price;
+                }else{
+                    $total_decoration_price = $decoration_price;
                 }
                 
-                $total_decoration_price = $decoration_price + $total_cake_price;
+                echo $total_decoration_price;
                 
                 $_SESSION['total_decoration_price'] = $total_decoration_price;
             
