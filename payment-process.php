@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 use classes\Customer as ClassesCustomer;
 use classes\DbConnector;
@@ -17,6 +18,8 @@ require_once './classes/Room.php';
 require_once './classes/RoomAmenity.php';
 require_once './classes/RoomImages.php';
 require_once 'vendor/autoload.php';
+
+require_once './classes/EventCustomization.php';
 
 try {
     // Establish database connection
@@ -48,7 +51,13 @@ if (!empty($_POST['stripeToken'])) {
     $number_of_room = $_POST['number_of_room'];
     $room_type = $_POST['room_type'];
     $room_id = $_POST['room_id'];
-    $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
+
+    if(!empty($_SESSION['total_decoration_price'])){
+        $total_decoration_price = $_SESSION['total_decoration_price'];
+        $total_price = (($_POST['room_price'] * $_POST['number_of_room']) + $total_decoration_price);
+    }else{
+        $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
+    }
     $amountInCents = $total_price * 100;
     $room_price = $_POST['room_price'];
 
@@ -126,6 +135,58 @@ if (!empty($_POST['stripeToken'])) {
                     $reservation->insertReservedRoomTypeId($con, $reservation_id, $reserved_room_type_id);
 
                     $reservedRoomCount++;
+                }
+
+                if(isset($_SESSION['event_type']) && isset($_SESSION['selected_decoration']) && isset($_SESSION['theme_color']) && isset($_SESSION['cake_order']) && isset($_SESSION['suggestions'])){
+                    if(!empty($_SESSION['event_type'] && $_SESSION['selected_decoration'] && $_SESSION['theme_color'] && $_SESSION['cake_order'] && $_SESSION['suggestions'])){
+                        $event_type = $_SESSION['event_type'];
+                        $selected_decoration = $_SESSION['selected_decoration'];
+                        $theme_color = $_SESSION['theme_color'];
+                        $cake_order = $_SESSION['cake_order'];
+                        $cake_kg = null;
+                        $cake_type = null;
+                        $cake_message = null;
+                        // $fileTmpPath = null;
+                        $dest_path = null;
+                        $suggestions = $_SESSION['suggestions'];
+                        $total_decoration_price = $_SESSION['total_decoration_price'];
+
+                        if($cake_order == "yes"){
+                            $cake_kg = $_SESSION['cake_kg'];
+                            $cake_type = $_SESSION['cake_type'];
+                            $cake_message = $_SESSION['cake_message'];
+                            // $fileTmpPath = $_SESSION['fileTmpPath'];
+                            $dest_path = $_SESSION['dest_path'];
+
+                            if($dest_path != null){
+                                // Move the file to the specified directory
+                                // if(move_uploaded_file($fileTmpPath, $dest_path)){
+                                //     $eventCustomizationObj = new EventCustomization($reservation_id, $event_type, $selected_decoration, $theme_color, $cake_order, $cake_kg, $cake_type, $cake_message, $dest_path, $suggestions, $total_decoration_price);
+                                //     $eventCustomizationObj->create($con);
+                                // }
+                                $eventCustomizationObj = new EventCustomization($reservation_id, $event_type, $selected_decoration, $theme_color, $cake_order, $cake_kg, $cake_type, $cake_message, $dest_path, $suggestions, $total_decoration_price);
+                                $eventCustomizationObj->create($con);
+                            }else{
+                                $eventCustomizationObj = new EventCustomization($reservation_id, $event_type, $selected_decoration, $theme_color, $cake_order, $cake_kg, $cake_type, $cake_message, null, $suggestions, $total_decoration_price);
+                                $eventCustomizationObj->create($con);
+                            }
+                            
+                        }else{
+                            $eventCustomizationObj = new EventCustomization($reservation_id, $event_type, $selected_decoration, $theme_color, $cake_order, null, null, null, null, $suggestions, $total_decoration_price);
+                            $eventCustomizationObj->create($con);
+                        }
+
+                        unset($_SESSION['event_type']);
+                        unset($_SESSION['selected_decoration']);
+                        unset($_SESSION['theme_color']);
+                        unset($_SESSION['cake_order']);
+                        unset($_SESSION['cake_kg']);
+                        unset($_SESSION['cake_type']);
+                        unset($_SESSION['cake_message']);
+                        unset($_SESSION['dest_path']);
+                        unset($_SESSION['suggestions']);
+                        unset($_SESSION['total_decoration_price']);
+                    }
                 }
 
                 // Generate PDF invoice

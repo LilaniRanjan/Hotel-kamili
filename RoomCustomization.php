@@ -2,6 +2,8 @@
 
 <?php
 session_start();
+ob_start();
+
 
 use classes\CakeOptions;
 
@@ -50,6 +52,73 @@ use classes\CakeOptions;
 
     </head>
     <body>
+    <style>
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%; /* Set modal width to 40% */
+    border-radius: 10px; /* Optional: Adding some rounding to the modal */
+}
+
+/* Header Style */
+#customizationModal h4 {
+    text-align: center; /* Center the header text */
+}
+
+#customizationModal h6 {
+    text-align: center; /* Center the header text */
+}
+
+/* Button Alignment */
+#btnalign {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center the buttons */
+    margin-top: 20px; /* Space above buttons */
+}
+
+#btnalign button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px; /* Margin around buttons */
+}
+
+#btnalign button:hover {
+    background-color: #45a049;
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
         <?php
             require './NavBar/navbar.php';
         ?>
@@ -218,8 +287,9 @@ use classes\CakeOptions;
                 <br><br>
 
                 <!-- Optional Cake Design Upload -->
-                <label for="cake_design">Upload Cake Design (Optional):</label>
-                <input type="file" id="cake_design" name="cake_design" accept="image/*">
+                <!-- Input for cake image upload -->
+            <label for="cake_design">Upload Cake Design (Optional):</label>
+            <input type="file" id="cake_design" name="cake_design" accept="image/*">
                 <br><br>
             </div>
 
@@ -271,6 +341,7 @@ use classes\CakeOptions;
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Handle the file upload
                     if (isset($_FILES['cake_design']) && $_FILES['cake_design']['error'] === UPLOAD_ERR_OK) {
+                        
                         $fileTmpPath = $_FILES['cake_design']['tmp_name'];
                         $fileName = $_FILES['cake_design']['name'];
                         $fileSize = $_FILES['cake_design']['size'];
@@ -288,19 +359,21 @@ use classes\CakeOptions;
                             $dest_path = $uploadFileDir . $fileName;
                 
                             // Move the file to the specified directory
-                            // if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                            //     echo 'File is successfully uploaded: ' . $dest_path;
-                            // } else {
-                            //     echo 'There was some error moving the file to the upload directory.';
-                            // }
-                            $_SESSION['fileTmpPath'] = $fileTmpPath;
-                            $_SESSION['dest_path'] = $dest_path;
+                            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                                $_SESSION['dest_path'] = $dest_path;
+                                // echo 'File is successfully uploaded: ' . $dest_path;
+                            } else {
+                                // echo 'There was some error moving the file to the upload directory.';
+                                $_SESSION['dest_path'] = null;
+                            }
+                            // $_SESSION['fileTmpPath'] = $fileTmpPath;
+                            // $_SESSION['dest_path'] = $dest_path;
 
                         } else {
-                            echo 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
+                            // echo 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
                         }
                     } else {
-                        echo 'No file uploaded or an error occurred.';
+                        // echo 'No file uploaded or an error occurred.';
                     }
                 }
                 
@@ -325,14 +398,51 @@ use classes\CakeOptions;
                     $total_decoration_price = $decoration_price;
                 }
                 
-                echo $total_decoration_price;
+                // echo $total_decoration_price;
                 
                 $_SESSION['total_decoration_price'] = $total_decoration_price;
+
+                header("Location: ".$_SERVER['PHP_SELF']."?form_submitted=1");
             
 
             }
         ?>
+        <!-- Modal -->
+        <div id="customizationModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h4>Your Total Customization Price is : Rs <?php echo $_SESSION['total_decoration_price']; ?></h4>
+                <br>
+                <h6>This amount will added with your  total Billing process</h6>
+                <div id="btnalign">
+                    <button id="continueButton">Continue</button>
+                </div>
+            </div>
+        </div>
 
+        <script>
+            // Function to check if 'form_submitted' parameter exists in the URL
+            function checkIfFormSubmitted() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('form_submitted') === '1') {
+                    // Show the modal if form_submitted=1
+                    document.getElementById('customizationModal').style.display = 'block';
+                }
+            }
+
+            // Close modal functionality
+            document.querySelector('.close').onclick = function() {
+                document.getElementById('customizationModal').style.display = 'none';
+            };
+
+            // Redirect to reservation-form.php when the continue button is clicked
+            document.getElementById('continueButton').onclick = function() {
+                window.location.href = 'reservation-form.php'; // Redirect to reservation-form.php
+            };
+
+            // Run the function when the page loads
+            window.onload = checkIfFormSubmitted;
+        </script>
 
 
         <?php

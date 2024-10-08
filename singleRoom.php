@@ -80,7 +80,8 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
                         <?php echo htmlspecialchars($room['room_description']); ?>
                     </p>
                     <br>
-                    <button type="button" onclick="window.location.href='reservation-form.php'" class="btn">BOOK NOW</button>
+                    <!-- <button type="button" onclick="window.location.href='reservation-form.php'" class="btn">BOOK NOW</button> -->
+                    <button type="button" onclick="openCustomizationModal()" class="btn">BOOK NOW</button>
                 </div>
             </article>
 
@@ -191,8 +192,52 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
         </div>
     </section>
 
+    <!-- Modal Structure -->
+    <div id="customizationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCustomizationModal()">&times;</span>
+            <h4>Do you want to customize your room for an event?</h4>
+            <div id="btnalign">
+                <button onclick="handleCustomizationResponse(true)">YES</button>
+                <button onclick="handleCustomizationResponse(false)">NO</button>
+            </div>
+        </div>
+    </div>
+
     <br>
     <br>
+
+    <script>
+        function openCustomizationModal() {
+            document.getElementById("customizationModal").style.display = "block"; // Show modal
+        }
+
+        function closeCustomizationModal() {
+            document.getElementById("customizationModal").style.display = "none"; // Hide modal
+        }
+
+        function handleCustomizationResponse(answer) {
+            if (answer) {
+                // User clicked YES
+                // Redirect to the event customization form
+                window.location.href = 'RoomCustomization.php'; // Adjust to your customization form URL
+            } else {
+                // User clicked NO
+                closeCustomizationModal(); // Close the modal
+                // You can proceed with the booking process here if needed
+                window.location.href = 'reservation-form.php'; // Redirect to the reservation form
+            }
+        }
+
+        // Close the modal if the user clicks outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById("customizationModal");
+            if (event.target == modal) {
+                closeCustomizationModal();
+            }
+        };
+    </script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.js"
         integrity="sha512-gY25nC63ddE0LcLPhxUJGFxa2GoIyA5FLym4UJqHDEMHjp8RET6Zn/SHo1sltt3WuVtqfyxECP38/daUc/WVEA=="
