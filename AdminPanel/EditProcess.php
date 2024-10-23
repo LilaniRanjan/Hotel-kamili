@@ -4,11 +4,15 @@ require '../classes/DbConnector.php';
 require '../classes/staff.php';
 require '../classes/room.php';
 require '../classes/Reservation.php';
+require '../classes/EventTypes.php';
+require '../classes/DecorationOptions.php';
 
 use classes\DbConnector;
 use classes\staff;
 use classes\Room;
 use classes\Reservation;
+use classes\EventTypes;
+use classes\DecorationOptions;
 
 $dbConnector = new DbConnector();
 $con = $dbConnector->getConnection();
@@ -143,5 +147,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    // Edit Event
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // Event Update Logic
+        if (isset($_POST['EventEdit'])) {
+            $event_id = $_POST['event_id'];
+            $event_name = $_POST['event_name'];
+            $decoTypes = $_POST['decoType'];
+            $decoPrices = $_POST['deco_price'];
+            $decoImages = $_FILES['DecoPhotos'];
+    
+            // Error handling
+            $errors = [];
+    
+            if (empty($event_name)) {
+                $errors[] = "Event name is required.";
+            }
+    
+            if (empty($decoTypes) || !is_array($decoTypes) || count($decoTypes) === 0) {
+                $errors[] = "At least one decoration type is required.";
+            }
+    
+            if (!empty($errors)) {
+                $_SESSION['errors'] = $errors;
+                header("Location: EditEvent.php?event_id=$event_id");
+                exit();
+            } else {
+                // Update event name
+                $eventObj = new EventTypes($con);
+                $updatedEvent = $eventObj->updateEvent($con, $event_type_id, $deco_types, $deco_price, $image_paths);
+    
+                // Handle decorations (Add/Edit/Remove)
+                $decorationObj = new \DecorationOptions($con, $decoration_name, $decoration_image, $decoration_price);
+    
+                foreach ($decoTypes as $index => $decoType) {
+                    $decoPrice = $decoPrices[$index];
+                    $decoImage = !empty($decoImages['name'][$index]) ? 'uploads/' . basename($decoImages['name'][$index]) : '';
+    
+                    // Upload image if provided
+                    if (!empty($decoImages['name'][$index])) {
+                        move_uploaded_file($decoImages['tmp_name'][$index], $decoImage);
+                    }
+ 
+                }
+    
+                if ($updatedEvent) {
+                    $_SESSION['message'] = "Event details updated successfully!";
+                } else {
+                    $_SESSION['errors'] = ["Failed to update event details."];
+                }
+    
+                header("Location: EditEvent.php?event_id=$event_id");
+                exit();
+            }
+        }
+    }
+    
     
 }

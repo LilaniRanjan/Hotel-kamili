@@ -109,7 +109,75 @@ class DecorationOptions {
         }
     }
     
-}
+    // Method to insert decoration options
+    public static function insertDecorationOptions($con, $event_type_id, $decoration_names, $decoration_images, $decoration_prices) {
+        try {
+            // Check if the input arrays are not null and have the same count
+            if (is_array($decoration_names) && is_array($decoration_images) && is_array($decoration_prices) &&
+                count($decoration_names) === count($decoration_images) && count($decoration_images) === count($decoration_prices)) {
 
+                // Begin transaction
+                $con->beginTransaction();
+                
+                // Prepare the insert statement
+                $query = "INSERT INTO DecorationOptions (event_type_id, decoration_name, decoration_image, decoration_price, created_at) VALUES (?, ?, ?, ?, NOW())";
+                $stmt = $con->prepare($query);
+
+                // Loop through each decoration type and execute the insert statement
+                for ($i = 0; $i < count($decoration_names); $i++) {
+                    // Bind values
+                    $stmt->execute([$event_type_id, $decoration_names[$i], $decoration_images[$i], $decoration_prices[$i]]);
+                }
+
+                // Commit the transaction
+                $con->commit();
+                return true; // Insertion successful
+            } else {
+                throw new InvalidArgumentException("Input arrays must be of the same length and not null.");
+            }
+        } catch (PDOException $e) {
+            // Rollback the transaction on error
+            $con->rollBack();
+            die("Error inserting decoration options: " . $e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            die($e->getMessage());
+        }
+    }
+
+    public static function updateDecorationImage($con, $decoration_image, $event_type_id) {
+        $query = "UPDATE DecorationOptions SET decoration_image = ? WHERE event_type_id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->execute([$decoration_image, $event_type_id]);
+    }
+    
+    // delete decoration based on eventTypeId
+
+    public static function deleteEvent($con, $event_type_id) {
+        try {
+            // Begin transaction
+            $con->beginTransaction();
+    
+            // First, delete from the DecorationOptions table
+            $queryDeleteDeco = "DELETE FROM DecorationOptions WHERE event_type_id = ?";
+            $stmtDeleteDeco = $con->prepare($queryDeleteDeco);
+            $stmtDeleteDeco->bindValue(1, $event_type_id);
+            $stmtDeleteDeco->execute();
+    
+            // Now delete related entries from the eventTypes table
+            $queryDeleteEventType = "DELETE FROM eventTypes WHERE event_type_id = ?";
+            $stmtDeleteEventType = $con->prepare($queryDeleteEventType);
+            $stmtDeleteEventType->bindValue(1, $event_type_id);
+            $stmtDeleteEventType->execute();
+    
+            // Commit the transaction
+            $con->commit();
+            return true;
+        } catch (PDOException $e) {
+            // Rollback the transaction on error
+            $con->rollBack();
+            die("Error deleting event: " . $e->getMessage());
+        }
+    }
+}    
 
 ?>

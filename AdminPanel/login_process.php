@@ -46,6 +46,8 @@ if(isset($_POST['user_name'], $_POST['password'])){
                     header("Location: ./Admin.php");
                     break;
                 case 'Receptionist':
+                    header("Location: ./Admin.php");
+                    break;
                 case 'Admin':
                     header("Location: ./Admin.php");
                     break;
@@ -73,8 +75,6 @@ if(isset($_POST['user_name'], $_POST['password'])){
     // $locattion = "login.php?status=3";
 }
 
-// Redirect the user based on the determined location
-// header("Location: $location");
 
 // Exit to prevent further execution
 exit(); 

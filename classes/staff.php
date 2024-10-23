@@ -76,11 +76,13 @@ class staff
         return $this->role;
     }
 
-    public function getToken_hash(){
+    public function getToken_hash()
+    {
         return $this->token_hash;
     }
 
-    public function getExpiryTime(){
+    public function getExpiryTime()
+    {
         return $this->expiryTime;
     }
 
@@ -129,11 +131,13 @@ class staff
         $this->role = $role;
     }
 
-    public function setToken_hash($token_hash){
+    public function setToken_hash($token_hash)
+    {
         $this->token_hash = $token_hash;
     }
 
-    public function setExpiryTime($expiryTime){
+    public function setExpiryTime($expiryTime)
+    {
         $this->expiryTime = $expiryTime;
     }
 
@@ -229,16 +233,17 @@ class staff
         }
     }
 
-    public function getAllStaffDetailsByToken($con, $token) {
+    public function getAllStaffDetailsByToken($con, $token)
+    {
         try {
             $reset_token = $token;
             $query = "SELECT * FROM Staff WHERE reset_token_hash = ?";
             $pstmt = $con->prepare($query);
             $pstmt->bindValue(1, $reset_token);
             $pstmt->execute();
-    
+
             $staffDetails = $pstmt->fetch(PDO::FETCH_ASSOC);
-    
+
             if ($staffDetails) {
                 $this->staff_id = $staffDetails['staff_id'];
                 $this->first_name = $staffDetails['firstname'];
@@ -250,7 +255,7 @@ class staff
                 $this->role = $staffDetails['role'];
                 $this->token_hash = $staffDetails['reset_token_hash'];
                 $this->expiryTime = $staffDetails['reset_token_expires_at'];
-    
+
                 return $staffDetails;
             } else {
                 return false;
@@ -260,8 +265,9 @@ class staff
         }
     }
 
-    public function updateResetPassword($con, $password_hash, $staff_id){
-        try{
+    public function updateResetPassword($con, $password_hash, $staff_id)
+    {
+        try {
             $query = "UPDATE Staff SET pwd=?, reset_token_hash=NULL, reset_token_expires_at=NULL WHERE staff_id = ?";
             $pstmt = $con->prepare($query);
             $pstmt->bindValue(1, $password_hash);
@@ -270,13 +276,14 @@ class staff
 
             return ($pstmt->rowCount() > 0);
         } catch (PDOException $exc) {
-            die("Error in updateResetPassword function in staff class" . $exc->getMessage()); 
+            die("Error in updateResetPassword function in staff class" . $exc->getMessage());
         }
     }
-    
-    public function getAllStaff($con){
+
+    public function getAllStaff($con)
+    {
         try {
-            $query = "SELECT * FROM staff";
+            $query = "SELECT * FROM staff ORDER BY created_at DESC"; //chnges done here
             $pstmt = $con->prepare($query);
             $pstmt->execute();
             return $pstmt->fetchAll(PDO::FETCH_ASSOC);
@@ -312,7 +319,8 @@ class staff
         }
     }
 
-    public function updateStaff($con, $staff_id, $first_name, $last_name, $nic_no, $email, $contact_no, $role) {
+    public function updateStaff($con, $staff_id, $first_name, $last_name, $nic_no, $email, $contact_no, $role)
+    {
         try {
             $query = "UPDATE staff SET firstname = ?, lastname = ?, nic = ?, email = ?, contact_no = ?, role = ? WHERE staff_id = ?";
             $stmt = $con->prepare($query);
@@ -352,5 +360,23 @@ class staff
             return false;
         }
     }
-        
+
+    public function fetchNotifications($con, $staff_id)
+    {
+        try {
+            // Query to fetch notifications for the specific staff member
+            $query = "SELECT * FROM staff WHERE staff_id = ? ORDER BY created_at DESC";
+            $pstmt = $con->prepare($query);
+            $pstmt->bindValue(1, $staff_id);
+            $pstmt->execute();
+
+            // Fetch all notifications
+            $notifications = $pstmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return the notifications
+            return $notifications;
+        } catch (PDOException $exc) {
+            die("Error fetching notifications: " . $exc->getMessage());
+        }
     }
+}

@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require '../classes/DbConnector.php';
 require '../classes/Room.php';
@@ -14,41 +15,79 @@ $dbConnector = new DbConnector();
 $con = $dbConnector->getConnection();
 $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+include('message.php');
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['deleteItemId']) && isset($_POST['itemType'])) {
         $itemId = $_POST['deleteItemId'];
         $itemType = $_POST['itemType'];
+        $reservations = null;
 
-        switch ($itemType) {
-            case 'room':
-                if (Room::delete($con, $itemId)) {
-                    $_SESSION['message'] = "Room deleted successfully!";
-                } else {
-                    $_SESSION['message'] = "Failed to delete room.";
+        if (!empty($itemId)) {
+            $reservations = Reservation::getAllReservationsByRoomId($con, $itemId);
+
+            if ($reservations != null) {
+                $_SESSION['errors'][] = "The Room is  reserved by a Customer so you can not delete it!";
+            } else {
+                // echo "deleted";
+                switch ($itemType) {
+                    case 'room':
+                        if (Room::delete($con, $itemId)) {
+                            $_SESSION['message'] = "Room deleted successfully!";
+                        } else {
+                            $_SESSION['errors'][] = "Failed to delete room.";
+                        }
+                        break;
+                    case 'staff':
+                        if (Staff::delete($con, $itemId)) {
+                            $_SESSION['message'] = "Staff deleted successfully!";
+                        } else {
+                            $_SESSION['errors'][] = "Failed to delete staff.";
+                        }
+                        break;
+                    case 'reservation':
+                        if (Reservation::delete($con, $itemId)) {
+                            $_SESSION['message'] = "Reservation deleted successfully!";
+                        } else {
+                            $_SESSION['errors'][] = "Failed to delete reservation.";
+                        }
+                        break;
+                    default:
+                        $_SESSION['errors'][] = "Invalid item type.";
+                        break;
                 }
-                break;
-            case 'staff':
-                if (Staff::delete($con, $itemId)) {
-                    $_SESSION['message'] = "Staff deleted successfully!";
-                } else {
-                    $_SESSION['message'] = "Failed to delete staff.";
-                }
-                break;
-            case 'reservation':
-                if (Reservation::delete($con, $itemId)) {
-                    $_SESSION['message'] = "Reservation deleted successfully!";
-                } else {
-                    $_SESSION['message'] = "Failed to delete reservation.";
-                }
-                break;
-            default:
-                $_SESSION['message'] = "Invalid item type.";
-                break;
+            }
         }
+
+        // switch ($itemType) {
+        //     case 'room':
+        //         if (Room::delete($con, $itemId)) {
+        //             $_SESSION['message'] = "Room deleted successfully!";
+        //         } else {
+        //             $_SESSION['errors'][] = "Failed to delete room.";
+        //         }
+        //         break;
+        //     case 'staff':
+        //         if (Staff::delete($con, $itemId)) {
+        //             $_SESSION['message'] = "Staff deleted successfully!";
+        //         } else {
+        //             $_SESSION['errors'][] = "Failed to delete staff.";
+        //         }
+        //         break;
+        //     case 'reservation':
+        //         if (Reservation::delete($con, $itemId)) {
+        //             $_SESSION['message'] = "Reservation deleted successfully!";
+        //         } else {
+        //             $_SESSION['errors'][] = "Failed to delete reservation.";
+        //         }
+        //         break;
+        //     default:
+        //         $_SESSION['errors'][] = "Invalid item type.";
+        //         break;
+        // }
     } else {
-        $_SESSION['message'] = "Failed to delete item. Required data not received.";
+        $_SESSION['errors'][] = "Failed to delete item. Required data not received.";
     }
     header('Location: admin.php');
     exit();
 }
-?>

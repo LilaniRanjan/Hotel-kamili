@@ -37,7 +37,7 @@ include('message.php');
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center" style=" background-color:#8d437f;">
-                            <h4 class="m-0" style="padding: 5px; color: white"><b>Add Room</b></h4>
+                            <h4 class="m-0" style="padding: 5px; color: white"><b>Add Staff</b></h4>
                             <a href="Admin.php">
                                 <button type="button" class="btn-close" aria-label="Close"></button>
                             </a>

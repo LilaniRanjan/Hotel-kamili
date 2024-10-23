@@ -27,7 +27,7 @@
         }
 
         // Email address to send the form data
-        $to = "ranjanlilani@gmail.com";
+        $to = "ayshacader2001@gmail.com";
 
         // Create and configure the email
         $mail = new EmailConnector();

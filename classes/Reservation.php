@@ -184,18 +184,58 @@ class Reservation {
         }
     }
 
-    public static function delete($con, $reservation_id) {
+    // public static function delete($con, $reservation_id) {
+    //     try {
+    //         $query = "DELETE FROM Reservation WHERE reservation_id = ?";
+    //         $stmt = $con->prepare($query);
+    //         $stmt->bindValue(1, $reservation_id);
+    //         $stmt->execute();
+    //         return ($stmt->rowCount() > 0);
+    //     } catch (PDOException $e) {
+    //         die("Error deleting reservation: " . $e->getMessage());
+    //     }
+    // }
+
+    public static function delete($con, $id) {
         try {
-            $query = "DELETE FROM Reservation WHERE reservation_id = ?";
-            $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $reservation_id);
-            $stmt->execute();
-            return ($stmt->rowCount() > 0);
+            // Fetch related entries from reservedroomtypeid
+            $queryFetchRelated = "SELECT id FROM reservedroomtypeid WHERE reservation_id = ?";
+            $stmtFetchRelated = $con->prepare($queryFetchRelated);
+            $stmtFetchRelated->bindValue(1, $id);
+            $stmtFetchRelated->execute();
+            $relatedIds = $stmtFetchRelated->fetchAll(PDO::FETCH_COLUMN);
+    
+            // Delete related entries from reservedroomtypeid
+            $queryDeleteRelated = "DELETE FROM reservedroomtypeid WHERE reservation_id = ?";
+            $stmtDeleteRelated = $con->prepare($queryDeleteRelated);
+            $stmtDeleteRelated->bindValue(1, $id);
+            $stmtDeleteRelated->execute();
+
+            // Fetch related entries from eventcustomizations
+            $queryFetchRelated = "SELECT customization_id FROM eventcustomizations WHERE reservation_id = ?";
+            $stmtFetchRelated = $con->prepare($queryFetchRelated);
+            $stmtFetchRelated->bindValue(1, $id);
+            $stmtFetchRelated->execute();
+            $relatedIds = $stmtFetchRelated->fetchAll(PDO::FETCH_COLUMN);
+    
+            // Delete related entries from eventcustomizations
+            $queryDeleteRelated = "DELETE FROM eventcustomizations WHERE reservation_id = ?";
+            $stmtDeleteRelated = $con->prepare($queryDeleteRelated);
+            $stmtDeleteRelated->bindValue(1, $id);
+            $stmtDeleteRelated->execute();
+    
+            // Now delete the reservation itself
+            $queryDeleteReservation = "DELETE FROM reservation WHERE reservation_id = ?";
+            $stmtDeleteReservation = $con->prepare($queryDeleteReservation);
+            $stmtDeleteReservation->bindValue(1, $id);
+            $stmtDeleteReservation->execute();
+    
+            return true;
         } catch (PDOException $e) {
             die("Error deleting reservation: " . $e->getMessage());
         }
     }
-
+    
     public static function filterAvailableRooms($con, $check_in_date, $check_out_date, $number_of_adult, $number_of_children) {
         try {
             $query = "
@@ -295,28 +335,7 @@ class Reservation {
         }
     }
 
-    public static function getanotherReservationById($con, $reservationId)
-    {
-        try {
-            $query = "
-                SELECT reservation.*, customer.full_name, room.room_id
-                FROM Reservation
-                JOIN Customer ON reservation.customer_id = customer.customer_id
-                JOIN Room ON reservation.room_id = room.room_id
-                WHERE reservation.reservation_id = ?
-                ORDER BY reservation.created_at DESC
-            ";
-            $stmt = $con->prepare($query);
-            $stmt->execute([$reservationId]);
-            
-            // Use fetch() to get a single row instead of fetchAll()
-            return $stmt->fetch(PDO::FETCH_ASSOC); // This will return a single associative array or false if no rows found
-        } catch (PDOException $e) {
-            die("Error fetching reservation by ID: " . $e->getMessage());
-        }
-    }
-
-    public static function cancelAndMoveToCancellation($con, $reservationId, $cancellationReason) {
+    public static function cancelAndMoveToCancellation($con, $id, $reservationId, $cancellationReason) {
         try {
             // Start a transaction
             $con->beginTransaction();
@@ -351,12 +370,41 @@ class Reservation {
     
                 // Only proceed to delete if the insert into Cancellation was successful
                 if ($success) {
-                    // Delete the reservation after moving it to Cancellation
+                    // Step 1: Fetch and delete related entries from reservedroomtypeid
+                    $queryFetchRelatedRoom = "SELECT id FROM reservedroomtypeid WHERE reservation_id = ?";
+                    $stmtFetchRelatedRoom = $con->prepare($queryFetchRelatedRoom);
+                    $stmtFetchRelatedRoom->bindValue(1, $reservationId);
+                    $stmtFetchRelatedRoom->execute();
+                    $relatedRoomIds = $stmtFetchRelatedRoom->fetchAll(PDO::FETCH_COLUMN);
+    
+                    if (!empty($relatedRoomIds)) {
+                        $queryDeleteRelatedRoom = "DELETE FROM reservedroomtypeid WHERE reservation_id = ?";
+                        $stmtDeleteRelatedRoom = $con->prepare($queryDeleteRelatedRoom);
+                        $stmtDeleteRelatedRoom->bindValue(1, $reservationId);
+                        $stmtDeleteRelatedRoom->execute();
+                    }
+    
+                    // Step 2: Fetch and delete related entries from eventcustomizations
+                    $queryFetchRelatedCustomization = "SELECT customization_id  FROM eventcustomizations WHERE reservation_id = ?";
+                    $stmtFetchRelatedCustomization = $con->prepare($queryFetchRelatedCustomization);
+                    $stmtFetchRelatedCustomization->bindValue(1, $reservationId);
+                    $stmtFetchRelatedCustomization->execute();
+                    $relatedCustomizationIds = $stmtFetchRelatedCustomization->fetchAll(PDO::FETCH_COLUMN);
+    
+                    if (!empty($relatedCustomizationIds)) {
+                        $queryDeleteRelatedCustomization = "DELETE FROM eventcustomizations WHERE reservation_id = ?";
+                        $stmtDeleteRelatedCustomization = $con->prepare($queryDeleteRelatedCustomization);
+                        $stmtDeleteRelatedCustomization->bindValue(1, $reservationId);
+                        $stmtDeleteRelatedCustomization->execute();
+                    }
+    
+                    // Step 3: After deleting related records, delete the reservation itself
                     $deleteReservationQuery = "DELETE FROM Reservation WHERE reservation_id = ?";
                     $stmtDelete = $con->prepare($deleteReservationQuery);
-                    $stmtDelete->execute([$reservationId]);
+                    $stmtDelete->bindValue(1, $reservationId);
+                    $stmtDelete->execute();
     
-                    // Commit the transaction after both operations succeed
+                    // Commit the transaction after all operations succeed
                     $con->commit();
                     return true;
                 } else {
@@ -377,14 +425,26 @@ class Reservation {
         }
     }
     
+    public static function getAllReservationsByRoomId($con, $room_id) {
+        try {
+            $query = "
+                SELECT reservation.*
+                FROM Reservation
+                WHERE room_id = ?
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Return an empty array if no reservations found
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (PDOException $e) {
+            // You can log the error here instead of dying
+            error_log("Error fetching reservations by room ID: " . $e->getMessage());
+            return []; // Return an empty array on error
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-
     
 }
 ?>

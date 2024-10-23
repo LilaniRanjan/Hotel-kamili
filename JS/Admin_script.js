@@ -2,18 +2,18 @@
 const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
 allSideMenu.forEach(item => {
-	const li = item.parentElement;
+    const li = item.parentElement;
 
-	item.addEventListener('click', function () {
-		allSideMenu.forEach(i => {
-			i.parentElement.classList.remove('active');
-		});
-		li.classList.add('active');
+    item.addEventListener('click', function () {
+        allSideMenu.forEach(i => {
+            i.parentElement.classList.remove('active');
+        });
+        li.classList.add('active');
 
-		// Update breadcrumb
-		const breadcrumb = document.getElementById('breadcrumb');
-		breadcrumb.textContent = item.textContent;
-	});
+        // Update breadcrumb
+        const breadcrumb = document.getElementById('breadcrumb');
+        breadcrumb.textContent = item.textContent;
+    });
 });
 
 // Toggle Sidebar
@@ -21,7 +21,7 @@ const menuBar = document.querySelector('#content nav .bx.bx-menu');
 const sidebar = document.getElementById('sidebar');
 
 menuBar.addEventListener('click', function () {
-	sidebar.classList.toggle('hide');
+    sidebar.classList.toggle('hide');
 });
 
 // Date Picker Toggle for Mobile
@@ -30,25 +30,25 @@ const searchButtonIcon = document.querySelector('#content nav form .form-input b
 const searchForm = document.querySelector('#content nav form');
 
 searchButton.addEventListener('click', function (e) {
-	if (window.innerWidth < 576) {
-		e.preventDefault();
-		searchForm.classList.toggle('show');
-		if (searchForm.classList.contains('show')) {
-			searchButtonIcon.classList.replace('bx-search', 'bx-x');
-		} else {
-			searchButtonIcon.classList.replace('bx-x', 'bx-search');
-		}
-	}
+    if (window.innerWidth < 576) {
+        e.preventDefault();
+        searchForm.classList.toggle('show');
+        if (searchForm.classList.contains('show')) {
+            searchButtonIcon.classList.replace('bx-search', 'bx-x');
+        } else {
+            searchButtonIcon.classList.replace('bx-x', 'bx-search');
+        }
+    }
 });
 
 // Initial Responsive Adjustments
 function adjustResponsive() {
-	if (window.innerWidth < 768) {
-		sidebar.classList.add('hide');
-	} else if (window.innerWidth > 576) {
-		searchButtonIcon.classList.replace('bx-x', 'bx-search');
-		searchForm.classList.remove('show');
-	}
+    if (window.innerWidth < 768) {
+        sidebar.classList.add('hide');
+    } else if (window.innerWidth > 576) {
+        searchButtonIcon.classList.replace('bx-x', 'bx-search');
+        searchForm.classList.remove('show');
+    }
 }
 
 adjustResponsive();
@@ -57,15 +57,15 @@ window.addEventListener('resize', adjustResponsive);
 
 // Add data-label attributes to table cells for responsiveness
 document.addEventListener('DOMContentLoaded', () => {
-	const tableHeaders = document.querySelectorAll('.table-data th');
-	const tableRows = document.querySelectorAll('.table-data tbody tr');
+    const tableHeaders = document.querySelectorAll('.table-data th');
+    const tableRows = document.querySelectorAll('.table-data tbody tr');
 
-	tableRows.forEach(row => {
-		const cells = row.querySelectorAll('td');
-		cells.forEach((cell, i) => {
-			cell.setAttribute('data-label', tableHeaders[i].innerText);
-		});
-	});
+    tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, i) => {
+            cell.setAttribute('data-label', tableHeaders[i].innerText);
+        });
+    });
 });
 
 
@@ -97,6 +97,7 @@ function showDashboard() {
     document.getElementById('settings').style.display = 'none';
     document.getElementById('staff').style.display = 'none';
     document.getElementById('faq').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     document.querySelector('.order').style.display = 'block';
     sessionStorage.setItem('activeSection', 'dashboard');
 }
@@ -107,6 +108,7 @@ function showRoomDetails() {
     document.getElementById('reservation').style.display = 'none';
     document.getElementById('settings').style.display = 'none';
     document.getElementById('staff').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     document.getElementById('faq').style.display = 'none';
     sessionStorage.setItem('activeSection', 'roomDetails');
 }
@@ -117,6 +119,7 @@ function showReservationDetails() {
     document.getElementById('staff').style.display = 'none';
     document.getElementById('faq').style.display = 'none';
     document.getElementById('settings').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     document.getElementById('reservation').style.display = 'block';
     sessionStorage.setItem('activeSection', 'reservation');
 }
@@ -127,8 +130,20 @@ function showStaffDetails() {
     document.getElementById('faq').style.display = 'none';
     document.getElementById('settings').style.display = 'none';
     document.querySelector('.order').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     document.getElementById('staff').style.display = 'block';
     sessionStorage.setItem('activeSection', 'staff');
+}
+
+function showEventDetails() {
+    document.getElementById('reservation').style.display = 'none';
+    document.getElementById('roomDetails').style.display = 'none';
+    document.getElementById('faq').style.display = 'none';
+    document.getElementById('settings').style.display = 'none';
+    document.querySelector('.order').style.display = 'none';
+    document.getElementById('staff').style.display = 'none';
+    document.getElementById('event').style.display = 'block';
+    sessionStorage.setItem('activeSection', 'event');
 }
 
 function showFAQs() {
@@ -137,6 +152,7 @@ function showFAQs() {
     document.getElementById('staff').style.display = 'none';
     document.querySelector('.order').style.display = 'none';
     document.getElementById('settings').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     document.getElementById('faq').style.display = 'block';
     sessionStorage.setItem('activeSection', 'faq');
 }
@@ -148,7 +164,19 @@ function showSettings() {
     document.getElementById('staff').style.display = 'none';
     document.querySelector('.order').style.display = 'none';
     document.getElementById('faq').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
     sessionStorage.setItem('activeSection', 'settings');
+}
+
+function showNotification(){
+    document.getElementById('settings').style.display = 'none';
+    document.getElementById('reservation').style.display = 'none';
+    document.getElementById('roomDetails').style.display = 'none';
+    document.getElementById('staff').style.display = 'block';
+    document.querySelector('.order').style.display = 'none';
+    document.getElementById('faq').style.display = 'none';
+    document.getElementById('event').style.display = 'none';
+    sessionStorage.setItem('activeSection', 'staff');
 }
 
 // Initial Setup
@@ -166,6 +194,9 @@ function loadLastActiveSection() {
             break;
         case 'faq':
             showFAQs();
+            break;
+        case 'event':
+            showEventDetails();
             break;
         case 'settings':
             showSettings();
@@ -185,7 +216,7 @@ function cancelReservation(reservationId) {
 
     // Ask for confirmation
     var confirmCancel = confirm("Are you sure you want to cancel this reservation?");
-    
+
     if (!confirmCancel) {
         console.log("Cancellation canceled by user.");
         return;

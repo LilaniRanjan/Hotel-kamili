@@ -90,7 +90,7 @@ if (!$staff) {
 
                     <div class="mb-3">
                         <label for="nic">NIC Number:</label>
-                        <input type="text" id="nic" name="nic" class="form-control" required value="<?php echo htmlspecialchars($staff['nic']); ?>">
+                        <input type="text" id="nic" name="nic" class="form-control" required value="<?php echo htmlspecialchars($staff['nic']); ?>" disabled>
                     </div>
 
                     <div class="mb-3">

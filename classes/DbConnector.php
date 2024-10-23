@@ -5,7 +5,7 @@ use PDO;
 
 class DbConnector{
     private $host = "localhost";
-    private $dbname = "KMV";
+    private $dbname = "KBR";
     private $dbuser = "root";
     private $dbpw = "";
 

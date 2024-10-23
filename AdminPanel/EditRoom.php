@@ -45,7 +45,8 @@ if (!$room) {
             background-repeat: no-repeat;
             opacity: 0.9;
         }
-        .card{
+
+        .card {
             box-shadow: 0 0 20px dimgray;
         }
 
@@ -113,7 +114,7 @@ if (!$room) {
 
                     <div class="mb-3">
                         <label for="roomInside360ViewImage">Room Inside 360 View Image:</label>
-                        <input type="file" id="roomInside360ViewImage" name="roomInside360ViewImage" class="form-control">
+                        <input type="file" id="roomInside360ViewImage" name="roomInside360ViewImage" class="form-control" title="Please upload 3D penaromic image for 3D view">
                         <img src="<?php echo htmlspecialchars($room->getRoomInside360ViewImage()); ?>" alt="Current Image" style="max-width: 200px; margin-top: 10px;">
                     </div>
 

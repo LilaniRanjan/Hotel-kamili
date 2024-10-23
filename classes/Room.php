@@ -233,7 +233,7 @@ class Room {
         } catch (PDOException $e) {
             die("Error updating room: " . $e->getMessage());
         } 
-    }
+}
 
     // Delete a room record
     public static function delete($con, $room_id) {

@@ -8,14 +8,17 @@ require_once '../classes/faq.php';
 require_once '../classes/Reservation.php';
 require_once '../classes/RoomAmenity.php';
 require_once '../classes/RoomImages.php';
+require_once '../classes/EventCustomization.php';
+require_once '../classes/EventTypes.php';
+require_once '../AdminPanel/session_check.php';
 
-
+check_login();
 
 use classes\DbConnector;
 use classes\Room;
 use classes\staff;
 use classes\Reservation;
-use classes\faq;
+
 
 
 // Initialize $selectedDate with a default value if not set
@@ -36,13 +39,16 @@ $staffList = $staff->getAllStaff($con);
 
 $reservations = Reservation::getAllReservations($con);
 
-$faq = new faq('', '');
-$faqList = $faq->getAllFaq($con);
+$customEvent = new \EventCustomization('', '', '', '', '', '', '', '', '', '', '', '');
+$event = $customEvent->getAllEventCustomization($con);
+
+// $faq = new faq('', '');
+// $faqList = $faq->getAllFaq($con);
 
 // pagination for reservation
 
 $totalReservations = Reservation::getTotalReservations($con);
-$limit = 2;
+$limit = 10;
 $totalPages = ceil($totalReservations / $limit);
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max($page, 1);
@@ -66,7 +72,16 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
     <!-- My CSS -->
     <link rel="stylesheet" href="../CSS/Admin_style.css">
 
-    <title>Admin Dashboard</title>
+
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+        <title>Admin Dashboard</title>
+    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Receptionist') : ?>
+        <title>Receptionist Dashboard</title>
+    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'room_manager') : ?>
+        <title>Room Manager Dashboard</title>
+    <?php endif; ?>
+
+
 
 </head>
 
@@ -91,6 +106,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                     <span class="text">Room</span>
                 </a>
             </li>
+
             <li>
                 <a href="#" onclick="showReservationDetails()">
                     <i class='bx bxs-doughnut-chart'></i>
@@ -103,12 +119,20 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                     <span class="text">Staff</span>
                 </a>
             </li>
+
             <li>
+                <a href="#" onclick="showEventDetails()">
+                    <i class='bx bxs-calendar-event'></i>
+                    <span class="text">Event</span>
+                </a>
+            </li>
+
+            <!-- <li>
                 <a href="#" onclick="showFAQs()">
                     <i class='bx bxs-message-dots'></i>
                     <span class="text">FAQ</span>
                 </a>
-            </li>
+            </li> -->
             <li>
                 <a href="#" onclick="showSettings()">
                     <i class='bx bxs-cog'></i>
@@ -116,9 +140,9 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                 </a>
             </li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu top">
             <li>
-                <a href="#" class="logout">
+                <a href="../AdminPanel/logout.php" class="logout">
                     <i class='bx bxs-log-out-circle'></i>
                     <span class="text">Logout</span>
                 </a>
@@ -135,18 +159,29 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
             <i class='bx bx-menu'></i>
             <form action="#">
                 <div class="form-input">
-                    <input type="search" placeholder="Search...">
+                    <!-- <input type="search" placeholder="Search..."> -->
                     <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
             <input type="checkbox" id="switch-mode" hidden>
-            <a href="#" class="notification">
-                <i class='bx bxs-bell'></i>
-                <span class="num">8</span>
+
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+
+                <!-- <a href="#" class="notification" onclick="showNotification()">
+                    <i class='bx bxs-bell'></i>
+                    <span class="num">8</span>
+                </a> -->
+
+            <?php endif; ?>
+
+            <a href="#" class="profile-button">
+                <?php if (isset($_SESSION['user_name'])) : ?>
+                    <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                <?php else : ?>
+                    <span>No username set</span>
+                <?php endif; ?>
             </a>
-            <a href="#" class="profile">
-                <img src="../Assests/people.png">
-            </a>
+
         </nav>
         <!-- NAVBAR -->
 
@@ -156,7 +191,13 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
             <div class="head-title">
 
                 <div class="left">
-                    <h1>Dashboard</h1>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                        <h1>Admin Dashboard</h1>
+                    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Receptionist'): ?>
+                        <h1>Receptionist Dashboard</h1>
+                    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'room_Manager'): ?>
+                        <h1>Room Manager Dashboard</h1>
+                    <?php endif; ?>
                     <ul class="breadcrumb">
                         <li>
                             <a href="#">Dashboard</a>
@@ -202,7 +243,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
 
                 </li>
                 <li>
-                    <i class='bx bxs-group'></i>
+                <i class='bx bx-bed'></i>
                     <span class="text">
                         <h3><?php echo $availableRooms; ?></h3>
                         <p>Available Rooms</p>
@@ -306,25 +347,35 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($rooms as $room) : ?>
+                                <?php if (!empty($rooms)) : ?>
+                                    <?php foreach ($rooms as $room) : ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($room['room_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($room['room_type']); ?></td>
+                                            <td><?php echo htmlspecialchars($room['adult_count'] + $room['children_count']); ?></td>
+                                            <td><?php echo htmlspecialchars($room['price_per_night']); ?></td>
+                                            <td>
+                                                <div class="icon-button" id="roomDetailsSection">
+                                                    <button type="button" class="viewButton"><a href="ViewRoom.php?room_id=<?php echo $room['room_id']; ?>"><img src="../Assests/view.png" alt="View"></a></button>
+
+                                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+                                                        <button type="button" class="editButton"><a href="EditRoom.php?room_id=<?php echo $room['room_id']; ?>"><img src="../Assests/edit.png" alt="Edit"></a></button>
+                                                        <button type="button" onclick="DeleteProcess(<?php echo $room['room_id']; ?>, 'room')"><img src="../Assests/delete.png" alt="Delete"></button>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($room['room_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($room['room_type']); ?></td>
-                                        <td><?php echo htmlspecialchars($room['adult_count'] + $room['children_count']); ?></td>
-                                        <td><?php echo htmlspecialchars($room['price_per_night']); ?></td>
-                                        <td>
-                                            <div class="icon-button" id="roomDetailsSection">
-                                                <button type="button" class="viewButton"><a href="ViewRoom.php?room_id=<?php echo $room['room_id']; ?>"><img src="../Assests/view.png" alt="View"></a></button>
-                                                <button type="button" class="editButton"><a href="EditRoom.php?room_id=<?php echo $room['room_id']; ?>"><img src="../Assests/edit.png" alt="Edit"></a></button>
-                                                <button type="button" onclick="DeleteProcess(<?php echo $room['room_id']; ?>, 'room')"><img src="../Assests/delete.png" alt="Delete"></button>
-                                            </div>
-                                        </td>
+                                        <td colspan="5">No Room found.</td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
-                        <div><button type="submit" class="btn-add">Add +</button></div>
-
+                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+                            <div><button type="submit" class="btn-add">Add +</button></div>
+                        <?php endif; ?>
                     </div>
                 </form>
 
@@ -346,214 +397,328 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                                     <th>Amount</th>
                                     <th>Guest count</th>
                                     <th>Payment status</th>
-                                    <th>Resrvation status</th>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Receptionist') : ?>
+                                        <th>Resrvation status</th>
+                                    <?php endif; ?>
+
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($reservations as $reservation) : ?>
-                                    <tr id="reservation-row-<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                        <td><?php echo htmlspecialchars($reservation['reservation_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($reservation['room_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($reservation['total_price']); ?></td>
-                                        <td><?php echo htmlspecialchars($reservation['number_of_adult'] + $reservation['number_of_children']); ?></td>
-                                        <td><?php echo htmlspecialchars($reservation['payment_status']); ?></td>
-                                        <td>
-                                            <form action="./cancel_reservation.php" method="POST" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
-                                                <input type="hidden" name="cancel_reservation_id" value="<?php echo htmlspecialchars($reservation['reservation_id']); ?>" />
-                                                <input type="hidden" name="reason" value="Customer request" />
-                                                <input type="submit" value="Cancel" style="color: black; background-color: #b89bb1; border: none; border-radius: 5px; padding: 8px; width: 100px; cursor: pointer;">
-                                            </form>
-                                        </td>
+                                    <?php if (!empty($reservations)) : ?>
+                                        <tr id="reservation-row-<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                            <td><?php echo htmlspecialchars($reservation['reservation_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($reservation['room_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($reservation['total_price']); ?></td>
+                                            <td><?php echo htmlspecialchars($reservation['number_of_adult'] + $reservation['number_of_children']); ?></td>
+                                            <td><?php echo htmlspecialchars($reservation['payment_status']); ?></td>
 
-                                        <td>
-                                            <div class="icon-button">
-
-                                                <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
-
-
-                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                    </a>
-
-                                                    <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
-                                                        <img src="../Assests/delete.png" alt="Delete">
-                                                    </button>
-
-                                                <?php else : ?>
-
-                                                    <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                        <button type="button"><img src="../Assests/view.png" alt="View"></button>
-                                                    </a>
-
-                                                    <a href="EditReservation.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
-                                                        <button type="button" class="editButton">
-                                                            <img src="../Assests/edit.png" alt="Edit">
-                                                        </button>
-                                                    </a>
-
-                                                    <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
-                                                        <img src="../Assests/delete.png" alt="Delete">
-                                                    </button>
-
-                                                <?php endif; ?>
-
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-
-                            </tbody>
-                        </table>
-                        <div><button class="btn-add" id="show-staff">Add +</button></div>
-
-                        <!-- Pagination Links -->
-                        <div class="pagination">
-                            <?php if ($page > 1) : ?>
-                                <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
-                            <?php endif; ?>
-                            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                                <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
-                                                                    else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
-                            <?php endfor; ?>
-                            <?php if ($page < $totalPages) : ?>
-                                <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+                                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Receptionist') : ?>
+                                                <td>
                 </form>
-                <!-- Reservation end -->
+                <form action="./cancel_reservation.php" method="POST" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                    <input type="hidden" name="cancel_reservation_id" value="<?php echo htmlspecialchars($reservation['reservation_id']); ?>" />
+                    <input type="hidden" name="reason" value="Customer request" />
+                    <input type="submit" name="CancelReservation" value="Cancel" style="color: black; background-color: #b89bb1; border: none; border-radius: 5px; padding: 8px; width: 100px; cursor: pointer;">
+                </form>
+                <form action="AddReservation.php" method="post">
+                    </td>
+                <?php endif ?>
 
-                <!-- Staff Strt -->
 
-                <form action="AddStaff.php" method="post">
-                    <?php include('message.php'); ?>
-                    <div class="order" id="staff" style="display:none;">
-                        <div class="head" style="margin-top: -32px;">
-                            <h3>Staff details</h3>
 
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
+                <td>
+                    <div class="icon-button">
+
+                        <?php if ($reservation['reservation_status'] === 'cancelled') : ?>
+
+
+                            <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                            </a>
+
+                            <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                <img src="../Assests/delete.png" alt="Delete">
+                            </button>
+
+                        <?php else : ?>
+
+                            <a href="viewReservations.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                <button type="button"><img src="../Assests/view.png" alt="View"></button>
+                            </a>
+
+                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Receptionist') : ?>
+
+                                <a href="EditReservation.php?reservation_id=<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
+                                    <button type="button" class="editButton">
+                                        <img src="../Assests/edit.png" alt="Edit">
+                                    </button>
+                                </a>
+
+                                <button type="button" onclick="DeleteProcess(<?php echo htmlspecialchars($reservation['reservation_id']); ?>, 'reservation')">
+                                    <img src="../Assests/delete.png" alt="Delete">
+                                </button>
+
+                            <?php endif; ?>
+
+                        <?php endif; ?>
+
+                    </div>
+                </td>
+                </tr>
+            <?php else : ?>
+                <tr>
+                    <td colspan="5">No reservations Found.</td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+
+        </tbody>
+        </table>
+        <div><button class="btn-add" id="show-staff">Add +</button></div>
+
+        <!-- Pagination Links -->
+        <div class="pagination">
+            <?php if ($page > 1) : ?>
+                <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
+                                                    else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
+            <?php endfor; ?>
+            <?php if ($page < $totalPages) : ?>
+                <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
+            <?php endif; ?>
+        </div>
+            </div>
+            </form>
+            <!-- Reservation end -->
+
+            <!-- Staff Strt -->
+
+            <form action="AddStaff.php" method="post">
+                <?php include('message.php'); ?>
+                <div class="order" id="staff" style="display:none;">
+                    <div class="head" style="margin-top: -32px;">
+                        <h3>Staff details</h3>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
                                     <th>Staff ID</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
-                                    <!-- <th>Username</th> -->
-                                    <!-- <th>NIC</th> -->
                                     <th>Email</th>
-                                    <!-- <th>Contact No</th> -->
                                     <th>Role</th>
                                     <th>Action</th>
+                                <?php endif; ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($staffList as $staff) : ?>
+                                <?php if (!empty($staffList)) : ?>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($staff['staff_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($staff['firstname']); ?></td>
+                                            <td><?php echo htmlspecialchars($staff['lastname']); ?></td>
+                                            <td><?php echo htmlspecialchars($staff['email']); ?></td>
+                                            <td><?php echo htmlspecialchars($staff['role']); ?></td>
+                                            <td>
+                                                <div class="icon-button">
+                                                    <button type="button" onclick="viewStaff(<?php echo $staff['staff_id']; ?>)"><a href="ViewStaff.php?staff_id=<?php echo $staff['staff_id']; ?>"><img src="../Assests/view.png" alt="View"></button>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($staffList as $staff) : ?>
+                                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                                                        <button type="button" onclick="editStaff(<?php echo $staff['staff_id']; ?>)"><a href="EditStaff.php?staff_id=<?php echo $staff['staff_id']; ?>"><img src="../Assests/edit.png" alt="Edit"></a></button>
+                                                        <button type="button" onclick="DeleteProcess(<?php echo $staff['staff_id']; ?>, 'staff')"><img src="../Assests/delete.png" alt="Delete"></button>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php else : ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($staff['staff_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($staff['firstname']); ?></td>
-                                        <td><?php echo htmlspecialchars($staff['lastname']); ?></td>
-
-
-                                        <td><?php echo htmlspecialchars($staff['email']); ?></td>
-
-                                        <td><?php echo htmlspecialchars($staff['role']); ?></td>
-                                        <td>
-                                            <div class="icon-button">
-                                                <button type="button" onclick="viewStaff(<?php echo $staff['staff_id']; ?>)"><a href="ViewStaff.php?staff_id=<?php echo $staff['staff_id']; ?>"><img src="../Assests/view.png" alt="View"></button>
-                                                <button type="button" onclick="editStaff(<?php echo $staff['staff_id']; ?>)"><a href="EditStaff.php?staff_id=<?php echo $staff['staff_id']; ?>"><img src="../Assests/edit.png" alt="Edit"></a></button>
-                                                <button type="button" onclick="DeleteProcess(<?php echo $staff['staff_id']; ?>, 'staff')"><img src="../Assests/delete.png" alt="Delete"></button>
-                                            </div>
-                                        </td>
+                                        <td colspan="5">No Staff Found.</td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
 
-                            </tbody>
+                        </tbody>
 
-                        </table>
+                    </table>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
                         <div><button class="btn-add" id="show-staff">Add +</button></div>
+                    <?php else: ?>
+                        <div class="no-events-container" style="border: 1px solid #ccc; border-radius: 5px; padding: 20px; text-align: center; background-color: #f9f9f9; margin: 20px; color: #555;">
+        <h2>This is Section is Not Available</h2>
+        
+    </div>
+
+                    <?php endif; ?>
+                </div>
+            </form>
+
+            <!-- Staff end -->
+
+            <!-- event strt -->
+
+            <form action="addEvent.php" method="post">
+                <div class="order" id="event" style="display:none;">
+                    <div class="head" style="margin-top: -32px;">
+                        <h3>Event</h3>
                     </div>
-                </form>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reservation ID</th>
+                                <th>Event Name</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($event as $customEvent) : ?>
+                                <?php if (!empty($event)) : ?>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                                    <td><?php echo htmlspecialchars($customEvent['reservation_id']); ?></td>
+                                    <td><?php
+                                            $cus_id = $customEvent['customization_id'];
+                                            $event_type_id = EventCustomization::getEventTypeIdByCustomizationId($con, $cus_id);
+                                            $event_name = EventTypes::getEventNameById($con, $event_type_id);
+                                            echo $event_name;?></td>
+                                    <td>
+                                        <select name="status[]" class="custom-select">
+                                            <option value="set">Set</option>
+                                            <option value="not_set">Not Set</option>
+                                        </select>
+                                    </td>
 
-                <!-- Staff end -->
+                                    <td>
+                                        <div class="icon-button">
+                                            <button type="button" onclick="viewEvent(<?php echo $customEvent['reservation_id']; ?>)">
+                                                <img src="../Assests/view.png" alt="View">
+                                            </button>
 
+                                            <script>
+                                                function viewEvent(reservationId) {
+                                                    window.location.href = 'EventCustomization.php?reservation_id=' + reservationId;
+                                                }
+                                            </script>
 
-                <!-- FAQ strt -->
-
-                <form action="" method="post" style="width: 100%;">
-                    <?php include('message.php'); ?>
-                    <div class="order" id="faq" style="display:none;">
-                        <div class="head" style="margin-top: -32px;">
-                            <h3>FAQ</h3>
-                        </div>
-
-                        <div class="faq" style="background-color: #cebcca; padding: 10px;">
-                            <?php if (!empty($reservations)) : ?>
-                                <?php $count = 1; ?>
-                                <?php foreach ($faqList as $faqItem) : ?>
-                                    <div class="faq-item" style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center;">
-                                            <div style="flex-grow: 1;">
-                                                <?php echo $count . ". " . htmlspecialchars($faqItem['faq_question']); ?>
-                                            </div>
-                                            <div class="icon-button" style="display: flex; gap: 5px;">
-                                                <button type="button"><img src="../Assests/edit.png" alt="Edit" style="width: 20px; height: 20px;"></button>
-                                                <button type="button" onclick="DeleteProcess(<?php echo $faqId; ?>, 'faq', event)">
-                                                    <img src="../Assests/delete.png" alt="Delete" style="width: 20px; height: 20px;">
-                                                </button>
-                                                <button type="button"><img src="../Assests/icons8-upload-26.png" alt="upload" style="width: 20px; height: 20px;"></button>
-                                            </div>
+                                            <button type="button" onclick="DeleteProcess()"><img src="../Assests/delete.png" alt="Delete"></button>
                                         </div>
-                                        <div class="faq-answer" style="display: none; padding: 10px; background-color: #f9f9f9; margin-top: 10px;">
-                                            <?php echo htmlspecialchars($faqItem['faq_answer']); ?>
+                                    </td>
+                                    </tr>
+
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan="5">This section is not available.</td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+
+                        </tbody>
+                    </table>
+                    <!-- <div><button class="btn-add" id="show-staff">Add +</button></div> -->
+
+                    <!-- Pagination Links -->
+                    <div class="pagination">
+                        <?php if ($page > 1) : ?>
+                            <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
+                        <?php endif; ?>
+                        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
+                                                                else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
+                        <?php endfor; ?>
+                        <?php if ($page < $totalPages) : ?>
+                            <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </form>
+
+            <!-- event end -->
+
+            <!-- FAQ strt -->
+
+            <form action="" method="post" style="width: 100%;">
+                <?php include('message.php'); ?>
+                <div class="order" id="faq" style="display:none;">
+                    <div class="head" style="margin-top: -32px;">
+                        <h3>FAQ</h3>
+                    </div>
+
+                    <div class="faq" style="background-color: #cebcca; padding: 10px;">
+                        <?php if (!empty($reservations)) : ?>
+                            <?php $count = 1; ?>
+                            <?php foreach ($faqList as $faqItem) : ?>
+                                <div class="faq-item" style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                                    <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="flex-grow: 1;">
+                                            <?php echo $count . ". " . htmlspecialchars($faqItem['faq_question']); ?>
+                                        </div>
+                                        <div class="icon-button" style="display: flex; gap: 5px;">
+                                            <button type="button"><img src="../Assests/edit.png" alt="Edit" style="width: 20px; height: 20px;"></button>
+                                            <button type="button" onclick="DeleteProcess(<?php echo $faqId; ?>, 'faq', event)">
+                                                <img src="../Assests/delete.png" alt="Delete" style="width: 20px; height: 20px;">
+                                            </button>
+                                            <button type="button"><img src="../Assests/icons8-upload-26.png" alt="upload" style="width: 20px; height: 20px;"></button>
                                         </div>
                                     </div>
-                                    <?php $count++; ?>
-                                <?php endforeach; ?>
-                            <?php else : ?>
-                                <tr>
-                                    <td colspan="5">No FAQ found.</td>
-                                </tr>
-                            <?php endif; ?>
-                        </div>
-
-                        <div><button class="btn-add" id="show-faq">Add +</button></div>
-
+                                    <div class="faq-answer" style="display: none; padding: 10px; background-color: #f9f9f9; margin-top: 10px;">
+                                        <?php echo htmlspecialchars($faqItem['faq_answer']); ?>
+                                    </div>
+                                </div>
+                                <?php $count++; ?>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr>
+                                <td colspan="5">No FAQ found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </div>
-                </form>
 
-                <!-- FAQ end -->
+                    <div><button class="btn-add" id="show-faq">Add +</button></div>
 
-                <!-- Settings strt -->
+                </div>
+            </form>
 
+            <!-- FAQ end -->
+
+            <!-- Settings strt -->
+
+            <form action="AddEvent.php" method="post">
                 <div class="order" id="settings" style="display:none;">
                     <div class="head">
                         <h3>Settings</h3>
-                        <i class='bx bx-search'></i>
-                        <i class='bx bx-filter'></i>
+
                     </div>
 
                     <ul class="Home-settings">
 
                         <li>
                             <i class='AboutUs content'></i>
-                            <button>Home Settings</button>
+                            <button>Event Settings</button>
                         </li>
-                        <li>
+                        <!-- <li>
                             <i class='gallary'></i>
                             <button>Gallary</button>
                         </li>
                         <li>
                             <i class='Feedback'></i>
                             <button>Feedback</button>
-                        </li>
+                        </li> -->
 
                     </ul>
 
                 </div>
+            </form>
 
-                <!-- Settings end -->
+            <!-- Settings end -->
 
         </main>
         <!-- MAIN end-->
@@ -579,6 +744,13 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
 
         });
     </script> -->
+
+    <script>
+        function viewEvent(reservationId) {
+            // Redirect to the EventCustomization page with the reservation_id as a query parameter
+            window.location.href = 'EventCustomization.php?reservation_id=' + reservationId;
+        }
+    </script>
 
 </body>
 

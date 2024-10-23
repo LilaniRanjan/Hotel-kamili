@@ -6,13 +6,18 @@ require '../classes/Room.php';
 require '../classes/staff.php';
 require '../classes/Reservation.php';
 require '../classes/Customer.php';
-require '../message.php';
+require '../classes/EventTypes.php';
+require '../classes/DecorationOptions.php';
+require '../classes/CakeOptions.php';
+require 'message.php';
 
 use classes\DbConnector;
 use classes\Room;
 use classes\Reservation;
 use classes\Customer;
 use classes\staff;
+use classes\CakeOptions;
+
 
 // Add Room Process
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -72,12 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-        } else {if ($room->create($con)) {
-            $_SESSION['message'] = "Room details saved successfully!";
         } else {
-            $_SESSION['errors'] = "Failed to save room details.";
+            if ($room->create($con)) {
+                $_SESSION['message'] = "Room details saved successfully!";
+            } else {
+                $_SESSION['errors'] = "Failed to save room details.";
+            }
         }
-    }
 
         header('Location: AddRoom.php');
         exit();
@@ -145,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($con) {
             if ($customer->create($con)) {
-                $customer_id = $customer->getCustomerId(); 
+                $customer_id = $customer->getCustomerId();
 
                 $room = $_POST['room_id'];
                 $check_in_date = $_POST['check_in_date'];
@@ -162,16 +168,144 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($reservation->create($con)) {
                     $_SESSION['message'] = "Reservation added successfully!";
                 } else {
-                    $_SESSION['message'] = "Failed to add reservation.";
+                    $_SESSION['errors'] = "Failed to add reservation.";
                 }
             } else {
-                $_SESSION['message'] = "Failed to add customer.";
+                $_SESSION['errors'] = "Failed to add customer.";
             }
         } else {
-            $_SESSION['message'] = "Database connection error.";
+            $_SESSION['errors'] = "Database connection error.";
         }
 
         header('Location: AddReservation.php');
         exit();
     }
+
+    // Add Event Process
+
+    if (isset($_POST['EventSubmit'])) {
+        // Database connection
+        $dbConnector = new DbConnector();
+        $con = $dbConnector->getConnection();
+
+        // Retrieve form data
+        $eventName = $_POST['event_name'];
+        $decoTypes = $_POST['decoType'];
+        $decoPrices = $_POST['deco_price'];
+        $decoPhotos = $_FILES['DecoPhotos'];
+
+        // Initialize error array
+        $errors = [];
+
+        // Validate form data
+        if (empty($eventName)) {
+            $errors[] = "Event name is required.";
+        }
+
+        if (empty($decoTypes) || count($decoTypes) == 0) {
+            $errors[] = "At least one decoration type is required.";
+        }
+
+        if (empty($decoPhotos['name'][0])) {
+            $errors[] = "At least one decoration photo is required.";
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors; // Store errors in session
+            header('Location: AddEvent.php'); // Redirect back to the form
+            exit();
+        }
+
+        try {
+            // Insert or get the event type ID
+            $eventType = new EventTypes($eventName);
+            $existingEventTypeId = $eventType->getEventNameById($con, $eventName);
+
+            if ($existingEventTypeId) {
+                $eventTypeId = $existingEventTypeId; // Use existing ID
+            } else {
+                $eventTypeId = $eventType->insertEvent($con); // Insert new event type if it doesn't exist
+            }
+
+            // Initialize arrays to store decoration options data
+            $decorationNames = [];
+            $decorationImages = [];
+
+            // Process each decoration type and its image
+            foreach ($decoTypes as $index => $decoType) {
+                if (isset($decoPhotos['name'][$index]) && $decoPhotos['error'][$index] == 0) {
+                    $targetDir = "../uploads/"; // Ensure this directory exists
+                    $targetFile = $targetDir . basename($decoPhotos['name'][$index]);
+
+                    // Move uploaded file to the target directory
+                    if (move_uploaded_file($decoPhotos['tmp_name'][$index], $targetFile)) {
+                        // Store decoration option data
+                        $decorationNames[] = $decoType; // Collect decoration types
+                        $decorationPrices[] = $decoPrices[$index]; // Collect decoration prices
+                        $decorationImages[] = $targetFile; // Collect uploaded image paths
+                    } else {
+                        throw new Exception("Failed to move uploaded file for {$decoType}.");
+                    }
+                } else {
+                    throw new Exception("Error uploading file for {$decoType}. Error code: " . $decoPhotos['error'][$index]);
+                }
+            }
+
+            // Insert decoration options into the database using the new method
+            \DecorationOptions::insertDecorationOptions($con, $eventTypeId, $decorationNames, $decorationImages, $decorationPrices);
+
+            // Success
+            $_SESSION['message'] = "Event and decoration types added successfully!";
+            header("Location: ViewEvent.php");
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['errors'] = ["Error: " . $e->getMessage()];
+            header('Location: AddEvent.php'); // Redirect back to the form
+            exit();
+        }
+    }
+
+    // Add cake
+if (isset($_POST['cakeSubmit'])) {
+    // Database connection
+    $dbConnector = new DbConnector();
+    $con = $dbConnector->getConnection();
+
+    // Retrieve form data
+    $cake_type = $_POST['cake_type'];
+    $cake_size = $_POST['cake_size'];
+    $cake_price = $_POST['cake_price'];
+
+    // Initialize error array
+    $errors = [];
+
+    // Validate form data
+    if (empty($cake_type) || empty($cake_size) || empty($cake_price)) {
+        $errors[] = "All fields are required ";
+    }
+
+    // If there are errors, redirect back to the form with error messages
+    if (!empty($errors)) {
+        $_SESSION['errors'] = $errors;
+        header('Location: AddCake.php');
+        exit();
+    }
+
+    try {
+        // Insert cake options into the database
+        
+        CakeOptions::insertCakeType($con, $cake_size, $cake_type, $cake_price);
+
+        // Success
+        $_SESSION['message'] = "A new cake design added successfully!";
+        header("Location: cake.php");
+        exit();
+    } catch (Exception $e) {
+        // Catch any exceptions and store error messages
+        $_SESSION['errors'] = ["Error: " . $e->getMessage()];
+        header('Location: AddCake.php'); // Redirect back to the form
+        exit();
+    }
+}
+
 }

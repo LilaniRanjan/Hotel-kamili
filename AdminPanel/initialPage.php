@@ -1,3 +1,11 @@
+<?php
+require_once '../AdminPanel/session_check.php';
+
+session_start();
+check_login();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +28,18 @@
             <div class="card p-4">
                 <div class="card-body">
                     <i class="lni lni-checkmark-circle success-icon mb-3"></i>
-                    <h2 class="card-title mb-3">Registration Successful!</h2>
-                    <p class="card-text"><b>You have successfully registered to Kamili Beach Resort.</b></p>
-                    <a href="./login.php" class="btn mt-3">Sign In</a>
+                    <h2 class="card-title mb-3">You Need Permission</h2>
+                    <p class="card-text"><b>Currently you have no access to this page.</b></p>
+                    <!-- <a href="#" class="btn mt-3">Request Access</a> -->
+                    <!-- <br> -->
+                    <form action="../AdminPanel/login.php" method="POST">
+                        <input type="hidden" name="staff_id" value="<?php echo $_SESSION['staff_id']; ?>">
+                        <button type="submit" class="btn mt-3">Sign In</button>
+                    </form>
+                    
+                    <hr>
+                   <!-- <a href="../AdminPanel/login.php" style="color: purple; font-size: 18px; text-decoration: none;">Login</a> -->
+
                 </div>
             </div>
         </div>
