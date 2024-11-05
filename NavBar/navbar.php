@@ -3,6 +3,7 @@
 
     <head>
         <meta charset="utf-8">
+        <link rel="shortcut icon" type="png" href="../Assests/cropped-kamili-Copy-1.png">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>KAMILI BEACH RESORT</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous"

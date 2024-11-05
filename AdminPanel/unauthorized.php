@@ -6,7 +6,6 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +17,10 @@ session_start();
     <style>
         .warning-icon {
             font-size: 60px;
-            color: #FFA500;
-            /* Bright orange color for the warning */
+            color: #FFA500; /* Bright orange color for the warning */
         }
     </style>
 </head>
-
 <body>
     <div class="background-image">
         <div class="container d-flex flex-column justify-content-center align-items-center vh-100 text-center">
@@ -35,29 +32,18 @@ session_start();
             </div>
             <div class="card p-4">
                 <div class="card-body">
-                    <i class="lni lni-warning warning-icon"></i>
+                <i class="lni lni-warning warning-icon"></i>
                     <h2 class="card-title mb-3">Unauthorized Access</h2>
                     <p class="card-text"><b>You do not have permission to view this page.</b></p>
                     <!-- <a href="#" class="btn mt-3">Request Access</a> -->
                     <!-- <br> -->
                     <form action="request_access.php" method="POST">
-                        <input type="hidden" name="staff_id"
-                            <?php
-                            if (!empty($_SESSION['staff_id'])) {
-                            ?>
-                                value="<?php echo $_SESSION['staff_id']; ?>">
-                            <?php
-                            } else {
-                            ?>
-                                value="">
-                            <?php
-                                    }
-                            ?>
-
+                        <input type="hidden" name="staff_id" value="<?php echo $_SESSION['staff_id']; ?>">
+                        
                     </form>
-
+                    
                     <hr>
-                    <a href="../AdminPanel/login.php" style="color: purple; font-size: 18px; text-decoration: none;">SignIn</a>
+                   <a href="../AdminPanel/login.php" style="color: purple; font-size: 18px; text-decoration: none;">SignIn</a>
 
                 </div>
             </div>
@@ -66,5 +52,4 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="success.js"></script>
 </body>
-
 </html>

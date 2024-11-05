@@ -27,6 +27,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <link rel="shortcut icon" type="png" href="../Assests/cropped-kamili-Copy-1.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KAMILI BEACH RESORT</title>
   <link rel="stylesheet" href="./css/home.css">

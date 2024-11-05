@@ -42,7 +42,7 @@ if(isset($_POST['user_name'], $_POST['password'])){
                 case 'Staff':
                     header("Location: ./initialPage.php");
                     break;
-                case 'Room_manager':
+                case 'Room Manager':
                     header("Location: ./Admin.php");
                     break;
                 case 'Receptionist':

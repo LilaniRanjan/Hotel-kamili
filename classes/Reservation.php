@@ -335,6 +335,25 @@ class Reservation {
         }
     }
 
+    public static function getAllReservationsByRoomId($con, $room_id) {
+        try {
+            $query = "
+                SELECT reservation.*
+                FROM Reservation
+                WHERE room_id = ?
+            ";
+            $stmt = $con->prepare($query);
+            $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Return an empty array if no reservations found
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (PDOException $e) {
+            // You can log the error here instead of dying
+            error_log("Error fetching reservations by room ID: " . $e->getMessage());
+            return []; // Return an empty array on error
+            }}
+
     public static function cancelAndMoveToCancellation($con, $id, $reservationId, $cancellationReason) {
         try {
             // Start a transaction
@@ -425,25 +444,6 @@ class Reservation {
         }
     }
     
-    public static function getAllReservationsByRoomId($con, $room_id) {
-        try {
-            $query = "
-                SELECT reservation.*
-                FROM Reservation
-                WHERE room_id = ?
-            ";
-            $stmt = $con->prepare($query);
-            $stmt->bindValue(1, $room_id, PDO::PARAM_INT);
-            $stmt->execute();
-            
-            // Return an empty array if no reservations found
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        } catch (PDOException $e) {
-            // You can log the error here instead of dying
-            error_log("Error fetching reservations by room ID: " . $e->getMessage());
-            return []; // Return an empty array on error
-        }
-    }
     
     
 }

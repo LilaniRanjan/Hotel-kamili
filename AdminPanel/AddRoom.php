@@ -88,17 +88,17 @@ include('message.php');
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="roomInside360ViewImage">Room Inside 360 View Image:</label>
+                                    <label for="roomInside360ViewImage">Room Inside 360 View Image:</label> <label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                                     <input type="file" id="roomInside360ViewImage" name="roomInside360ImageUpload" class="form-control" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="roomBathroom360ViewImage">Room Bathroom 360 View Image:</label>
+                                    <label for="roomBathroom360ViewImage">Room Bathroom 360 View Image:</label> <label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                                     <input type="file" id="roomBathroom360ViewImage" name="bathroom360ImageUpload" class="form-control" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="roomOutdoor360ViewImage">Room Outdoor 360 View Image:</label>
+                                    <label for="roomOutdoor360ViewImage">Room Outdoor 360 View Image:</label> <label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                                     <input type="file" id="roomOutdoor360ViewImage" name="outdoor360ImageUpload" class="form-control" required>
                                 </div>
 

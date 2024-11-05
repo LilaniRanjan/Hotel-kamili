@@ -52,8 +52,9 @@ $maxPrice = $priceRange['max_price'];
 
 <head>
   <meta charset="utf-8">
+  <link rel="shortcut icon" type="png" href="../Assests/cropped-kamili-Copy-1.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAMILI BEACH RESORT</title>
+  <title>Rooms | Kamili Beach Resort</title>
   <link rel="stylesheet" href="./css/home.css">
   <link rel="stylesheet" href="./css/filtered_room.css">
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>

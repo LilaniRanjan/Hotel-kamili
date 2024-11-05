@@ -196,7 +196,8 @@ $images = \classes\RoomImages::getImagesByRoomId($con, $room_id);
     <div id="customizationModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCustomizationModal()">&times;</span>
-            <h4>Do you want to customize your room for an event?</h4>
+            <h4 style="color: blueviolet;">Celebrating something special?</h4>
+            <center><label>Would you like us to arrange any room decorations for you?</label></center>
             <div id="btnalign">
                 <button onclick="handleCustomizationResponse(true)">YES</button>
                 <button onclick="handleCustomizationResponse(false)">NO</button>

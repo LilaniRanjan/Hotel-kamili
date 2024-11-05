@@ -62,6 +62,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
 
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" type="png" href="../Assests/cropped-kamili-Copy-1.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
@@ -77,7 +78,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
         <title>Admin Dashboard</title>
     <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Receptionist') : ?>
         <title>Receptionist Dashboard</title>
-    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'room_manager') : ?>
+    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Room Manager') : ?>
         <title>Room Manager Dashboard</title>
     <?php endif; ?>
 
@@ -195,7 +196,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                         <h1>Admin Dashboard</h1>
                     <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Receptionist'): ?>
                         <h1>Receptionist Dashboard</h1>
-                    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'room_Manager'): ?>
+                    <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Room Manager'): ?>
                         <h1>Room Manager Dashboard</h1>
                     <?php endif; ?>
                     <ul class="breadcrumb">
@@ -243,7 +244,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
 
                 </li>
                 <li>
-                <i class='bx bx-bed'></i>
+                    <i class='bx bx-bed'></i>
                     <span class="text">
                         <h3><?php echo $availableRooms; ?></h3>
                         <p>Available Rooms</p>
@@ -553,9 +554,9 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                         <div><button class="btn-add" id="show-staff">Add +</button></div>
                     <?php else: ?>
                         <div class="no-events-container" style="border: 1px solid #ccc; border-radius: 5px; padding: 20px; text-align: center; background-color: #f9f9f9; margin: 20px; color: #555;">
-        <h2>This is Section is Not Available</h2>
-        
-    </div>
+                            <h2>This is Section is Not Available</h2>
+
+                        </div>
 
                     <?php endif; ?>
                 </div>
@@ -565,7 +566,7 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
 
             <!-- event strt -->
 
-            <form action="addEvent.php" method="post">
+            <form action="add_event_status.php" method="post">
                 <div class="order" id="event" style="display:none;">
                     <div class="head" style="margin-top: -32px;">
                         <h3>Event</h3>
@@ -581,21 +582,24 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                         </thead>
                         <tbody>
                             <?php foreach ($event as $customEvent) : ?>
-                                <?php if (!empty($event)) : ?>
-                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                                <tr>
                                     <td><?php echo htmlspecialchars($customEvent['reservation_id']); ?></td>
-                                    <td><?php
-                                            $cus_id = $customEvent['customization_id'];
-                                            $event_type_id = EventCustomization::getEventTypeIdByCustomizationId($con, $cus_id);
-                                            $event_name = EventTypes::getEventNameById($con, $event_type_id);
-                                            echo $event_name;?></td>
                                     <td>
+                                        <?php
+                                        $cus_id = $customEvent['customization_id'];
+                                        $event_type_id = EventCustomization::getEventTypeIdByCustomizationId($con, $cus_id);
+                                        $event_name = EventTypes::getEventNameById($con, $event_type_id);
+                                        echo $event_name;
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <!-- Add a hidden input for customization_id -->
+                                        <input type="hidden" name="customization_id[]" value="<?php echo $cus_id; ?>">
                                         <select name="status[]" class="custom-select">
-                                            <option value="set">Set</option>
-                                            <option value="not_set">Not Set</option>
+                                            <option value="Set" <?php echo $customEvent['status'] == 'Set' ? 'selected' : ''; ?>>Set</option>
+                                            <option value="Not Set" <?php echo $customEvent['status'] == 'Not Set' ? 'selected' : ''; ?>>Not Set</option>
                                         </select>
                                     </td>
-
                                     <td>
                                         <div class="icon-button">
                                             <button type="button" onclick="viewEvent(<?php echo $customEvent['reservation_id']; ?>)">
@@ -611,33 +615,26 @@ $reservations = Reservation::getAllReservations($con, $limit, $offset);
                                             <button type="button" onclick="DeleteProcess()"><img src="../Assests/delete.png" alt="Delete"></button>
                                         </div>
                                     </td>
-                                    </tr>
-
-                                <?php else : ?>
-                                    <tr>
-                                        <td colspan="5">This section is not available.</td>
-                                    </tr>
-                                <?php endif; ?>
-                                <?php endif; ?>
+                                </tr>
                             <?php endforeach; ?>
-
                         </tbody>
                     </table>
-                    <!-- <div><button class="btn-add" id="show-staff">Add +</button></div> -->
+                    <div><button class="btn-add" id="show-staff" type="submit">Save Changes</button></div>
+                </div>
 
-                    <!-- Pagination Links -->
-                    <div class="pagination">
-                        <?php if ($page > 1) : ?>
-                            <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
-                        <?php endif; ?>
-                        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
-                                                                else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
-                        <?php endfor; ?>
-                        <?php if ($page < $totalPages) : ?>
-                            <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
-                        <?php endif; ?>
-                    </div>
+                <!-- Pagination Links -->
+                <div class="pagination">
+                    <?php if ($page > 1) : ?>
+                        <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">Previous</a>
+                    <?php endif; ?>
+                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                        <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="pagination-link active"';
+                                                            else echo 'class="pagination-link"'; ?>><?php echo $i; ?></a>
+                    <?php endfor; ?>
+                    <?php if ($page < $totalPages) : ?>
+                        <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">Next</a>
+                    <?php endif; ?>
+                </div>
                 </div>
             </form>
 

@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $reservations = Reservation::getAllReservationsByRoomId($con, $itemId);
 
             if ($reservations != null) {
-                $_SESSION['errors'][] = "The Room is  reserved by a Customer so you can not delete it!";
+                $_SESSION['errors'][] = "This room cannot be deleted or cancelled as there are reservations";
             } else {
                 // echo "deleted";
                 switch ($itemType) {

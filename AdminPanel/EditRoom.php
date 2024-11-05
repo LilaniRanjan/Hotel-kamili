@@ -113,19 +113,19 @@ if (!$room) {
                     </div>
 
                     <div class="mb-3">
-                        <label for="roomInside360ViewImage">Room Inside 360 View Image:</label>
+                        <label for="roomInside360ViewImage">Room Inside 360 View Image:</label> <label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                         <input type="file" id="roomInside360ViewImage" name="roomInside360ViewImage" class="form-control" title="Please upload 3D penaromic image for 3D view">
                         <img src="<?php echo htmlspecialchars($room->getRoomInside360ViewImage()); ?>" alt="Current Image" style="max-width: 200px; margin-top: 10px;">
                     </div>
 
                     <div class="mb-3">
-                        <label for="roomBathroom360ViewImage">Room Bathroom 360 View Image:</label>
+                        <label for="roomBathroom360ViewImage">Room Bathroom 360 View Image:</label><label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                         <input type="file" id="roomBathroom360ViewImage" name="roomBathroom360ViewImage" class="form-control">
                         <img src="<?php echo htmlspecialchars($room->getRoomBathroom360ViewImage()); ?>" alt="Current Image" style="max-width: 200px; margin-top: 10px;">
                     </div>
 
                     <div class="mb-3">
-                        <label for="roomOutdoor360ViewImage">Room Outdoor 360 View Image:</label>
+                        <label for="roomOutdoor360ViewImage">Room Outdoor 360 View Image:</label><label style="color: Orange;">Upload a 3D panoramic image for a better view! </label>
                         <input type="file" id="roomOutdoor360ViewImage" name="roomOutdoor360ViewImage" class="form-control">
                         <img src="<?php echo htmlspecialchars($room->getRoomOutdoor360ViewImage()); ?>" alt="Current Image" style="max-width: 200px; margin-top: 10px;">
                     </div>

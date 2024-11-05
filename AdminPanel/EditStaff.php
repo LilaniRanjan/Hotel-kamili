@@ -90,7 +90,7 @@ if (!$staff) {
 
                     <div class="mb-3">
                         <label for="nic">NIC Number:</label>
-                        <input type="text" id="nic" name="nic" class="form-control" required value="<?php echo htmlspecialchars($staff['nic']); ?>" disabled>
+                        <input type="text" id="nic" name="nic" class="form-control" required value="<?php echo htmlspecialchars($staff['nic']); ?>">
                     </div>
 
                     <div class="mb-3">
@@ -110,7 +110,7 @@ if (!$staff) {
                             <option value="Receptionist" <?php if ($staff['role'] === 'Receptionist') echo 'selected'; ?>>Receptionist</option>
                             <option value="Admin" <?php if ($staff['role'] === 'Admin') echo 'selected'; ?>>Admin</option>
                             <option value="Room Manager" <?php if ($staff['role'] === 'Room Manager') echo 'selected'; ?>>Room Manager</option>
-                            <option value="None" <?php if ($staff['role'] === 'None') echo 'selected'; ?>>None</option>
+                            <!-- <option value="None" <?php if ($staff['role'] === 'None') echo 'selected'; ?>>None</option> -->
                         </select>
                     </div>
 

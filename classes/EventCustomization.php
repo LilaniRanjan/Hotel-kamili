@@ -120,7 +120,27 @@ public static function getEventTypeIdByCustomizationId($con, $customization_id) 
     }
 }
 
+public static function updateEventStatusByCustomizationId($con, $customization_id, $status) {
+    try {
+        // Prepare the SQL query to update the status based on customization_id
+        $query = "UPDATE EventCustomizations SET status = ? WHERE customization_id = ?";
+        $stmt = $con->prepare($query);
+        
+        // Bind the status and customization_id parameters
+        $stmt->bindParam(1, $status, PDO::PARAM_STR);
+        $stmt->bindParam(2, $customization_id, PDO::PARAM_INT);
+        
+        // Execute the query
+        $stmt->execute();
 
+        // Return true on success
+        return true;
+    } catch (PDOException $e) {
+        // Log the error and return false for better error handling
+        error_log("Error updating status: " . $e->getMessage());
+        return false;
+    }
+}
 
 
     

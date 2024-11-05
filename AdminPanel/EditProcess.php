@@ -10,9 +10,6 @@ require '../classes/DecorationOptions.php';
 use classes\DbConnector;
 use classes\staff;
 use classes\Room;
-use classes\Reservation;
-use classes\EventTypes;
-use classes\DecorationOptions;
 
 $dbConnector = new DbConnector();
 $con = $dbConnector->getConnection();

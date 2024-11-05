@@ -52,21 +52,11 @@ if (!empty($_POST['stripeToken'])) {
     $room_type = $_POST['room_type'];
     $room_id = $_POST['room_id'];
 
-    // Convert the dates to DateTime objects
-    $checkInDate = new DateTime($check_in_date);
-    $checkOutDate = new DateTime($check_out_date);
-
-    // Calculate the difference between the two dates
-    $interval = $checkInDate->diff($checkOutDate);
-
-    // Get the number of days as an integer
-    $numberOfDays = $interval->days;
-
     if(!empty($_SESSION['total_decoration_price'])){
         $total_decoration_price = $_SESSION['total_decoration_price'];
-        $total_price = (($_POST['room_price'] * $_POST['number_of_room'] * $numberOfDays) + $total_decoration_price);
+        $total_price = (($_POST['room_price'] * $_POST['number_of_room']) + $total_decoration_price);
     }else{
-        $total_price = ($_POST['room_price'] * $_POST['number_of_room'] * $numberOfDays);
+        $total_price = ($_POST['room_price'] * $_POST['number_of_room']);
     }
     $amountInCents = $total_price * 100;
     $room_price = $_POST['room_price'];
